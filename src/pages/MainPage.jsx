@@ -111,24 +111,27 @@ export default function MainPage() {
 
 
   //////////  axios 코드 ////////////////////////////////
-  const [aiReply, setAiReply] = useState(''); // AI 답변을 담을 상태 추가
-  const handleSubmit = async () => { // 2. async 키워드 추가
+  const [aiReply, setAiReply] = useState('');
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
     if (!query.trim()) return;
 
-    console.log('전송 시도:', query);
+    setHasSubmitted(true);
+    setIsLoading(true);
+    setAiReply('');
 
     try {
-      // 3. 실제 서버 통신 시도
       const result = await sendChatQuery(query);
-
-      // 4. 서버 응답이 성공했을 때
       setAiReply(result.reply || "전송 했습니다.");
-      setQuery(''); // 입력창 비우기
+      setQuery('');
     } catch (error) {
-      // 5. 서버가 없거나 에러 났을 때 (테스트용)
       console.log("서버 미연결 상태 - 테스트 메시지 출력");
       setAiReply("**임시 답변**. (서버 연결 대기 중)");
       setQuery('');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -137,7 +140,12 @@ export default function MainPage() {
       <Navigationbar />
 
       <main className="pt-32 pb-40 px-6 md:px-12 max-w-7xl mx-auto transition-all duration-300">
-        <section className="mb-16">
+        {/* 헤더 + 슬라이더: 제출 시 부드럽게 사라짐 */}
+        <section
+          className={`mb-16 transition-all duration-500 ease-in-out overflow-hidden ${
+            hasSubmitted ? 'opacity-0 max-h-0 mb-0 pointer-events-none' : 'opacity-100 max-h-[1000px]'
+          }`}
+        >
           {/* 헤더 */}
           <div className="flex flex-col items-center justify-center mb-8">
             <h2 className="text-3xl font-extrabold text-on-surface tracking-tight">
@@ -172,16 +180,28 @@ export default function MainPage() {
             </div>
           </div>
         </section>
-        {/* AI 답변 영역 */}
-        {aiReply && (
-          // <section className="mb-16">
-            <div className="max-w-3xl mx-auto bg-primary-container/50 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-outline-variant/30">
-              <h3 className="text-lg font-bold text-on-surface mb-2">AI의 답변:</h3>
+
+        {/* AI 답변 영역: 제출 후 부드럽게 나타남 */}
+        <section
+          className={`mb-16 transition-all duration-500 ease-in-out ${
+            hasSubmitted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+          }`}
+        >
+          <div className="max-w-3xl mx-auto bg-primary-container/50 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-outline-variant/30">
+            <h3 className="text-lg font-bold text-on-surface mb-2">AI의 답변:</h3>
+            {isLoading ? (
+              <div className="flex items-center gap-2 text-on-surface-variant">
+                <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>
+                <span>답변 생성 중...</span>
+              </div>
+            ) : (
               <p className="text-on-surface-variant">{aiReply}</p>
-            </div>
-          // </section>
-        )}
+            )}
+          </div>
+        </section>
+        
       </main>
+
       <ChatInput value={query} onChange={setQuery} onSubmit={handleSubmit} />
       {/* 모바일 하단 네비게이션 */}
       {/* <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant/20 z-50 px-6 py-3 flex justify-around items-center">
