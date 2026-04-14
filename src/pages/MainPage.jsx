@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import Navigationbar from '../components/Navigationbar';
 import MealCard from '../components/MealCard';
 import ChatInput from '../components/ChatInput';
+import { sendChatQuery } from '../api/chatService'; // 1. API 함수 불러오기
 
 // 임시 데이터 - 실제로는 백엔드에서 받아올 예정
 const MEAL_DATA = [
@@ -102,11 +103,33 @@ export default function MainPage() {
     };
   }, [updateButtons]);
 
-  const handleSubmit = () => {
+  // const handleSubmit = () => {
+  //   if (!query.trim()) return;
+  //   // TODO: 백엔드 연결
+  //   console.log('전송:', query);
+  //   setQuery('');
+
+
+  //////////  axios 코드 ////////////////////////////////
+  const [aiReply, setAiReply] = useState(''); // AI 답변을 담을 상태 추가
+  const handleSubmit = async () => { // 2. async 키워드 추가
     if (!query.trim()) return;
-    // TODO: 백엔드 연결
-    console.log('전송:', query);
-    setQuery('');
+
+    console.log('전송 시도:', query);
+
+    try {
+      // 3. 실제 서버 통신 시도
+      const result = await sendChatQuery(query);
+
+      // 4. 서버 응답이 성공했을 때
+      setAiReply(result.reply || "전송 했습니다.");
+      setQuery(''); // 입력창 비우기
+    } catch (error) {
+      // 5. 서버가 없거나 에러 났을 때 (테스트용)
+      console.log("서버 미연결 상태 - 테스트 메시지 출력");
+      setAiReply("**임시 답변**. (서버 연결 대기 중)");
+      setQuery('');
+    }
   };
 
   return (
@@ -149,8 +172,16 @@ export default function MainPage() {
             </div>
           </div>
         </section>
+        {/* AI 답변 영역 */}
+        {aiReply && (
+          // <section className="mb-16">
+            <div className="max-w-3xl mx-auto bg-primary-container/50 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-outline-variant/30">
+              <h3 className="text-lg font-bold text-on-surface mb-2">AI의 답변:</h3>
+              <p className="text-on-surface-variant">{aiReply}</p>
+            </div>
+          // </section>
+        )}
       </main>
-
       <ChatInput value={query} onChange={setQuery} onSubmit={handleSubmit} />
       {/* 모바일 하단 네비게이션 */}
       {/* <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant/20 z-50 px-6 py-3 flex justify-around items-center">
