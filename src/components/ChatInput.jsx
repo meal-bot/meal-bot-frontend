@@ -1,7 +1,13 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 export default function ChatInput({ value, onChange, onSubmit }) {
   const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (!value && textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+  }, [value]);
 
   const handleInput = (e) => {
     const el = e.target;

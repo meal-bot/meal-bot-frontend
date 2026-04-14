@@ -103,35 +103,66 @@ export default function MainPage() {
     };
   }, [updateButtons]);
 
-  // const handleSubmit = () => {
-  //   if (!query.trim()) return;
-  //   // TODO: 백엔드 연결
-  //   console.log('전송:', query);
-  //   setQuery('');
-
-
-  //////////  axios 코드 ////////////////////////////////
-  const [aiReply, setAiReply] = useState('');
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef(null);
+  const typingIntervalRef = useRef(null);
+
+  const hasMessages = messages.length > 0;
+
+  useEffect(() => {
+    return () => {
+      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const typeMessage = useCallback((fullText, messageId) => {
+    if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+    let index = 0;
+    typingIntervalRef.current = setInterval(() => {
+      index++;
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.id === messageId
+            ? { ...msg, content: fullText.slice(0, index), isTyping: index < fullText.length }
+            : msg
+        )
+      );
+      if (index >= fullText.length) {
+        clearInterval(typingIntervalRef.current);
+        typingIntervalRef.current = null;
+      }
+    }, 20);
+  }, []);
 
   const handleSubmit = async () => {
-    if (!query.trim()) return;
+    if (!query.trim() || isLoading) return;
 
-    setHasSubmitted(true);
+    const currentQuery = query;
+    const userMsgId = Date.now();
+    const assistantMsgId = userMsgId + 1;
+
+    setMessages(prev => [
+      ...prev,
+      { id: userMsgId, role: 'user', content: currentQuery },
+      { id: assistantMsgId, role: 'assistant', content: '', isTyping: false },
+    ]);
+    setQuery('');
     setIsLoading(true);
-    setAiReply('');
 
     try {
-      const result = await sendChatQuery(query);
-      setAiReply(result.reply || "전송 했습니다.");
-      setQuery('');
-    } catch (error) {
-      console.log("서버 미연결 상태 - 테스트 메시지 출력");
-      setAiReply("**임시 답변**. (서버 연결 대기 중)");
-      setQuery('');
-    } finally {
+      const result = await sendChatQuery(currentQuery);
+      const fullReply = result.reply || '전송 했습니다.';
       setIsLoading(false);
+      typeMessage(fullReply, assistantMsgId);
+    } catch {
+      const fallback = '임시 답변입니다. (서버 연결 대기 중)';
+      setIsLoading(false);
+      typeMessage(fallback, assistantMsgId);
     }
   };
 
@@ -143,7 +174,7 @@ export default function MainPage() {
         {/* 헤더 + 슬라이더: 제출 시 부드럽게 사라짐 */}
         <section
           className={`mb-16 transition-all duration-500 ease-in-out overflow-hidden ${
-            hasSubmitted ? 'opacity-0 max-h-0 mb-0 pointer-events-none' : 'opacity-100 max-h-[1000px]'
+            hasMessages ? 'opacity-0 max-h-0 mb-0 pointer-events-none' : 'opacity-100 max-h-[1000px]'
           }`}
         >
           {/* 헤더 */}
@@ -181,24 +212,46 @@ export default function MainPage() {
           </div>
         </section>
 
-        {/* AI 답변 영역: 제출 후 부드럽게 나타남 */}
-        <section
-          className={`mb-16 transition-all duration-500 ease-in-out ${
-            hasSubmitted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-          }`}
-        >
-          <div className="max-w-3xl mx-auto bg-primary-container/50 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-outline-variant/30">
-            <h3 className="text-lg font-bold text-on-surface mb-2">AI의 답변:</h3>
-            {isLoading ? (
-              <div className="flex items-center gap-2 text-on-surface-variant">
-                <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>
-                <span>답변 생성 중...</span>
+        {/* 채팅 메시지 영역 */}
+        {hasMessages && (
+          <section className="max-w-3xl mx-auto flex flex-col gap-4">
+            {messages.map(msg => (
+              <div
+                key={msg.id}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}
+              >
+                {msg.role === 'assistant' && (
+                  <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
+                    <span className="material-symbols-outlined text-on-primary-container" style={{ fontSize: '16px' }}>smart_toy</span>
+                  </div>
+                )}
+                <div
+                  className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+                    msg.role === 'user'
+                      ? 'bg-primary text-on-primary rounded-br-sm'
+                      : 'bg-surface-container text-on-surface rounded-bl-sm'
+                  }`}
+                >
+                  {msg.role === 'assistant' && isLoading && msg.content === '' ? (
+                    <div className="flex items-center gap-1.5 py-1 px-1">
+                      <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  ) : (
+                    <p className="whitespace-pre-wrap leading-relaxed text-sm">
+                      {msg.content}
+                      {msg.isTyping && (
+                        <span className="inline-block w-0.5 h-4 bg-current ml-0.5 align-middle animate-pulse" />
+                      )}
+                    </p>
+                  )}
+                </div>
               </div>
-            ) : (
-              <p className="text-on-surface-variant">{aiReply}</p>
-            )}
-          </div>
-        </section>
+            ))}
+            <div ref={messagesEndRef} />
+          </section>
+        )}
         
       </main>
 
