@@ -79,92 +79,115 @@ const MEAL_DATA = [
 ];
 
 export default function MainPage() {
+  // 채팅 입력창의 텍스트 값
   const [query, setQuery] = useState('');
-  const sliderRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
 
+  // *** 슬라이더 좌우 스크롤 관련 ***
+  const sliderRef = useRef(null);           // 슬라이더 DOM 요소 참조
+  const [canScrollLeft, setCanScrollLeft] = useState(false);   // 왼쪽 화살표 버튼 활성화 여부
+  const [canScrollRight, setCanScrollRight] = useState(true);  // 오른쪽 화살표 버튼 활성화 여부
+
+  // 현재 스크롤 위치를 기반으로 좌우 버튼 활성화 상태 갱신
   const updateButtons = useCallback(() => {
     const el = sliderRef.current;
     if (!el) return;
+    // 왼쪽으로 5px 이상 스크롤됐으면 왼쪽 버튼 활성화
     setCanScrollLeft(el.scrollLeft > 5);
+    // 오른쪽 끝에 도달하지 않았으면 오른쪽 버튼 활성화
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 5);
   }, []);
 
+  // ***슬라이더 스크롤 이벤트 및 창 리사이즈 이벤트 등록 (언마운트 시 정리)***
   useEffect(() => {
     const el = sliderRef.current;
     if (!el) return;
     el.addEventListener('scroll', updateButtons);
     window.addEventListener('resize', updateButtons);
-    updateButtons();
+    updateButtons(); // 초기 상태 한 번 체크
     return () => {
       el.removeEventListener('scroll', updateButtons);
       window.removeEventListener('resize', updateButtons);
     };
   }, [updateButtons]);
 
-  const [messages, setMessages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-  const typingIntervalRef = useRef(null);
 
+  // ***채팅 메시지 관련 ***
+  const [messages, setMessages] = useState([]);       // 전체 메시지 목록
+  const [isLoading, setIsLoading] = useState(false);  // AI 응답 대기 중 여부
+  const messagesEndRef = useRef(null);                // 메시지 목록 맨 아래 DOM 참조 (자동 스크롤용)
+  const typingIntervalRef = useRef(null);             // 타이핑 애니메이션 인터벌 참조
+
+  // 메시지가 하나라도 있으면 true (헤더/슬라이더 숨김 여부 결정에 사용)
   const hasMessages = messages.length > 0;
 
+  // 컴포넌트 언마운트 시 진행 중인 타이핑 인터벌 정리 (메모리 누수 방지)
   useEffect(() => {
     return () => {
       if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
     };
   }, []);
 
+  // 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // ***한 글자씩 출력하는 타이핑 애니메이션***
+  // fullText: 전체 응답 텍스트, messageId: 업데이트할 메시지 ID
   const typeMessage = useCallback((fullText, messageId) => {
+    // 이전 타이핑 인터벌이 있으면 취소
     if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
     let index = 0;
+    // 20ms마다 글자 하나씩 추가
     typingIntervalRef.current = setInterval(() => {
       index++;
       setMessages(prev =>
         prev.map(msg =>
           msg.id === messageId
+            // 해당 메시지의 content를 index만큼 잘라서 업데이트, 타이핑 완료 여부도 함께 갱신
             ? { ...msg, content: fullText.slice(0, index), isTyping: index < fullText.length }
             : msg
         )
       );
+      // 모든 글자를 다 출력하면 인터벌 종료
       if (index >= fullText.length) {
         clearInterval(typingIntervalRef.current);
         typingIntervalRef.current = null;
       }
-    }, 20);
+    }, 40);
   }, []);
 
+  // ***채팅 axios 전송 핸들러***
   const handleSubmit = async () => {
+    // 빈 입력이거나 이미 로딩 중이면 무시
     if (!query.trim() || isLoading) return;
 
     const currentQuery = query;
-    const userMsgId = Date.now();
-    const assistantMsgId = userMsgId + 1;
+    const userMsgId = Date.now();         // 사용자 메시지 ID (타임스탬프)
+    const assistantMsgId = userMsgId + 1; // AI 메시지 ID (사용자 ID + 1로 고유성 보장)
 
+    // 사용자 메시지와 빈 AI 메시지 자리를 미리 추가
     setMessages(prev => [
       ...prev,
       { id: userMsgId, role: 'user', content: currentQuery },
       { id: assistantMsgId, role: 'assistant', content: '', isTyping: false },
     ]);
-    setQuery('');
-    setIsLoading(true);
+    setQuery('');       // 입력창 초기화
+    setIsLoading(true); // 로딩 상태 시작 (점 3개 애니메이션 표시)
 
     try {
       const result = await sendChatQuery(currentQuery);
       const fullReply = result.reply || '전송 했습니다.';
       setIsLoading(false);
-      typeMessage(fullReply, assistantMsgId);
+      typeMessage(fullReply, assistantMsgId); // 응답을 타이핑 애니메이션으로 출력
     } catch {
+      // 서버 오류 시 fallback 메시지를 타이핑 애니메이션으로 출력
       const fallback = '임시 답변입니다. (서버 연결 대기 중)';
       setIsLoading(false);
       typeMessage(fallback, assistantMsgId);
     }
   };
+
 
   return (
     <div className="text-on-surface selection:bg-primary-container">
@@ -189,21 +212,38 @@ export default function MainPage() {
             <button
               onClick={() => sliderRef.current?.scrollBy({ left: -400, behavior: 'smooth' })}
               disabled={!canScrollLeft}
-              className="absolute left-[-24px] top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-lg border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all duration-300 opacity-0 group-hover/slider:opacity-100 disabled:hidden z-20"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-lg border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all duration-300 opacity-0 group-hover/slider:opacity-100 disabled:hidden z-20"
             >
               <span className="material-symbols-outlined">arrow_back_ios_new</span>
             </button>
             <button
               onClick={() => sliderRef.current?.scrollBy({ left: 400, behavior: 'smooth' })}
               disabled={!canScrollRight}
-              className="absolute right-[-24px] top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-lg border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all duration-300 opacity-0 group-hover/slider:opacity-100 disabled:hidden z-20"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-lg border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all duration-300 opacity-0 group-hover/slider:opacity-100 disabled:hidden z-20"
             >
               <span className="material-symbols-outlined">arrow_forward_ios</span>
             </button>
             <div
               ref={sliderRef}
               className="flex gap-6 overflow-x-auto pb-6 snap-x"
-              style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+              style={{
+                msOverflowStyle: 'none',
+                scrollbarWidth: 'none',
+                maskImage: canScrollLeft && canScrollRight
+                  ? 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+                  : canScrollLeft
+                  ? 'linear-gradient(to right, transparent, black 10%)'
+                  : canScrollRight
+                  ? 'linear-gradient(to right, black 90%, transparent)'
+                  : 'none',
+                WebkitMaskImage: canScrollLeft && canScrollRight
+                  ? 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+                  : canScrollLeft
+                  ? 'linear-gradient(to right, transparent, black 10%)'
+                  : canScrollRight
+                  ? 'linear-gradient(to right, black 90%, transparent)'
+                  : 'none',
+              }}
             >
               {MEAL_DATA.map((meal) => (
                 <MealCard key={meal.id} meal={meal} />
@@ -251,11 +291,15 @@ export default function MainPage() {
             ))}
             <div ref={messagesEndRef} />
           </section>
-        )}
-        
+        )}        
       </main>
 
       <ChatInput value={query} onChange={setQuery} onSubmit={handleSubmit} />
+    </div>
+  );
+}
+
+
       {/* 모바일 하단 네비게이션 */}
       {/* <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant/20 z-50 px-6 py-3 flex justify-around items-center">
         <a href="#" className="flex flex-col items-center gap-1 text-primary">
@@ -276,6 +320,3 @@ export default function MainPage() {
           <span className="text-[10px] font-bold uppercase tracking-tight">프로필</span>
         </a>
       </nav> */}
-    </div>
-  );
-}
