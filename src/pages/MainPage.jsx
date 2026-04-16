@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
 import Navigationbar from '../components/Navigationbar';
 import MealCard from '../components/MealCard';
 import ChatInput from '../components/ChatInput';
-import { sendChatQuery } from '../api/chatService'; // 1. API 함수 불러오기
+import { useSlider } from '../hooks/useSlider';
+import { useChat } from '../hooks/useChat';
 
 // 임시 데이터 - 실제로는 백엔드에서 받아올 예정
 const MEAL_DATA = [
@@ -79,114 +79,8 @@ const MEAL_DATA = [
 ];
 
 export default function MainPage() {
-  // 채팅 입력창의 텍스트 값
-  const [query, setQuery] = useState('');
-
-  // *** 슬라이더 좌우 스크롤 관련 ***
-  const sliderRef = useRef(null);           // 슬라이더 DOM 요소 참조
-  const [canScrollLeft, setCanScrollLeft] = useState(false);   // 왼쪽 화살표 버튼 활성화 여부
-  const [canScrollRight, setCanScrollRight] = useState(true);  // 오른쪽 화살표 버튼 활성화 여부
-
-  // 현재 스크롤 위치를 기반으로 좌우 버튼 활성화 상태 갱신
-  const updateButtons = useCallback(() => {
-    const el = sliderRef.current;
-    if (!el) return;
-    // 왼쪽으로 5px 이상 스크롤됐으면 왼쪽 버튼 활성화
-    setCanScrollLeft(el.scrollLeft > 5);
-    // 오른쪽 끝에 도달하지 않았으면 오른쪽 버튼 활성화
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 5);
-  }, []);
-
-  // ***슬라이더 스크롤 이벤트 및 창 리사이즈 이벤트 등록 (언마운트 시 정리)***
-  useEffect(() => {
-    const el = sliderRef.current;
-    if (!el) return;
-    el.addEventListener('scroll', updateButtons);
-    window.addEventListener('resize', updateButtons);
-    updateButtons(); // 초기 상태 한 번 체크
-    return () => {
-      el.removeEventListener('scroll', updateButtons);
-      window.removeEventListener('resize', updateButtons);
-    };
-  }, [updateButtons]);
-
-
-  // ***채팅 메시지 관련 ***
-  const [messages, setMessages] = useState([]);       // 전체 메시지 목록
-  const [isLoading, setIsLoading] = useState(false);  // AI 응답 대기 중 여부
-  const messagesEndRef = useRef(null);                // 메시지 목록 맨 아래 DOM 참조 (자동 스크롤용)
-  const typingIntervalRef = useRef(null);             // 타이핑 애니메이션 인터벌 참조
-
-  // 메시지가 하나라도 있으면 true (헤더/슬라이더 숨김 여부 결정에 사용)
-  const hasMessages = messages.length > 0;
-
-  // 컴포넌트 언마운트 시 진행 중인 타이핑 인터벌 정리 (메모리 누수 방지)
-  useEffect(() => {
-    return () => {
-      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
-    };
-  }, []);
-
-  // 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // ***한 글자씩 출력하는 타이핑 애니메이션***
-  // fullText: 전체 응답 텍스트, messageId: 업데이트할 메시지 ID
-  const typeMessage = useCallback((fullText, messageId) => {
-    // 이전 타이핑 인터벌이 있으면 취소
-    if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
-    let index = 0;
-    // 20ms마다 글자 하나씩 추가
-    typingIntervalRef.current = setInterval(() => {
-      index++;
-      setMessages(prev =>
-        prev.map(msg =>
-          msg.id === messageId
-            // 해당 메시지의 content를 index만큼 잘라서 업데이트, 타이핑 완료 여부도 함께 갱신
-            ? { ...msg, content: fullText.slice(0, index), isTyping: index < fullText.length }
-            : msg
-        )
-      );
-      // 모든 글자를 다 출력하면 인터벌 종료
-      if (index >= fullText.length) {
-        clearInterval(typingIntervalRef.current);
-        typingIntervalRef.current = null;
-      }
-    }, 40);
-  }, []);
-
-  // ***채팅 axios 전송 핸들러***
-  const handleSubmit = async () => {
-    // 빈 입력이거나 이미 로딩 중이면 무시
-    if (!query.trim() || isLoading) return;
-
-    const currentQuery = query;
-    const userMsgId = Date.now();         // 사용자 메시지 ID (타임스탬프)
-    const assistantMsgId = userMsgId + 1; // AI 메시지 ID (사용자 ID + 1로 고유성 보장)
-
-    // 사용자 메시지와 빈 AI 메시지 자리를 미리 추가
-    setMessages(prev => [
-      ...prev,
-      { id: userMsgId, role: 'user', content: currentQuery },
-      { id: assistantMsgId, role: 'assistant', content: '', isTyping: false },
-    ]);
-    setQuery('');       // 입력창 초기화
-    setIsLoading(true); // 로딩 상태 시작 (점 3개 애니메이션 표시)
-
-    try {
-      const result = await sendChatQuery(currentQuery);
-      const fullReply = result.reply || '전송 했습니다.';
-      setIsLoading(false);
-      typeMessage(fullReply, assistantMsgId); // 응답을 타이핑 애니메이션으로 출력
-    } catch {
-      // 서버 오류 시 fallback 메시지를 타이핑 애니메이션으로 출력
-      const fallback = '임시 답변입니다. (서버 연결 대기 중)';
-      setIsLoading(false);
-      typeMessage(fallback, assistantMsgId);
-    }
-  };
+  const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
+  const { query, setQuery, messages, isLoading, hasMessages, messagesEndRef, handleSubmit } = useChat();
 
 
   return (
@@ -196,9 +90,8 @@ export default function MainPage() {
       <main className="pt-32 pb-40 px-6 md:px-12 max-w-7xl mx-auto transition-all duration-300">
         {/* 헤더 + 슬라이더: 제출 시 부드럽게 사라짐 */}
         <section
-          className={`mb-16 transition-all duration-500 ease-in-out overflow-hidden ${
-            hasMessages ? 'opacity-0 max-h-0 mb-0 pointer-events-none' : 'opacity-100 max-h-[1000px]'
-          }`}
+          className={`mb-16 transition-all duration-500 ease-in-out overflow-hidden ${hasMessages ? 'opacity-0 max-h-0 mb-0 pointer-events-none' : 'opacity-100 max-h-[1000px]'
+            }`}
         >
           {/* 헤더 */}
           <div className="flex flex-col items-center justify-center mb-8">
@@ -232,17 +125,17 @@ export default function MainPage() {
                 maskImage: canScrollLeft && canScrollRight
                   ? 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
                   : canScrollLeft
-                  ? 'linear-gradient(to right, transparent, black 10%)'
-                  : canScrollRight
-                  ? 'linear-gradient(to right, black 90%, transparent)'
-                  : 'none',
+                    ? 'linear-gradient(to right, transparent, black 10%)'
+                    : canScrollRight
+                      ? 'linear-gradient(to right, black 90%, transparent)'
+                      : 'none',
                 WebkitMaskImage: canScrollLeft && canScrollRight
                   ? 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
                   : canScrollLeft
-                  ? 'linear-gradient(to right, transparent, black 10%)'
-                  : canScrollRight
-                  ? 'linear-gradient(to right, black 90%, transparent)'
-                  : 'none',
+                    ? 'linear-gradient(to right, transparent, black 10%)'
+                    : canScrollRight
+                      ? 'linear-gradient(to right, black 90%, transparent)'
+                      : 'none',
               }}
             >
               {MEAL_DATA.map((meal) => (
@@ -266,11 +159,10 @@ export default function MainPage() {
                   </div>
                 )}
                 <div
-                  className={`max-w-[75%] rounded-2xl px-4 py-3 ${
-                    msg.role === 'user'
-                      ? 'bg-primary text-on-primary rounded-br-sm'
-                      : 'bg-surface-container text-on-surface rounded-bl-sm'
-                  }`}
+                  className={`max-w-[75%] rounded-2xl px-4 py-3 ${msg.role === 'user'
+                    ? 'bg-primary text-on-primary rounded-br-sm'
+                    : 'bg-surface-container text-on-surface rounded-bl-sm'
+                    }`}
                 >
                   {msg.role === 'assistant' && isLoading && msg.content === '' ? (
                     <div className="flex items-center gap-1.5 py-1 px-1">
@@ -291,7 +183,7 @@ export default function MainPage() {
             ))}
             <div ref={messagesEndRef} />
           </section>
-        )}        
+        )}
       </main>
 
       <ChatInput value={query} onChange={setQuery} onSubmit={handleSubmit} />
@@ -300,8 +192,8 @@ export default function MainPage() {
 }
 
 
-      {/* 모바일 하단 네비게이션 */}
-      {/* <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant/20 z-50 px-6 py-3 flex justify-around items-center">
+{/* 모바일 하단 네비게이션 */ }
+{/* <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant/20 z-50 px-6 py-3 flex justify-around items-center">
         <a href="#" className="flex flex-col items-center gap-1 text-primary">
           <span
             className="material-symbols-outlined"
