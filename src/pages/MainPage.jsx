@@ -78,6 +78,8 @@ const MEAL_DATA = [
   },
 ];
 
+// const localStorageToken = localStorage.getItem('token');
+
 export default function MainPage() {
   const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
   const { query, setQuery, messages, isLoading, hasMessages, messagesEndRef, handleSubmit } = useChat();
