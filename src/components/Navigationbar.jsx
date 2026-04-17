@@ -32,7 +32,7 @@ export default function Navigationbar() {
         {/* 오른쪽 사용자 메뉴 */}
         <div className="flex items-center ml-auto">
           {isLoggedIn && (
-            <span className="text-sm text-on-surface-variant mr-2">환영합니다, {name}님!</span>
+            <span className="text-sm text-on-surface-variant mr-2">환영합니다 {name}님!</span>
           )}
           {!isLoggedIn && (
             <span className="text-sm text-on-surface-variant mr-2">로그인하여 맞춤 식단을 받아보세요</span>
