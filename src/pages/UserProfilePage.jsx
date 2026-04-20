@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import Navigationbar from '../components/Navigationbar';
+import Layout from '../components/Layout';
 
 function PasswordField({ label, name, value, onChange, show, onToggle, error, placeholder }) {
   return (
@@ -8,11 +9,10 @@ function PasswordField({ label, name, value, onChange, show, onToggle, error, pl
         {label}
       </label>
       <div
-        className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${
-          error
+        className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${error
             ? 'border-red-300 focus-within:border-red-400'
             : 'border-outline-variant/30 focus-within:border-primary'
-        }`}
+          }`}
       >
         <span className="material-symbols-outlined text-on-surface-variant text-xl">lock</span>
         <input
@@ -95,8 +95,7 @@ export default function UserProfilePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#ffffff' }}>
-      <Navigationbar />
+    <Layout className="min-h-screen flex flex-col" style={{ backgroundColor: '#ffffff' }}>
 
       <main className="flex-1 flex justify-center px-6 pt-28 pb-16">
         <div className="w-full max-w-lg">
@@ -169,11 +168,10 @@ export default function UserProfilePage() {
                   이름
                 </label>
                 <div
-                  className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${
-                    errors.name
+                  className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${errors.name
                       ? 'border-red-300 focus-within:border-red-400'
                       : 'border-outline-variant/30 focus-within:border-primary'
-                  }`}
+                    }`}
                 >
                   <span className="material-symbols-outlined text-on-surface-variant text-xl">badge</span>
                   <input
@@ -194,11 +192,10 @@ export default function UserProfilePage() {
                   이메일
                 </label>
                 <div
-                  className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${
-                    errors.email
+                  className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${errors.email
                       ? 'border-red-300 focus-within:border-red-400'
                       : 'border-outline-variant/30 focus-within:border-primary'
-                  }`}
+                    }`}
                 >
                   <span className="material-symbols-outlined text-on-surface-variant text-xl">mail</span>
                   <input
@@ -272,6 +269,6 @@ export default function UserProfilePage() {
           </form>
         </div>
       </main>
-    </div>
+    </Layout>
   );
 }

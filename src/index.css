@@ -30,6 +30,13 @@
   --font-headline: 'Manrope', sans-serif;
   --font-body:     'Manrope', sans-serif;
   --font-label:    'Manrope', sans-serif;
+
+  /* Z-index 레이어 순서 (숫자가 클수록 위에 렌더링) */
+  --z-base:      0;   /* 일반 콘텐츠 */
+  --z-navbar:    50;  /* 네비게이션 바 */
+  --z-sidebar:   60;  /* 사이드바 (네비바 위에 오버레이) */
+  --z-modal:     70;  /* 모달 */
+  --z-toast:     80;  /* 토스트 알림 */
 }
 
 body {

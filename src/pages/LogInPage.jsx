@@ -30,7 +30,7 @@ export default function LogInPage() {
         style={{ background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)' }}
       >
         <div className="flex justify-between items-center px-8 h-20 max-w-7xl mx-auto w-full">
-          <Link to="/" className="text-2xl font-bold tracking-tighter text-on-surface">
+          <Link to="/" className="text-2xl font-bold tracking-tighter text-on-surface ml-12">
             Meal-Bot
           </Link>
           {/* <div className="flex items-center gap-4">
