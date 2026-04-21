@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import MealCard from '../components/MealCard';
 import ChatInput from '../components/ChatInput';
 import Layout from '../components/Layout';
@@ -7,10 +8,18 @@ import MEAL_DATA from '../data/mealData';
 
 export default function MainPage() {
   const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
-  const { query, setQuery, messages, isLoading, hasMessages, messagesEndRef, handleSubmit } = useChat();
+  const { query, setQuery, messages, isLoading, hasMessages, messagesEndRef, handleSubmit, startNewChat, loadConversation } = useChat();
+
+  // sidebarOpen을 MainPage에서 관리 → Layout과 ChatInput 양쪽에 직접 전달 가능
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <Layout>
+    <Layout
+      sidebarOpen={sidebarOpen}
+      onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
+      onNewChat={startNewChat}
+      onSessionSelect={loadConversation}
+    >
       {/* 헤더 + 슬라이더: 채팅 시작 시 부드럽게 사라짐 */}
       <section
         className={`mb-16 transition-all duration-500 ease-in-out overflow-hidden ${hasMessages ? 'opacity-0 max-h-0 mb-0 pointer-events-none' : 'opacity-100 max-h-[1000px]'}`}
@@ -103,7 +112,8 @@ export default function MainPage() {
         </section>
       )}
 
-      <ChatInput value={query} onChange={setQuery} onSubmit={handleSubmit} />
+      {/* sidebarOpen 전달 → ChatInput이 사이드바 너비에 맞게 위치 조정 */}
+      <ChatInput value={query} onChange={setQuery} onSubmit={handleSubmit} sidebarOpen={sidebarOpen} />
     </Layout>
   );
 }

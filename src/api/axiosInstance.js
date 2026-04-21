@@ -1,11 +1,19 @@
 import axios from 'axios';
 
-const instance = axios.create(
-    {
-        baseURL: 'http://localhost:8080', // 스프링 서버 주소
-        timeout: 5000, // 5초 넘으면 자동 취소
-        headers: { 'Content-Type': 'application/json' }
-    }
-);
+const instance = axios.create({
+  baseURL: 'http://localhost:8080',
+  timeout: 5000,
+  headers: { 'Content-Type': 'application/json' },
+});
+
+// 요청마다 localStorage의 JWT 토큰을 Authorization 헤더에 자동 삽입
+// 토큰이 없으면 (비로그인) 헤더를 추가하지 않음
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export default instance;

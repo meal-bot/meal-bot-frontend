@@ -1,24 +1,19 @@
-import { useState } from 'react';
 import Navigationbar from './Navigationbar';
 import Sidebar from './Sidebar';
 
 /**
  * Layout - 전체 페이지의 공통 뼈대 컴포넌트
  *
- * 역할:
- *   - 사이드바 열림/닫힘 상태(sidebarOpen)를 이 컴포넌트 하나에서 관리
- *   - Navigationbar와 Sidebar가 서로를 직접 알 필요 없이 props로 상태를 받음
- *   - children 자리에 각 페이지(예: MainPage)가 삽입됨
+ * sidebarOpen / onSidebarToggle 을 외부(MainPage)에서 받는 제어 컴포넌트
+ * → MainPage가 sidebarOpen 상태를 소유하므로 ChatInput 등 하위 컴포넌트에도 직접 전달 가능
  *
- * 사용 예시:
- *   <Layout>
- *     <MainPage />   ← 이 컴포넌트가 children으로 전달되어 <main> 안에 렌더링됨
- *   </Layout>
+ * props:
+ *   sidebarOpen     : 사이드바 열림 여부 (MainPage에서 관리)
+ *   onSidebarToggle : 토글 버튼 클릭 시 MainPage의 상태를 반전하는 콜백
+ *   onNewChat       : 새 채팅 버튼 → MainPage.startNewChat
+ *   onSessionSelect : 대화 클릭   → MainPage.loadConversation
  */
-export default function Layout({ children }) {
-  // 사이드바 열림 여부: false = 접힘(좁음), true = 펼침(넓음)
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
+export default function Layout({ children, sidebarOpen, onSidebarToggle, onNewChat, onSessionSelect }) {
   return (
     <div className="text-on-surface selection:bg-primary-container">
 
@@ -27,12 +22,14 @@ export default function Layout({ children }) {
 
       {/*
         사이드바:
-          isOpen  → 현재 열림 상태 전달
-          onToggle → 사이드바 내부 버튼이 눌리면 여기서 상태를 반전(true↔false)
+          isOpen   → 현재 열림 상태 전달
+          onToggle → 버튼 클릭 시 MainPage의 상태를 반전(true↔false)
       */}
       <Sidebar
         isOpen={sidebarOpen}
-        onToggle={() => setSidebarOpen((prev) => !prev)}
+        onToggle={onSidebarToggle}
+        onNewChat={onNewChat}
+        onSessionSelect={onSessionSelect}
       />
 
       {/*

@@ -1,18 +1,22 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { sendChatQuery } from '../api/chatService';
+import { createConversation, sendChat, sendChat_guest } from '../api/conversationApi';
 
-// 채팅 메시지 상태, 전송, 타이핑 애니메이션 관리 훅
+// <채팅> 채팅 상태 전체를 관리하는 커스텀 훅
+// 메시지 목록, 대화 ID, 로딩 상태, 전송/초기화/불러오기 기능을 제공
 export function useChat() {
-  const [query, setQuery] = useState('');
-  const [messages, setMessages] = useState([]);       // 전체 메시지 목록
-  const [isLoading, setIsLoading] = useState(false);  // AI 응답 대기 중 여부
-  const messagesEndRef = useRef(null);                // 메시지 목록 맨 아래 DOM 참조 (자동 스크롤용)
-  const typingIntervalRef = useRef(null);             // 타이핑 애니메이션 인터벌 참조
+  const [query, setQuery] = useState('');          // 입력창 텍스트
+  const [messages, setMessages] = useState([]);    // 화면에 표시되는 메시지 목록
+  const [isLoading, setIsLoading] = useState(false);
+  // <채팅> conversationId: 로그인 시 백엔드 대화와 연결되는 ID
+  // null이면 대화 미생성 상태 (비로그인이거나 새 채팅 시작 전)
+  const [conversationId, setConversationId] = useState(null);
+  const messagesEndRef = useRef(null);       // 자동 스크롤용 DOM 참조
+  const typingIntervalRef = useRef(null);    // 타이핑 애니메이션 인터벌 참조
 
-  // 메시지가 하나라도 있으면 true (헤더/슬라이더 숨김 여부 결정에 사용)
+  // 메시지가 하나라도 있으면 true (헤더/슬라이더 숨김 여부 결정)
   const hasMessages = messages.length > 0;
 
-  // 컴포넌트 언마운트 시 진행 중인 타이핑 인터벌 정리 (메모리 누수 방지)
+  // 언마운트 시 진행 중인 타이핑 인터벌 정리 (메모리 누수 방지)
   useEffect(() => {
     return () => {
       if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
@@ -24,24 +28,20 @@ export function useChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // 한 글자씩 출력하는 타이핑 애니메이션
-  // fullText: 전체 응답 텍스트, messageId: 업데이트할 메시지 ID
+  // <채팅> 타이핑 애니메이션: AI 응답을 40ms 간격으로 한 글자씩 출력
+  // fullText: 완성된 전체 응답, messageId: 업데이트할 메시지 ID
   const typeMessage = useCallback((fullText, messageId) => {
-    // 이전 타이핑 인터벌이 있으면 취소
     if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
     let index = 0;
-    // 40ms마다 글자 하나씩 추가
     typingIntervalRef.current = setInterval(() => {
       index++;
       setMessages(prev =>
         prev.map(msg =>
           msg.id === messageId
-            // 해당 메시지의 content를 index만큼 잘라서 업데이트, 타이핑 완료 여부도 함께 갱신
             ? { ...msg, content: fullText.slice(0, index), isTyping: index < fullText.length }
             : msg
         )
       );
-      // 모든 글자를 다 출력하면 인터벌 종료
       if (index >= fullText.length) {
         clearInterval(typingIntervalRef.current);
         typingIntervalRef.current = null;
@@ -49,36 +49,85 @@ export function useChat() {
     }, 40);
   }, []);
 
-  // 채팅 전송 핸들러
+  // <채팅> 메시지 전송 핸들러
   const handleSubmit = async () => {
-    // 빈 입력이거나 이미 로딩 중이면 무시
     if (!query.trim() || isLoading) return;
 
     const currentQuery = query;
-    const userMsgId = Date.now();         // 사용자 메시지 ID (현재 시간을 밀리초로 변환해서 고유한 ID 생성)
-    const assistantMsgId = userMsgId + 1; // AI 메시지 ID (사용자 ID + 1로 고유성 보장)
+    const userMsgId = Date.now();
+    const assistantMsgId = userMsgId + 1;
+    const isLoggedIn = !!localStorage.getItem('token');
 
-    // 사용자 메시지와 빈 AI 메시지 자리를 미리 추가
+    // <채팅> 로그인 상태이고 대화가 없으면 → 첫 메시지 전송 전에 대화 먼저 생성
+    // 비로그인은 대화 ID 없이 진행 (메모리에만 저장)
+    let currentConversationId = conversationId;
+    if (isLoggedIn && !currentConversationId) {
+      try {
+        currentConversationId = await createConversation();
+        setConversationId(currentConversationId);
+      } catch {
+        console.error('대화 생성 실패');
+      }
+    }
+
+    // <채팅> 서버 응답을 기다리지 않고 화면에 즉시 표시
+    // 사용자 메시지 + 빈 AI 말풍선(로딩 점 3개)을 동시에 추가
     setMessages(prev => [
       ...prev,
       { id: userMsgId, role: 'user', content: currentQuery },
       { id: assistantMsgId, role: 'assistant', content: '', isTyping: false },
     ]);
-    setQuery('');       // 입력창 초기화
-    setIsLoading(true); // 로딩 상태 시작 (점 3개 애니메이션 표시)
+    setQuery('');
+    setIsLoading(true);
 
     try {
-      const result = await sendChatQuery(currentQuery);
-      const fullReply = result.reply || '전송 했습니다.';
+      let result;
+      if (isLoggedIn) {
+        result = await sendChat(currentConversationId, currentQuery);
+      } else {
+        // <채팅 - 비로그인> 백엔드가 stateless이므로 컨텍스트를 매 요청마다 직접 전달
+        // setMessages 호출 전의 messages를 사용 → 빈 assistant placeholder가 섞이지 않은 깨끗한 히스토리
+        // 현재 입력(currentQuery)을 마지막에 추가해 전체 대화 흐름을 구성
+        const messagesForApi = [
+          ...messages.map(({ role, content }) => ({ role, content })),
+          { role: 'user', content: currentQuery },
+        ];
+        result = await sendChat_guest(messagesForApi);
+      }
+      const fullReply = result.reply || '응답을 받지 못했습니다.';
       setIsLoading(false);
-      typeMessage(fullReply, assistantMsgId); // 응답을 타이핑 애니메이션으로 출력
+      typeMessage(fullReply, assistantMsgId);
     } catch {
-      // 서버 오류 시 fallback 메시지를 타이핑 애니메이션으로 출력
       const fallback = '임시 답변입니다. (서버 연결 대기 중)';
       setIsLoading(false);
       typeMessage(fallback, assistantMsgId);
     }
   };
 
-  return { query, setQuery, messages, isLoading, hasMessages, messagesEndRef, handleSubmit };
+  // <채팅> 새 채팅 시작: 모든 상태 초기화
+  // 브라우저 재접속 시에는 useState 초기값으로 자동 초기화되므로 별도 처리 불필요
+  const startNewChat = useCallback(() => {
+    if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+    setMessages([]);
+    setConversationId(null);
+    setQuery('');
+    setIsLoading(false);
+  }, []);
+
+  // <채팅> 이전 대화 불러오기: 사이드바 항목 클릭 시 호출
+  // 백엔드 메시지 형식 { role, content }에 화면 렌더링용 id를 붙여 messages에 세팅
+  const loadConversation = useCallback((id, conversationMessages) => {
+    if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+    setConversationId(id);
+    setMessages(conversationMessages.map((msg, i) => ({ ...msg, id: i })));
+    setQuery('');
+    setIsLoading(false);
+  }, []);
+
+  return {
+    query, setQuery,
+    messages, isLoading, hasMessages,
+    messagesEndRef, handleSubmit,
+    startNewChat, loadConversation,
+  };
 }
