@@ -20,7 +20,7 @@ export default function Sidebar({ isOpen, onToggle, onNewChat, onSessionSelect }
   return (
     <aside
       style={{ zIndex: 'var(--z-sidebar)' }}
-      className={`fixed left-0 top-0 h-screen border-r border-outline-variant/30 bg-gray-50/80 backdrop-blur-sm flex flex-col py-4 gap-1 transition-all duration-300 ${isOpen ? 'w-60 px-3' : 'w-10.5 px-1'}`}
+      className={`fixed left-0 top-0 h-screen border-r border-outline-variant/30 bg-gray-100/80 backdrop-blur-sm flex flex-col py-4 gap-1 transition-all duration-300 ${isOpen ? 'w-60 px-3' : 'w-10.5 px-1'}`}
     >
       {/* 토글 버튼: 열림이면 menu_open, 닫힘이면 menu 아이콘 */}
       <button
