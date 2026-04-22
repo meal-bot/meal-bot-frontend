@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
+import { isLoggedIn, getName, clearAuth } from '../utils/auth';
 
 // sidebarOpen: 사이드바 너비만큼 로고를 우측으로 밀어 사이드바와 겹치지 않게 함
-export default function Navigationbar({ sidebarOpen = false }) {
+export default function Navigationbar({ sidebarOpen = false, onNewChat }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const isLoggedIn = localStorage.getItem('token'); // 토큰이 있으면 로그인된 상태로 간주
-  const name = localStorage.getItem('name'); // 사용자 이름 (프로필 편집에서 저장된 값)
+  const loggedIn = isLoggedIn();
+  const name = getName();
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function Navigationbar({ sidebarOpen = false }) {
         {/* 사이드바 너비에 맞춰 로고 위치 이동 */}
         <Link
           to="/"
+          onClick={onNewChat}
           className={`text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'ml-60' : 'ml-10.5'}`}
         >
           Meal-Bot
@@ -36,10 +38,10 @@ export default function Navigationbar({ sidebarOpen = false }) {
 
         {/* 오른쪽 사용자 메뉴 - 우측 끝단 고정 */}
         <div className="flex items-center">
-          {isLoggedIn && (
+          {loggedIn && (
             <span className="inline-flex items-center text-sm text-on-surface-variant mr-2">환영합니다 {name}님!</span>
           )}
-          {!isLoggedIn && (
+          {!loggedIn && (
             <span className="inline-flex items-center text-sm text-on-surface-variant mr-2">로그인하여 맞춤 식단을 받아보세요</span>
           )}
           <div className="relative flex items-center" ref={dropdownRef}>
@@ -50,7 +52,7 @@ export default function Navigationbar({ sidebarOpen = false }) {
               account_circle
             </span>
             {/* 드롭다운 메뉴 NOT 로그인 */}
-            {dropdownOpen && !isLoggedIn && (
+            {dropdownOpen && !loggedIn && (
               <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-outline-variant/30 bg-white/95 shadow-lg backdrop-blur-sm py-1">
                 <Link
                   to="/login"
@@ -73,7 +75,7 @@ export default function Navigationbar({ sidebarOpen = false }) {
             )}
 
             {/* 드롭다운 메뉴 로그인 상태 */}
-            {dropdownOpen && isLoggedIn && (
+            {dropdownOpen && loggedIn && (
               <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-outline-variant/30 bg-white/95 shadow-lg backdrop-blur-sm py-1">
                 <Link
                   to="/profile"
@@ -86,7 +88,7 @@ export default function Navigationbar({ sidebarOpen = false }) {
                 <hr className="my-1 border-outline-variant/30" />
                 <Link
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-on-surface hover:bg-surface-variant/40 transition-colors"
-                  onClick={() => { localStorage.removeItem('token'); setDropdownOpen(false); }} // 로그아웃 시 토큰 제거
+                  onClick={() => { clearAuth(); setDropdownOpen(false); }}
                   to="/login" // 로그아웃 후 로그인 페이지로 이동
                 >
                   <span className="material-symbols-outlined text-base">logout</span>

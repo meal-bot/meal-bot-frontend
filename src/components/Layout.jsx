@@ -10,15 +10,17 @@ import Sidebar from './Sidebar';
  * props:
  *   sidebarOpen     : 사이드바 열림 여부 (MainPage에서 관리)
  *   onSidebarToggle : 토글 버튼 클릭 시 MainPage의 상태를 반전하는 콜백
- *   onNewChat       : 새 채팅 버튼 → MainPage.startNewChat
- *   onSessionSelect : 대화 클릭   → MainPage.loadConversation
+ *   onNewChat            : 새 채팅 버튼 → MainPage.startNewChat
+ *   conversations        : 대화 목록 (MainPage의 useConversations에서 관리)
+ *   onConversationSelect : 대화 클릭   → MainPage.loadConversation
+ *   onConversationDelete : X 버튼 클릭 → MainPage.deleteConversation
  */
-export default function Layout({ children, sidebarOpen, onSidebarToggle, onNewChat, onSessionSelect }) {
+export default function Layout({ children, sidebarOpen, onSidebarToggle, onNewChat, conversations, onConversationSelect, onConversationDelete }) {
   return (
     <div className="text-on-surface selection:bg-primary-container">
 
       {/* 네비게이션 바: sidebarOpen을 받아 로고 위치를 사이드바 너비에 맞게 이동 */}
-      <Navigationbar sidebarOpen={sidebarOpen} />
+      <Navigationbar sidebarOpen={sidebarOpen} onNewChat={onNewChat} />
 
       {/*
         사이드바:
@@ -29,7 +31,9 @@ export default function Layout({ children, sidebarOpen, onSidebarToggle, onNewCh
         isOpen={sidebarOpen}
         onToggle={onSidebarToggle}
         onNewChat={onNewChat}
-        onSessionSelect={onSessionSelect}
+        conversations={conversations}        // MainPage에서 관리하는 대화 목록 전달
+        onConversationSelect={onConversationSelect}
+        onConversationDelete={onConversationDelete}  // X 버튼 → MainPage.deleteConversation
       />
 
       {/*

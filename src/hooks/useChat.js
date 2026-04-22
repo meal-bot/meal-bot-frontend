@@ -1,9 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { createConversation, sendChat, sendChat_guest } from '../api/conversationApi';
+import { isLoggedIn } from '../utils/auth';
 
 // <채팅> 채팅 상태 전체를 관리하는 커스텀 훅
 // 메시지 목록, 대화 ID, 로딩 상태, 전송/초기화/불러오기 기능을 제공
-export function useChat() {
+// onNewConversation: 새 대화가 생성될 때 MainPage에서 전달받는 콜백 (대화 목록 즉시 갱신용)
+export function useChat({ onNewConversation } = {}) {
   const [query, setQuery] = useState('');          // 입력창 텍스트
   const [messages, setMessages] = useState([]);    // 화면에 표시되는 메시지 목록
   const [isLoading, setIsLoading] = useState(false);
@@ -56,12 +58,12 @@ export function useChat() {
     const currentQuery = query;
     const userMsgId = Date.now();
     const assistantMsgId = userMsgId + 1;
-    const isLoggedIn = !!localStorage.getItem('token');
+    const loggedIn = isLoggedIn();
 
     // <채팅> 로그인 상태이고 대화가 없으면 → 첫 메시지 전송 전에 대화 먼저 생성
     // 비로그인은 대화 ID 없이 진행 (메모리에만 저장)
     let currentConversationId = conversationId;
-    if (isLoggedIn && !currentConversationId) {
+    if (loggedIn && !currentConversationId) {
       try {
         currentConversationId = await createConversation();
         setConversationId(currentConversationId);
@@ -82,7 +84,7 @@ export function useChat() {
 
     try {
       let result;
-      if (isLoggedIn) {
+      if (loggedIn) {
         result = await sendChat(currentConversationId, currentQuery);
       } else {
         // <채팅 - 비로그인> 백엔드가 stateless이므로 컨텍스트를 매 요청마다 직접 전달
@@ -97,6 +99,8 @@ export function useChat() {
       const fullReply = result.reply || '응답을 받지 못했습니다.';
       setIsLoading(false);
       typeMessage(fullReply, assistantMsgId);
+      // AI 응답 완료 후 갱신 → 백엔드가 타이틀을 생성한 뒤이므로 올바른 제목이 반영됨
+      onNewConversation?.();
     } catch {
       const fallback = '임시 답변입니다. (서버 연결 대기 중)';
       setIsLoading(false);

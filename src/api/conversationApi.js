@@ -39,3 +39,10 @@ export const fetchConversationDetail = async (conversationId) => {
   const response = await api.get(`/api/conversations/${conversationId}`);
   return response.data; // { conversationId, title, messages: [{ role, content }, ...] }
 };
+
+// <채팅> 특정 대화 내역 삭제
+// 사이드바에서 x 버튼 클릭했을 때 해당 대화 내용을 DB에서 제거
+export const deleteConversation = async (conversationId) => {
+  const response = await api.post(`/api/conversations/${conversationId}/delete`);
+  return response.data; // { success: true }
+};

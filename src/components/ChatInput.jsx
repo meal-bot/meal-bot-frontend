@@ -1,8 +1,12 @@
 import { useRef, useEffect } from 'react';
+//import { useConversations } from '../hooks/useConversations';
 
 // sidebarOpen: 사이드바 열림 여부 → left 값을 조정해 사이드바와 겹치지 않게 위치 이동
 export default function ChatInput({ value, onChange, onSubmit, sidebarOpen = false }) {
   const textareaRef = useRef(null);
+
+  //const { conversations, loadConversations } = useConversations(onSubmit);
+
 
   useEffect(() => {
     if (!value && textareaRef.current) {

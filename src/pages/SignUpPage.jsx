@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm } from '../hooks/useForm';
+import { doPasswordsMatch } from '../utils/validation';
 
 export default function SignUpPage() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
+  const { form, handleChange } = useForm({ name: '', email: '', password: '', confirm: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const passwordMatch = form.confirm === '' || form.password === form.confirm;
-
-  const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const passwordMatch = form.confirm === '' || doPasswordsMatch(form.password, form.confirm);
 
   const handleSubmit = (e) => {
     e.preventDefault();

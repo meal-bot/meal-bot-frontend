@@ -1,24 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MealCard from '../components/MealCard';
 import ChatInput from '../components/ChatInput';
 import Layout from '../components/Layout';
 import { useSlider } from '../hooks/useSlider';
 import { useChat } from '../hooks/useChat';
+import { useConversations } from '../hooks/useConversations';  // Sidebar에서 MainPage로 이관
+import { isLoggedIn } from '../utils/auth';
 import MEAL_DATA from '../data/mealData';
 
 export default function MainPage() {
   const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
-  const { query, setQuery, messages, isLoading, hasMessages, messagesEndRef, handleSubmit, startNewChat, loadConversation } = useChat();
 
   // sidebarOpen을 MainPage에서 관리 → Layout과 ChatInput 양쪽에 직접 전달 가능
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // 대화 목록을 MainPage에서 관리 → 새 대화 생성 시 즉시 갱신 가능
+  const { conversations, loadConversations, selectConversation, deleteConversation } = useConversations();
+
+  // 사이드바가 열릴 때마다 대화 목록 갱신 (기존 Sidebar의 useEffect 역할을 MainPage가 담당)
+  useEffect(() => {
+    if (sidebarOpen && isLoggedIn()) loadConversations();
+  }, [sidebarOpen, loadConversations]);
+
+  // onNewConversation: 새 대화 생성 직후 loadConversations를 호출해 사이드바 즉시 갱신
+  const { query, setQuery, messages, isLoading, hasMessages, messagesEndRef, handleSubmit, startNewChat, loadConversation } = useChat({ onNewConversation: loadConversations });
 
   return (
     <Layout
       sidebarOpen={sidebarOpen}
       onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
       onNewChat={startNewChat}
-      onSessionSelect={loadConversation}
+      conversations={conversations}
+      onConversationSelect={(id) => selectConversation(id, loadConversation)}  // 대화 선택 시 메시지 불러오기
+      onConversationDelete={deleteConversation}  // X 버튼 클릭 시 로컬 state에서 제거
     >
       {/* 헤더 + 슬라이더: 채팅 시작 시 부드럽게 사라짐 */}
       <section

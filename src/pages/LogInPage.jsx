@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm } from '../hooks/useForm';
 
 export default function LogInPage() {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const { form, handleChange } = useForm({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();

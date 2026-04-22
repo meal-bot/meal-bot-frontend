@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { setToken, setName, decodeJWT } from '../utils/auth';
 
 // 구글 OAuth 로그인 후 리디렉션되는 페이지
 export default function OAuthCallbackPage() {
@@ -19,18 +20,11 @@ export default function OAuthCallbackPage() {
         const token = params.get('token');
 
         if (token != null) {
-            console.log("로그인 성공 localStorage에 저장된 토큰: " + params.get('token')); // 토큰 확인용 로그
-            localStorage.setItem('token', token); // 토큰 저장
+            setToken(token);
 
-            // JWT payload 디코딩해서 이름 저장
-            try {
-                const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-                const payload = JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-                console.log("JWT payload:", payload); // 어떤 필드가 있는지 확인용
-                const name = payload.name || payload.given_name || payload.email || '';
-                localStorage.setItem('name', name);
-            } catch (e) {
-                console.error("JWT 디코딩 실패:", e);
+            const payload = decodeJWT(token);
+            if (payload) {
+                setName(payload.name || payload.given_name || payload.email || '');
             }
             
             navigate('/');                         // 메인 페이지로 이동

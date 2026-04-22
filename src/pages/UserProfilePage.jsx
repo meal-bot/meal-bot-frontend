@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
-import Navigationbar from '../components/Navigationbar';
 import Layout from '../components/Layout';
+import { useForm } from '../hooks/useForm';
+import { isPasswordMinLength, doPasswordsMatch } from '../utils/validation';
 
 function PasswordField({ label, name, value, onChange, show, onToggle, error, placeholder }) {
   return (
@@ -10,8 +11,8 @@ function PasswordField({ label, name, value, onChange, show, onToggle, error, pl
       </label>
       <div
         className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${error
-            ? 'border-red-300 focus-within:border-red-400'
-            : 'border-outline-variant/30 focus-within:border-primary'
+          ? 'border-red-300 focus-within:border-red-400'
+          : 'border-outline-variant/30 focus-within:border-primary'
           }`}
       >
         <span className="material-symbols-outlined text-on-surface-variant text-xl">lock</span>
@@ -39,7 +40,7 @@ function PasswordField({ label, name, value, onChange, show, onToggle, error, pl
 }
 
 export default function UserProfilePage() {
-  const [form, setForm] = useState({
+  const { form, setForm, handleChange: formHandleChange } = useForm({
     name: '홍길동',
     email: 'user@mealbot.kr',
     currentPassword: '',
@@ -63,7 +64,7 @@ export default function UserProfilePage() {
   };
 
   const handleChange = (e) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    formHandleChange(e);
     setErrors(prev => ({ ...prev, [e.target.name]: '' }));
     setSaved(false);
   };
@@ -72,9 +73,9 @@ export default function UserProfilePage() {
     const newErrors = {};
     if (!form.name.trim()) newErrors.name = '이름을 입력해주세요.';
     if (!form.email.trim()) newErrors.email = '이메일을 입력해주세요.';
-    if (form.newPassword && form.newPassword.length < 8)
+    if (form.newPassword && !isPasswordMinLength(form.newPassword))
       newErrors.newPassword = '비밀번호는 8자 이상이어야 합니다.';
-    if (form.newPassword && form.newPassword !== form.confirmPassword)
+    if (form.newPassword && !doPasswordsMatch(form.newPassword, form.confirmPassword))
       newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
     if (form.newPassword && !form.currentPassword)
       newErrors.currentPassword = '현재 비밀번호를 입력해주세요.';
@@ -169,8 +170,8 @@ export default function UserProfilePage() {
                 </label>
                 <div
                   className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${errors.name
-                      ? 'border-red-300 focus-within:border-red-400'
-                      : 'border-outline-variant/30 focus-within:border-primary'
+                    ? 'border-red-300 focus-within:border-red-400'
+                    : 'border-outline-variant/30 focus-within:border-primary'
                     }`}
                 >
                   <span className="material-symbols-outlined text-on-surface-variant text-xl">badge</span>
@@ -193,8 +194,8 @@ export default function UserProfilePage() {
                 </label>
                 <div
                   className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${errors.email
-                      ? 'border-red-300 focus-within:border-red-400'
-                      : 'border-outline-variant/30 focus-within:border-primary'
+                    ? 'border-red-300 focus-within:border-red-400'
+                    : 'border-outline-variant/30 focus-within:border-primary'
                     }`}
                 >
                   <span className="material-symbols-outlined text-on-surface-variant text-xl">mail</span>
