@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { createConversation, sendChat, sendChat_guest } from '../api/conversationApi';
+import { createConversation, sendChat, sendGuestChat } from '../api/conversationApi';
 import { isLoggedIn } from '../utils/auth';
 
 // <채팅> 채팅 상태 전체를 관리하는 커스텀 훅
@@ -90,11 +90,11 @@ export function useChat({ onNewConversation } = {}) {
         // <채팅 - 비로그인> 백엔드가 stateless이므로 컨텍스트를 매 요청마다 직접 전달
         // setMessages 호출 전의 messages를 사용 → 빈 assistant placeholder가 섞이지 않은 깨끗한 히스토리
         // 현재 입력(currentQuery)을 마지막에 추가해 전체 대화 흐름을 구성
-        const messagesForApi = [
+        const guestChatHistory = [
           ...messages.map(({ role, content }) => ({ role, content })),
           { role: 'user', content: currentQuery },
         ];
-        result = await sendChat_guest(messagesForApi);
+        result = await sendGuestChat(guestChatHistory);
       }
       const fullReply = result.reply || '응답을 받지 못했습니다.';
       setIsLoading(false);

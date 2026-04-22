@@ -15,7 +15,7 @@ export default function MainPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // 대화 목록을 MainPage에서 관리 → 새 대화 생성 시 즉시 갱신 가능
-  const { conversations, loadConversations, selectConversation, deleteConversation } = useConversations();
+  const { conversations, loadConversations, selectConversation, removeConversation } = useConversations();
 
   // 사이드바가 열릴 때마다 대화 목록 갱신 (기존 Sidebar의 useEffect 역할을 MainPage가 담당)
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function MainPage() {
       onNewChat={startNewChat}
       conversations={conversations}
       onConversationSelect={(id) => selectConversation(id, loadConversation)}  // 대화 선택 시 메시지 불러오기
-      onConversationDelete={deleteConversation}  // X 버튼 클릭 시 로컬 state에서 제거
+      onConversationDelete={removeConversation}  // X 버튼 클릭 시 로컬 state에서 제거
     >
       {/* 헤더 + 슬라이더: 채팅 시작 시 부드럽게 사라짐 */}
       <section

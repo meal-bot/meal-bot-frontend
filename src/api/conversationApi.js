@@ -1,18 +1,17 @@
 import api from './axiosInstance';
 
 // <채팅> 새 대화 생성
-// 첫 메시지를 보내기 전에 호출해서 conversationId를 확보함
-// 백엔드가 title을 "새 대화"로 초기 생성하고, 첫 메시지 수신 시 실제 내용으로 업데이트
+// 로그인한 사용자는 백엔드에 대화가 저장되고 conversationId가 발급됨
+// 비로그인 사용자는 conversationId가 null로 유지되고 대화 내용도 저장되지 않음
 export const createConversation = async () => {
   const response = await api.post('/api/conversations');
   return response.data.conversationId;
 };
 
-
 // <채팅> 메시지 전송 및 AI 응답 수신 (비로그인용)
 // 대화 히스토리 전체를 매 요청마다 전송 → 백엔드는 stateless, DB 저장 없음
 // messages: [{ role: 'user'|'assistant', content: string }, ...]
-export const sendChat_guest = async (messages) => {
+export const sendGuestChat = async (messages) => {
   const response = await api.post('/api/conversations/guest/chat', { messages });
   return response.data; // { reply }
 };
@@ -43,6 +42,5 @@ export const fetchConversationDetail = async (conversationId) => {
 // <채팅> 특정 대화 내역 삭제
 // 사이드바에서 x 버튼 클릭했을 때 해당 대화 내용을 DB에서 제거
 export const deleteConversation = async (conversationId) => {
-  const response = await api.post(`/api/conversations/${conversationId}/delete`);
-  return response.data; // { success: true }
+  await api.delete(`/api/conversations/${conversationId}`);
 };

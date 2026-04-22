@@ -26,7 +26,7 @@ export default function OAuthCallbackPage() {
             if (payload) {
                 setName(payload.name || payload.given_name || payload.email || '');
             }
-            
+
             navigate('/');                         // 메인 페이지로 이동
         } else {
             console.log("로그인 실패"); // 토큰 확인용 로그

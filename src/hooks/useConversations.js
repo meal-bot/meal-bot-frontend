@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { fetchConversations, fetchConversationDetail } from '../api/conversationApi';
+import { fetchConversations, fetchConversationDetail, deleteConversation as deleteConversationApi } from '../api/conversationApi';
 
 // <채팅> 대화 목록 조회 및 특정 대화 불러오기를 담당하는 훅
 // 기존에는 Sidebar 내부에서 호출했으나, MainPage로 이관하여
@@ -26,10 +26,15 @@ export function useConversations() {
     }
   }, []);
 
-  // 대화 삭제: 로컬 state에서만 제거 (백엔드 연동은 추후 추가)
-  const deleteConversation = useCallback((id) => {
-    setConversations(prev => prev.filter(conv => conv.conversationId !== id));
+  // 대화 제거: 백엔드 DB에서 먼저 삭제 후 로컬 state에서도 제거
+  const removeConversation = useCallback(async (id) => {
+    try {
+      await deleteConversationApi(id);
+      setConversations(prev => prev.filter(conv => conv.conversationId !== id));
+    } catch {
+      console.error('대화 삭제 실패');
+    }
   }, []);
 
-  return { conversations, loadConversations, selectConversation, deleteConversation };
+  return { conversations, loadConversations, selectConversation, removeConversation };
 }

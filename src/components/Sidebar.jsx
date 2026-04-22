@@ -64,7 +64,9 @@ export default function Sidebar({ isOpen, onToggle, onNewChat, conversations, on
                       </span>
                     </button>
 
-                    {/* X 버튼: 호버 시에만 표시, 클릭이 대화 선택으로 전파되지 않도록 stopPropagation */}
+                    {/* X 버튼: 호버 시에만 표시, 클릭이 대화 선택으로 전파되지 않도록 stopPropagation 
+                        stopPropagation : 클릭 이벤트가 부모 요소로 전파되는 것을 막음
+                        → X 버튼 클릭 시 대화 선택 이벤트가 발생하지 않도록하는 역할         */}
                     <button
                       onClick={(e) => { e.stopPropagation(); onConversationDelete(conv.conversationId); }}
                       className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-5 h-5 flex items-center justify-center rounded hover:bg-error/10"
