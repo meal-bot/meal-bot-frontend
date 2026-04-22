@@ -19,6 +19,11 @@ export default function SignUpPage() {
     console.log('회원가입 시도:', form);
   };
 
+  //구글 회원가입 == 로그인과 동일
+  const handleGoogleSignUp = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* 상단 네비 */}      
@@ -187,6 +192,7 @@ export default function SignUpPage() {
             {/* 구글 가입 */}
             <button
               type="button"
+              onClick={handleGoogleSignUp}
               className="w-full flex items-center justify-center gap-3 border border-outline-variant rounded-2xl py-3.5 text-sm font-semibold text-on-surface hover:bg-surface-container transition-colors"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
