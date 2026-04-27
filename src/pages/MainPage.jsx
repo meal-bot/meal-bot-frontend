@@ -4,7 +4,6 @@ import ChatInput from '../components/ChatInput';
 import Layout from '../components/Layout';
 import { useSlider } from '../hooks/useSlider';
 import { useChat } from '../hooks/useChat';
-import { useConversations } from '../hooks/useConversations';  // Sidebar에서 MainPage로 이관
 import { isLoggedIn } from '../utils/auth';
 import MEAL_DATA from '../data/mealData';
 
@@ -14,25 +13,28 @@ export default function MainPage() {
   // sidebarOpen을 MainPage에서 관리 → Layout과 ChatInput 양쪽에 직접 전달 가능
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // 대화 목록을 MainPage에서 관리 → 새 대화 생성 시 즉시 갱신 가능
-  const { conversations, loadConversations, selectConversation, removeConversation } = useConversations();
+  const { query, setQuery,
+          messages, isLoading, hasMessages, messagesEndRef,
+          handleSubmit, startChatThread, loadChatThread, chatThreadId,
+          chatThreads, loadChatThreads, deleteChatThread,
+        } = useChat();
 
-  // 사이드바가 열릴 때마다 대화 목록 갱신 (기존 Sidebar의 useEffect 역할을 MainPage가 담당)
+  // 사이드바가 열릴 때마다 스레드 목록 갱신 (기존 Sidebar의 useEffect 역할을 MainPage가 담당)
   useEffect(() => {
-    if (sidebarOpen && isLoggedIn()) loadConversations();
-  }, [sidebarOpen, loadConversations]);
-
-  // onNewConversation: 새 대화 생성 직후 loadConversations를 호출해 사이드바 즉시 갱신
-  const { query, setQuery, messages, isLoading, hasMessages, messagesEndRef, handleSubmit, startNewChat, loadConversation } = useChat({ onNewConversation: loadConversations });
+    if (sidebarOpen && isLoggedIn()) loadChatThreads();
+  }, [sidebarOpen, loadChatThreads]);
 
   return (
     <Layout
       sidebarOpen={sidebarOpen}
       onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
-      onNewChat={startNewChat}
-      conversations={conversations}
-      onConversationSelect={(id) => selectConversation(id, loadConversation)}  // 대화 선택 시 메시지 불러오기
-      onConversationDelete={removeConversation}  // X 버튼 클릭 시 로컬 state에서 제거
+      onChatThreadStart={startChatThread}
+      chatThreads={chatThreads}
+      onChatThreadSelect={loadChatThread}
+      onChatThreadDelete={(id) => {
+        deleteChatThread(id);
+        if (id === chatThreadId) startChatThread();  // 현재 스레드 삭제 시 새 채팅으로 초기화
+      }}
     >
       {/* 헤더 + 슬라이더: 채팅 시작 시 부드럽게 사라짐 */}
       <section
@@ -94,10 +96,11 @@ export default function MainPage() {
               key={msg.id}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}
             >
+              {/* assistant 메시지에는 아이콘 표시 */}
               {msg.role === 'assistant' && (
                 <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
                   <span className="material-symbols-outlined text-on-primary-container" style={{ fontSize: '16px' }}>smart_toy</span>
-                </div>
+                </div>    
               )}
               <div
                 className={`max-w-[75%] rounded-2xl px-4 py-3 ${msg.role === 'user'

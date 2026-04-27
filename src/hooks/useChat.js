@@ -1,21 +1,21 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { createConversation, sendChat, sendGuestChat } from '../api/conversationApi';
+import { createChatThread, sendChatMessage, sendGuestChatMessage,
+         fetchChatThreads, fetchChatThreadDetail, deleteChatThread as deleteChatThreadApi } from '../api/chatApi';
 import { isLoggedIn } from '../utils/auth';
 
-// <채팅> 채팅 상태 전체를 관리하는 커스텀 훅
-// 메시지 목록, 대화 ID, 로딩 상태, 전송/초기화/불러오기 기능을 제공
-// onNewConversation: 새 대화가 생성될 때 MainPage에서 전달받는 콜백 (대화 목록 즉시 갱신용)
-export function useChat({ onNewConversation } = {}) {
-  const [query, setQuery] = useState('');          // 입력창 텍스트
-  const [messages, setMessages] = useState([]);    // 화면에 표시되는 메시지 목록
+// 채팅 상태 전체를 관리하는 커스텀 훅
+// - 활성 스레드: 메시지 목록, 스레드 ID, 전송/초기화/불러오기
+// - 스레드 목록: 사이드바용 목록 조회/삭제
+export function useChat() {
+  const [query, setQuery] = useState('');
+  const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  // <채팅> conversationId: 로그인 시 백엔드 대화와 연결되는 ID
-  // null이면 대화 미생성 상태 (비로그인이거나 새 채팅 시작 전)
-  const [conversationId, setConversationId] = useState(null);
-  const messagesEndRef = useRef(null);       // 자동 스크롤용 DOM 참조
-  const typingIntervalRef = useRef(null);    // 타이핑 애니메이션 인터벌 참조
+  // null이면 스레드 미생성 상태 (비로그인이거나 새 채팅 시작 전)
+  const [chatThreadId, setChatThreadId] = useState(null);
+  const [chatThreads, setChatThreads] = useState([]);
+  const messagesEndRef = useRef(null);
+  const typingIntervalRef = useRef(null);
 
-  // 메시지가 하나라도 있으면 true (헤더/슬라이더 숨김 여부 결정)
   const hasMessages = messages.length > 0;
 
   // 언마운트 시 진행 중인 타이핑 인터벌 정리 (메모리 누수 방지)
@@ -30,8 +30,7 @@ export function useChat({ onNewConversation } = {}) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // <채팅> 타이핑 애니메이션: AI 응답을 40ms 간격으로 한 글자씩 출력
-  // fullText: 완성된 전체 응답, messageId: 업데이트할 메시지 ID
+  // 타이핑 애니메이션: AI 응답을 40ms 간격으로 한 글자씩 출력
   const typeMessage = useCallback((fullText, messageId) => {
     if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
     let index = 0;
@@ -51,7 +50,28 @@ export function useChat({ onNewConversation } = {}) {
     }, 40);
   }, []);
 
-  // <채팅> 메시지 전송 핸들러
+  // ── 스레드 목록 ────────────────────────────────────────────
+
+  // 스레드 목록을 서버에서 불러와 state에 저장
+  const loadChatThreads = useCallback(() => {
+    fetchChatThreads()
+      .then(setChatThreads)
+      .catch(() => console.error('채팅 스레드 목록 로드 실패'));
+  }, []);
+
+  // 스레드 삭제: 백엔드 DB에서 먼저 삭제 후 로컬 state에서도 제거
+  const deleteChatThread = useCallback(async (id) => {
+    try {
+      await deleteChatThreadApi(id);
+      setChatThreads(prev => prev.filter(thread => thread.chatId !== id));
+    } catch {
+      console.error('채팅 스레드 삭제 실패');
+    }
+  }, []);
+
+  // ── 활성 스레드 ────────────────────────────────────────────
+
+  // 메시지 전송 핸들러
   const handleSubmit = async () => {
     if (!query.trim() || isLoading) return;
 
@@ -60,19 +80,19 @@ export function useChat({ onNewConversation } = {}) {
     const assistantMsgId = userMsgId + 1;
     const loggedIn = isLoggedIn();
 
-    // <채팅> 로그인 상태이고 대화가 없으면 → 첫 메시지 전송 전에 대화 먼저 생성
-    // 비로그인은 대화 ID 없이 진행 (메모리에만 저장)
-    let currentConversationId = conversationId;
-    if (loggedIn && !currentConversationId) {
+    // 로그인 상태이고 스레드가 없으면 → 첫 메시지 전송 전에 스레드 먼저 생성
+    // 비로그인은 스레드 ID 없이 진행 (메모리에만 저장)
+    let currentChatThreadId = chatThreadId;
+    if (loggedIn && !currentChatThreadId) {
       try {
-        currentConversationId = await createConversation();
-        setConversationId(currentConversationId);
+        currentChatThreadId = await createChatThread();
+        setChatThreadId(currentChatThreadId);
       } catch {
-        console.error('대화 생성 실패');
+        console.error('채팅 스레드 생성 실패');
       }
     }
 
-    // <채팅> 서버 응답을 기다리지 않고 화면에 즉시 표시
+    // 서버 응답을 기다리지 않고 화면에 즉시 표시
     // 사용자 메시지 + 빈 AI 말풍선(로딩 점 3개)을 동시에 추가
     setMessages(prev => [
       ...prev,
@@ -85,22 +105,21 @@ export function useChat({ onNewConversation } = {}) {
     try {
       let result;
       if (loggedIn) {
-        result = await sendChat(currentConversationId, currentQuery);
+        result = await sendChatMessage(currentChatThreadId, currentQuery);
       } else {
-        // <채팅 - 비로그인> 백엔드가 stateless이므로 컨텍스트를 매 요청마다 직접 전달
+        // 비로그인: 백엔드가 stateless이므로 컨텍스트를 매 요청마다 직접 전달
         // setMessages 호출 전의 messages를 사용 → 빈 assistant placeholder가 섞이지 않은 깨끗한 히스토리
-        // 현재 입력(currentQuery)을 마지막에 추가해 전체 대화 흐름을 구성
         const guestChatHistory = [
           ...messages.map(({ role, content }) => ({ role, content })),
           { role: 'user', content: currentQuery },
         ];
-        result = await sendGuestChat(guestChatHistory);
+        result = await sendGuestChatMessage(guestChatHistory);
       }
       const fullReply = result.reply || '응답을 받지 못했습니다.';
       setIsLoading(false);
       typeMessage(fullReply, assistantMsgId);
       // AI 응답 완료 후 갱신 → 백엔드가 타이틀을 생성한 뒤이므로 올바른 제목이 반영됨
-      onNewConversation?.();
+      loadChatThreads();
     } catch {
       const fallback = '임시 답변입니다. (서버 연결 대기 중)';
       setIsLoading(false);
@@ -108,30 +127,38 @@ export function useChat({ onNewConversation } = {}) {
     }
   };
 
-  // <채팅> 새 채팅 시작: 모든 상태 초기화
-  // 브라우저 재접속 시에는 useState 초기값으로 자동 초기화되므로 별도 처리 불필요
-  const startNewChat = useCallback(() => {
+  // 새 채팅 스레드 시작: 모든 상태 초기화
+  const startChatThread = useCallback(() => {
     if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
     setMessages([]);
-    setConversationId(null);
+    setChatThreadId(null);
     setQuery('');
     setIsLoading(false);
   }, []);
 
-  // <채팅> 이전 대화 불러오기: 사이드바 항목 클릭 시 호출
-  // 백엔드 메시지 형식 { role, content }에 화면 렌더링용 id를 붙여 messages에 세팅
-  const loadConversation = useCallback((id, conversationMessages) => {
-    if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
-    setConversationId(id);
-    setMessages(conversationMessages.map((msg, i) => ({ ...msg, id: i })));
-    setQuery('');
-    setIsLoading(false);
+  // 이전 스레드 불러오기: 사이드바 항목 클릭 시 호출
+  const loadChatThread = useCallback(async (id) => {
+    try {
+      const data = await fetchChatThreadDetail(id);
+      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+      // 백엔드 chatId(DB 키) → 프론트 chatThreadId state로 매핑
+      setChatThreadId(data.chatId);
+      // 백엔드 메시지 { role, content }에 React key·타이핑 애니메이션용 id 추가
+      setMessages(data.messages.map((msg, i) => ({ ...msg, id: i })));
+      setQuery('');
+      setIsLoading(false);
+    } catch {
+      console.error('채팅 스레드 불러오기 실패');
+    }
   }, []);
 
   return {
+    // 메시지 입력
     query, setQuery,
-    messages, isLoading, hasMessages,
-    messagesEndRef, handleSubmit,
-    startNewChat, loadConversation,
+    // 활성 스레드
+    messages, isLoading, hasMessages, messagesEndRef, chatThreadId,
+    handleSubmit, startChatThread, loadChatThread,
+    // 스레드 목록
+    chatThreads, loadChatThreads, deleteChatThread,
   };
 }

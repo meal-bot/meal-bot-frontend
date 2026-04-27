@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { isLoggedIn, getName, clearAuth } from '../utils/auth';
 
 // sidebarOpen: 사이드바 너비만큼 로고를 우측으로 밀어 사이드바와 겹치지 않게 함
-export default function Navigationbar({ sidebarOpen = false, onNewChat }) {
+export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const loggedIn = isLoggedIn();
@@ -30,7 +30,7 @@ export default function Navigationbar({ sidebarOpen = false, onNewChat }) {
         {/* 사이드바 너비에 맞춰 로고 위치 이동 */}
         <Link
           to="/"
-          onClick={onNewChat}
+          onClick={onChatThreadStart}
           className={`text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'ml-60' : 'ml-10.5'}`}
         >
           Meal-Bot
