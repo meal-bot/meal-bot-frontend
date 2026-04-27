@@ -53,7 +53,7 @@ export function useChat() {
   // ── 스레드 목록 ────────────────────────────────────────────
 
   // 스레드 목록을 서버에서 불러와 state에 저장
-  const loadChatThreads = useCallback(() => {
+  const fetchThreadList = useCallback(() => {
     fetchChatThreads()
       .then(setChatThreads)
       .catch(() => console.error('채팅 스레드 목록 로드 실패'));
@@ -119,7 +119,7 @@ export function useChat() {
       setIsLoading(false);
       typeMessage(fullReply, assistantMsgId);
       // AI 응답 완료 후 갱신 → 백엔드가 타이틀을 생성한 뒤이므로 올바른 제목이 반영됨
-      loadChatThreads();
+      fetchThreadList();
     } catch {
       const fallback = '임시 답변입니다. (서버 연결 대기 중)';
       setIsLoading(false);
@@ -137,7 +137,7 @@ export function useChat() {
   }, []);
 
   // 이전 스레드 불러오기: 사이드바 항목 클릭 시 호출
-  const loadChatThread = useCallback(async (id) => {
+  const openChatThread = useCallback(async (id) => {
     try {
       const data = await fetchChatThreadDetail(id);
       if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
@@ -157,8 +157,8 @@ export function useChat() {
     query, setQuery,
     // 활성 스레드
     messages, isLoading, hasMessages, messagesEndRef, chatThreadId,
-    handleSubmit, startChatThread, loadChatThread,
+    handleSubmit, startChatThread, openChatThread,
     // 스레드 목록
-    chatThreads, loadChatThreads, deleteChatThread,
+    chatThreads, fetchThreadList, deleteChatThread,
   };
 }

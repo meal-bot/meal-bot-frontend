@@ -37,12 +37,24 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
         </Link>
 
         {/* 오른쪽 사용자 메뉴 - 우측 끝단 고정 */}
-        <div className="flex items-center">
+        <div className="flex items-center gap-4">
+          <Link
+            to="/inbody"
+            className="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
+          >
+            바디 분석
+          </Link>
+          <Link
+            to="/inbody/new"
+            className="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
+          >
+            측정 입력
+          </Link>
           {loggedIn && (
-            <span className="inline-flex items-center text-sm text-on-surface-variant mr-2">환영합니다 {name}님!</span>
+            <span className="inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">환영합니다 {name}님!</span>
           )}
           {!loggedIn && (
-            <span className="inline-flex items-center text-sm text-on-surface-variant mr-2">로그인하여 맞춤 식단을 받아보세요</span>
+            <span className="inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">로그인하여 맞춤 식단을 받아보세요</span>
           )}
           <div className="relative flex items-center" ref={dropdownRef}>
             <span

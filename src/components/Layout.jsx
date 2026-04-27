@@ -13,7 +13,8 @@ import Sidebar from './Sidebar';
  *   onChatThreadDelete : X 버튼 클릭  → MainPage.deleteChatThread
  *   onChatThreadLoad   : 스레드 로드   → MainPage.loadChatThread
  */
-export default function Layout({ children, sidebarOpen, onSidebarToggle, onChatThreadStart, chatThreads, onChatThreadSelect, onChatThreadDelete }) {
+export default function Layout({ children, sidebarOpen, onSidebarToggle, onChatThreadStart,
+                                 chatThreads, onChatThreadSelect, onChatThreadDelete }) {
   return (
     <div className="text-on-surface selection:bg-primary-container">
 

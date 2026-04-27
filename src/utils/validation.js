@@ -1,2 +1,2 @@
-export const isPasswordMinLength = (password) => password.length >= 8;
-export const doPasswordsMatch = (password, confirm) => password === confirm;
+export const isPasswordMinLength = (password) => { return password.length >= 8; };
+export const doPasswordsMatch = (password, confirm) => { return password === confirm; };

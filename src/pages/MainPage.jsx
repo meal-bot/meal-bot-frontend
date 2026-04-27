@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useSidebar } from '../context/SidebarContext';
 import MealCard from '../components/MealCard';
 import ChatInput from '../components/ChatInput';
 import Layout from '../components/Layout';
@@ -9,20 +11,27 @@ import MEAL_DATA from '../data/mealData';
 
 export default function MainPage() {
   const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
+  const location = useLocation();
 
-  // sidebarOpen을 MainPage에서 관리 → Layout과 ChatInput 양쪽에 직접 전달 가능
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { sidebarOpen, setSidebarOpen } = useSidebar();
 
   const { query, setQuery,
           messages, isLoading, hasMessages, messagesEndRef,
-          handleSubmit, startChatThread, loadChatThread, chatThreadId,
-          chatThreads, loadChatThreads, deleteChatThread,
+          handleSubmit, startChatThread, openChatThread, chatThreadId,
+          chatThreads, fetchThreadList, deleteChatThread,
         } = useChat();
 
   // 사이드바가 열릴 때마다 스레드 목록 갱신 (기존 Sidebar의 useEffect 역할을 MainPage가 담당)
   useEffect(() => {
-    if (sidebarOpen && isLoggedIn()) loadChatThreads();
-  }, [sidebarOpen, loadChatThreads]);
+    if (sidebarOpen && isLoggedIn()) fetchThreadList();
+  }, [sidebarOpen, fetchThreadList]);
+
+  // 인바디 등 다른 페이지 사이드바에서 스레드 클릭 시 해당 스레드 자동 로드
+  // ref로 마운트 시점의 state만 캡처 → location 변경에 재반응하지 않음
+  const incomingThreadId = useRef(location.state?.chatThreadId);
+  useEffect(() => {
+    if (incomingThreadId.current) openChatThread(incomingThreadId.current);
+  }, [openChatThread]);
 
   return (
     <Layout
@@ -30,7 +39,7 @@ export default function MainPage() {
       onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
       onChatThreadStart={startChatThread}
       chatThreads={chatThreads}
-      onChatThreadSelect={loadChatThread}
+      onChatThreadSelect={openChatThread}
       onChatThreadDelete={(id) => {
         deleteChatThread(id);
         if (id === chatThreadId) startChatThread();  // 현재 스레드 삭제 시 새 채팅으로 초기화
