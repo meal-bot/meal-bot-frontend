@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { BASIC_FIELDS, ADVANCED_FIELDS } from '../data/inbodyData';
+import { BASIC_FIELDS, ADVANCED_FIELDS, ACTIVITY_LEVELS } from '../data/inbodyData';
 import { saveInbody } from '../api/inbodyApi';
 
 /**
@@ -14,25 +14,15 @@ import { saveInbody } from '../api/inbodyApi';
 export default function InBodyInputPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    height: '', weight: '', age: '', gender: '남성',
+    height: '', weight: '', age: '', gender: '남성', activityLevel: 1.55,
     skeletalMuscle: '', bodyFat: '', bodyFatPercent: '',
-    bmi: '', protein: '', mineral: '', bodyWater: '', visceralFat: '',
+    protein: '', mineral: '', bodyWater: '', visceralFat: '',
   });
   const [errors, setErrors] = useState({});
 
   const handleChange = (key, value) => {
     setForm(prev => ({ ...prev, [key]: value }));
     setErrors(prev => ({ ...prev, [key]: '' }));
-
-    // BMI 자동 계산 (키와 체중 입력 시)
-    if (key === 'height' || key === 'weight') {
-      const height = key === 'height' ? parseFloat(value) : parseFloat(form.height);
-      const weight = key === 'weight' ? parseFloat(value) : parseFloat(form.weight);
-      if (height && weight && height > 0) {
-        const bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
-        setForm(prev => ({ ...prev, [key]: value, bmi }));
-      }
-    }
   };
 
   const validate = () => {
@@ -114,11 +104,43 @@ export default function InBodyInputPage() {
             </div>
           </section>
 
-          {/* ───── STEP 2. 상세 측정값 ───── */}
+          {/* ───── STEP 1.5. 활동 수준 ───── */}
+          <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+            <SectionHeader
+              step="02"
+              title="활동 수준"
+              caption="일일 권장 칼로리 계산에 사용"
+              tone="primary"
+            />
+            <div className="grid grid-cols-5 gap-2 mt-6">
+              {ACTIVITY_LEVELS.map(level => (
+                <button
+                  key={level.factor}
+                  type="button"
+                  onClick={() => handleChange('activityLevel', level.factor)}
+                  className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border text-center transition-all ${
+                    form.activityLevel === level.factor
+                      ? 'bg-primary text-white border-primary'
+                      : 'border-outline-variant/30 text-on-surface-variant hover:border-primary/50'
+                  }`}
+                >
+                  <span className="text-xs font-bold leading-tight">{level.label}</span>
+                  <span className={`text-[10px] leading-tight ${form.activityLevel === level.factor ? 'text-white/80' : 'text-on-surface-variant/60'}`}>
+                    {level.description}
+                  </span>
+                  <span className={`text-[11px] font-extrabold mt-0.5 ${form.activityLevel === level.factor ? 'text-white' : 'text-primary'}`}>
+                    ×{level.factor}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* ───── STEP 3. 상세 측정값 ───── */}
           <section className="bg-surface-container-low rounded-[2rem] border border-outline-variant/40 p-8">
             <div className="flex items-start justify-between gap-4 mb-2">
               <SectionHeader
-                step="02"
+                step="03"
                 title="상세 측정값"
                 caption="인바디 기기 결과지 필요"
                 tone="secondary"
@@ -134,7 +156,6 @@ export default function InBodyInputPage() {
               <p className="text-xs leading-relaxed text-on-surface">
                 <span className="font-bold">결과지에서 찾는 법: </span>
                 인바디 결과지 좌측 상단의 <em className="not-italic font-semibold">"체성분 분석"</em> 표를 참고하세요.
-                BMI는 키·체중 입력 시 자동 계산됩니다.
               </p>
             </div>
 

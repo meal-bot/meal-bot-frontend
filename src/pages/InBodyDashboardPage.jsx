@@ -5,9 +5,10 @@ import MealCard from '../components/MealCard';
 import MEAL_DATA from '../data/mealData';
 import {
   ADVANCED_FIELDS, SEGMENTS,
-  evaluate, gaugePosition,
+  evaluate, gaugePosition, AVG_STATS,
 } from '../data/inbodyData';
 import { fetchInbodyList } from '../api/inbodyApi';
+import { ResponsiveBar } from '@nivo/bar';
 //import { timeAgo } from '../utils/timeAgo';
 
 
@@ -43,8 +44,7 @@ export default function InBodyDashboardPage() {
   }));
 
   const weightDelta = curr && prev ? (curr.weight - prev.weight).toFixed(1) : null;
-  const fatDelta = curr && prev ? (curr.bodyFatPercent - prev.bodyFatPercent).toFixed(1) : null;
-  const muscleDelta = curr && prev ? (curr.skeletalMuscle - prev.skeletalMuscle).toFixed(1) : null;
+  const bmiDelta = curr && prev ? (curr.bmi - prev.bmi).toFixed(1) : null;
   const scoreDelta = curr?.score && prev?.score ? curr.score - prev.score : 0;
 
   const recommendedMeals = MEAL_DATA.slice(0, 3);
@@ -112,16 +112,117 @@ export default function InBodyDashboardPage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 pt-3 border-t border-outline-variant/40">
+              <div className="grid grid-cols-5 gap-3 pt-3 border-t border-outline-variant/40">
                 <DeltaStat label="체중" value={curr ? `${curr.weight} kg` : '-'} delta={weightDelta} good={weightDelta <= 0} />
-                <DeltaStat label="체지방률" value={curr ? `${curr.bodyFatPercent}%` : '-'} delta={fatDelta} good={fatDelta < 0} />
-                <DeltaStat label="골격근량" value={curr ? `${curr.skeletalMuscle} kg` : '-'} delta={muscleDelta} good={muscleDelta > 0} suffixed />
+                <DeltaStat label="키" value={curr ? `${curr.height} cm` : '-'} />
+                <DeltaStat label="나이" value={curr ? `${curr.age} 세` : '-'} />
+                <DeltaStat label="성별" value={curr?.gender ?? '-'} />
+                <DeltaStat label="BMI" value={curr ? `${curr.bmi}` : '-'} delta={bmiDelta} good={bmiDelta <= 0} />
               </div>
             </div>
           </div>
         </section>
 
-        {/* ───── 2. 항목별 게이지 ───── */}
+
+
+        {/* ───── 2. BMI 평균 비교 바차트 ───── */}
+        <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+          <SectionTitle eyebrow="COMPARISON" title="BMI 비교" sub="내 BMI vs 동일 성별·연령대 평균" />
+          <div className="h-48 mt-6">
+            <ResponsiveBar
+              data={[{ metric: 'BMI', 나: curr?.bmi ?? 0, 평균: AVG_STATS.bmi }]}
+              keys={['나', '평균']}
+              indexBy="metric"
+              layout="horizontal"
+              groupMode="grouped"
+              margin={{ top: 10, right: 80, bottom: 10, left: 40 }}
+              padding={0.3}
+              innerPadding={4}
+              colors={['var(--color-primary)', 'var(--color-outline-variant)']}
+              borderRadius={6}
+              axisLeft={null}
+              axisBottom={null}
+              axisRight={{ tickSize: 0, tickPadding: 8, format: v => v }}
+              enableGridX
+              enableGridY={false}
+              label={d => d.value}
+              labelPosition="end"
+              labelOffset={8}
+              labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+              legends={[{
+                dataFrom: 'keys',
+                anchor: 'bottom-right',
+                direction: 'column',
+                translateX: 80,
+                itemWidth: 70,
+                itemHeight: 20,
+                itemsSpacing: 4,
+                symbolSize: 10,
+                symbolShape: 'circle',
+              }]}
+              animate
+            />
+          </div>
+        </section>
+
+        {/* ───── 2. BMR 평균 비교 바차트 ───── */}
+        <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+          <SectionTitle eyebrow="COMPARISON" title="BMR 비교" sub="내 BMR vs 동일 성별·연령대 평균" />
+          <div className="h-48 mt-6">
+            <ResponsiveBar
+              data={[{ metric: 'BMR', 나: curr?.bmr ?? 0, 평균: AVG_STATS.bmr }]}
+              keys={['나', '평균']}
+              indexBy="metric"
+              layout="horizontal"
+              groupMode="grouped"
+              margin={{ top: 10, right: 80, bottom: 10, left: 40 }}
+              padding={0.3}
+              innerPadding={4}
+              colors={['var(--color-primary)', 'var(--color-outline-variant)']}
+              borderRadius={6}
+              axisLeft={null}
+              axisBottom={null}
+              axisRight={{ tickSize: 0, tickPadding: 8, format: v => v }}
+              enableGridX
+              enableGridY={false}
+              label={d => d.value}
+              labelPosition="end"
+              labelOffset={8}
+              labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+              legends={[{
+                dataFrom: 'keys',
+                anchor: 'bottom-right',
+                direction: 'column',
+                translateX: 80,
+                itemWidth: 70,
+                itemHeight: 20,
+                itemsSpacing: 4,
+                symbolSize: 10,
+                symbolShape: 'circle',
+              }]}
+              animate
+            />
+          </div>
+        </section>
+
+        {/* ───── 3. 일일 권장 칼로리 ───── */}
+        {curr?.dailyCalories && (
+          <section className="bg-primary rounded-[2rem] p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <span className="material-symbols-outlined text-white/80 text-4xl">local_fire_department</span>
+              <div>
+                <p className="text-xs font-bold text-white/60 uppercase tracking-widest mb-1">오늘 하루 섭취 권장 칼로리</p>
+                <p className="text-sm text-white/70 leading-snug">기초대사량 × 활동계수 기준</p>
+              </div>
+            </div>
+            <div className="flex items-baseline gap-2 shrink-0">
+              <span className="text-6xl font-extrabold text-white tabular-nums">{curr.dailyCalories.toLocaleString()}</span>
+              <span className="text-xl font-bold text-white/70">kcal</span>
+            </div>
+          </section>
+        )}
+
+        {/* ───── 4. 항목별 게이지 ───── */}
         <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
           <SectionTitle eyebrow="STANDARD 8" title="항목별 분석" sub="정상 범위 대비 현재값" />
 
@@ -271,10 +372,12 @@ function DeltaStat({ label, value, delta, good, suffixed }) {
     <div className="flex flex-col gap-0.5">
       <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">{label}</span>
       <span className="text-lg font-extrabold text-on-surface tabular-nums">{value}</span>
-      <span className={`text-xs font-semibold ${color} flex items-center gap-0.5 tabular-nums`}>
-        <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>{arrow}</span>
-        {sign}{delta}{suffixed ? ' kg' : (label === '체지방률' ? '%p' : ' kg')}
-      </span>
+      {delta != null && (
+        <span className={`text-xs font-semibold ${color} flex items-center gap-0.5 tabular-nums`}>
+          <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>{arrow}</span>
+          {sign}{delta}{suffixed ? ' kg' : ' '}
+        </span>
+      )}
     </div>
   );
 }
