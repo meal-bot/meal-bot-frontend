@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { useChat } from '../hooks/useChat';
-import { isLoggedIn } from '../utils/auth';
-import { useSidebar } from '../context/SidebarContext';
 import MealCard from '../components/MealCard';
 import MEAL_DATA from '../data/mealData';
 import {
@@ -26,14 +23,6 @@ import { fetchInbodyList } from '../api/inbodyApi';
  */
 export default function InBodyDashboardPage() {
   const navigate = useNavigate();
-  const { sidebarOpen, setSidebarOpen } = useSidebar();
-  const { startChatThread, deleteChatThread,
-    chatThreads, fetchThreadList, chatThreadId } = useChat();
-
-  useEffect(() => {
-    if (sidebarOpen && isLoggedIn()) fetchThreadList();
-  }, [sidebarOpen, fetchThreadList]);
-
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,14 +50,7 @@ export default function InBodyDashboardPage() {
   const recommendedMeals = MEAL_DATA.slice(0, 3);
 
   return (
-    <Layout
-      sidebarOpen={sidebarOpen}
-      onSidebarToggle={() => setSidebarOpen(p => !p)}
-      onChatThreadStart={startChatThread}
-      chatThreads={chatThreads}
-      onChatThreadSelect={(id) => navigate('/', { state: { chatThreadId: id } })}
-      onChatThreadDelete={(id) => { deleteChatThread(id); if (id === chatThreadId) startChatThread(); }}
-    >
+    <Layout>
       <div className="max-w-5xl mx-auto flex flex-col gap-6">
 
         {/* ───── 헤더 ───── */}

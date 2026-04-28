@@ -1,11 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { useChat } from '../hooks/useChat';
-import { isLoggedIn } from '../utils/auth';
 import { BASIC_FIELDS, ADVANCED_FIELDS } from '../data/inbodyData';
 import { saveInbody } from '../api/inbodyApi';
-import { useSidebar } from '../context/SidebarContext';
 
 /**
  * 인바디 측정값 입력 페이지 — /inbody/new
@@ -16,13 +13,6 @@ import { useSidebar } from '../context/SidebarContext';
  */
 export default function InBodyInputPage() {
   const navigate = useNavigate();
-  const { sidebarOpen, setSidebarOpen } = useSidebar();
-  const { startChatThread, deleteChatThread,
-          chatThreads, fetchThreadList, chatThreadId } = useChat();
-
-  useEffect(() => {
-    if (sidebarOpen && isLoggedIn()) fetchThreadList();
-  }, [sidebarOpen, fetchThreadList]);
   const [form, setForm] = useState({
     height: '', weight: '', age: '', gender: '남성',
     skeletalMuscle: '', bodyFat: '', bodyFatPercent: '',
@@ -71,14 +61,7 @@ export default function InBodyInputPage() {
   const filledAdvanced = ADVANCED_FIELDS.filter(field => form[field.key] !== '').length;
 
   return (
-    <Layout
-      sidebarOpen={sidebarOpen}
-      onSidebarToggle={() => setSidebarOpen(prev => !prev)}
-      onChatThreadStart={startChatThread}
-      chatThreads={chatThreads}
-      onChatThreadSelect={(id) => navigate('/', { state: { chatThreadId: id } })}
-      onChatThreadDelete={(id) => { deleteChatThread(id); if (id === chatThreadId) startChatThread(); }}
-    >
+    <Layout>
       <div className="max-w-3xl mx-auto">
         {/* 페이지 헤더 */}
         <header className="mb-10">

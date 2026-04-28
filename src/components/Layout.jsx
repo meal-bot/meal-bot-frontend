@@ -21,24 +21,20 @@ export default function Layout({ children, sidebarOpen, onSidebarToggle, onChatT
       {/* 네비게이션 바: sidebarOpen을 받아 로고 위치를 사이드바 너비에 맞게 이동 */}
       <Navigationbar sidebarOpen={sidebarOpen} onChatThreadStart={onChatThreadStart} />
 
-      <Sidebar
-        isOpen={sidebarOpen}
-        onToggle={onSidebarToggle}
-        onChatThreadStart={onChatThreadStart}
-        chatThreads={chatThreads}
-        onChatThreadSelect={onChatThreadSelect}
-        onChatThreadDelete={onChatThreadDelete}
-      />
+      {onSidebarToggle && (
+        <Sidebar
+          isOpen={sidebarOpen}
+          onToggle={onSidebarToggle}
+          onChatThreadStart={onChatThreadStart}
+          chatThreads={chatThreads}
+          onChatThreadSelect={onChatThreadSelect}
+          onChatThreadDelete={onChatThreadDelete}
+        />
+      )}
 
-      {/*
-        페이지 본문 영역:
-          - pt-32: 상단 고정 네비바 높이만큼 아래로 밀기
-          - pb-40: 하단 고정 ChatInput 높이만큼 위로 밀기
-          - pl-64 / pl-16: 사이드바가 열리면 넓게, 닫히면 좁게
-      */}
       <main
         className={`pt-32 pb-40 pr-6 md:pr-12 max-w-screen-2xl mx-auto transition-all duration-300 ${
-          sidebarOpen ? 'pl-64' : 'pl-16'
+          onSidebarToggle && sidebarOpen ? 'pl-64' : 'pl-16'
         }`}
       >
         {children}
