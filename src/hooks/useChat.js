@@ -115,12 +115,15 @@ export function useChat() {
         ];
         result = await sendGuestChatMessage(guestChatHistory);
       }
+      console.log('AI 응답 result:', result);
       const fullReply = result.reply || '응답을 받지 못했습니다.';
       setIsLoading(false);
       typeMessage(fullReply, assistantMsgId);
       // AI 응답 완료 후 갱신 → 백엔드가 타이틀을 생성한 뒤이므로 올바른 제목이 반영됨
       fetchThreadList();
-    } catch {
+    } catch (error) {
+      console.error('채팅 에러:', error);
+      console.error('에러 응답:', error?.response?.data);
       const fallback = '임시 답변입니다. (서버 연결 대기 중)';
       setIsLoading(false);
       typeMessage(fallback, assistantMsgId);
