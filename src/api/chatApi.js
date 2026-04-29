@@ -17,14 +17,14 @@ export const createChatThread = async () => {
 // messages: [{ role: 'user'|'assistant', content: string }, ...]
 export const sendGuestChatMessage = async (messages) => {
   const response = await api.post('/api/chat/guest/sendMessage', { messages }, { timeout: CHAT_TIMEOUT });
-  return response.data; // { reply }
+  return response.data.reply;
 };
 
 // 3. 단건 메시지 전송 및 AI 응답 수신 (로그인용)
 // 백엔드가 메시지 저장 → title 업데이트 → AI 호출을 한 번에 처리하고 응답 반환
 export const sendChatMessage = async (chatThreadId, content) => {
   const response = await api.post(`/api/chat/${chatThreadId}/sendMessage`, { content }, { timeout: CHAT_TIMEOUT });
-  return response.data; // { messageId, reply }
+  return response.data.reply;
 };
 
 // 4. 사이드바용 채팅 스레드 목록 조회

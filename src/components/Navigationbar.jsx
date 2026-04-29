@@ -29,7 +29,7 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
       <div className="flex justify-between items-center px-8 h-20 w-full">
         {/* 사이드바 너비에 맞춰 로고 위치 이동 */}
         <Link
-          to="/"
+          to="/main"
           onClick={onChatThreadStart}
           className={`text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'ml-60' : 'ml-10.5'}`}
         >
@@ -101,7 +101,7 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
                 <Link
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-on-surface hover:bg-surface-variant/40 transition-colors"
                   onClick={() => { clearAuth(); setDropdownOpen(false); }}
-                  to="/login" // 로그아웃 후 로그인 페이지로 이동
+                  to="/main" // 로그아웃 후 로그인 페이지로 이동
                 >
                   <span className="material-symbols-outlined text-base">logout</span>
                   로그아웃

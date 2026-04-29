@@ -11,6 +11,10 @@ export const clearAuth = () => {
   localStorage.removeItem('name');
 };
 
+export const loginWithGoogle = () => {
+  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+};
+
 export const decodeJWT = (token) => {
   try {
     const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');

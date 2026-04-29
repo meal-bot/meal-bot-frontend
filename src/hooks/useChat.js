@@ -115,8 +115,7 @@ export function useChat() {
         ];
         result = await sendGuestChatMessage(guestChatHistory);
       }
-      console.log('AI 응답 result:', result);
-      const fullReply = result.reply || '응답을 받지 못했습니다.';
+      const fullReply = result || '응답을 받지 못했습니다.';
       setIsLoading(false);
       typeMessage(fullReply, assistantMsgId);
       // AI 응답 완료 후 갱신 → 백엔드가 타이틀을 생성한 뒤이므로 올바른 제목이 반영됨

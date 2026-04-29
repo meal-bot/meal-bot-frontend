@@ -7,6 +7,7 @@ import OAuthCallbackPage from './pages/OAuthCallbackPage';
 import MealDetailPage from './pages/MealDetailPage';
 import InBodyInputPage from './pages/InBodyInputPage';
 import InBodyDashboardPage from './pages/InBodyDashboardPage';
+import LandingPage from './pages/LandingPage';
 import { isLoggedIn } from './utils/auth';
 import { SidebarProvider } from './context/SidebarContext';
 
@@ -19,7 +20,8 @@ export default function App() {
     <SidebarProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<MainPage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/main" element={<MainPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/profile" element={<UserProfilePage />} />

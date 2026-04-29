@@ -4,10 +4,19 @@ import { useSidebar } from '../context/SidebarContext';
 import MealCard from '../components/MealCard';
 import ChatInput from '../components/ChatInput';
 import Layout from '../components/Layout';
+import RecommendationCards from '../components/RecommendationCards';
 import { useSlider } from '../hooks/useSlider';
 import { useChat } from '../hooks/useChat';
 import { isLoggedIn } from '../utils/auth';
 import MEAL_DATA from '../data/mealData';
+import { parseRecommendations } from '../utils/parseRecommendations';
+
+// TODO: 파이썬 서버 연동 후 제거
+const MOCK_RECOMMENDATIONS = [
+  { rank: 1, name: '소안심 야채 호박잎쌈', category: '반찬', cookingWay: '굽기' },
+  { rank: 2, name: '장어찜', category: '반찬', cookingWay: '찌기' },
+  { rank: 3, name: '건강그린 샐러드와 고소한 두유드레싱', category: '반찬', cookingWay: '기타' },
+];
 
 export default function MainPage() {
   const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
@@ -100,40 +109,49 @@ export default function MainPage() {
       {/* 채팅 메시지 영역 */}
       {hasMessages && (
         <section className="max-w-3xl mx-auto flex flex-col gap-4">
-          {messages.map(msg => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}
-            >
-              {/* assistant 메시지에는 아이콘 표시 */}
-              {msg.role === 'assistant' && (
-                <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-on-primary-container" style={{ fontSize: '16px' }}>smart_toy</span>
-                </div>    
-              )}
-              <div
-                className={`max-w-[75%] rounded-2xl px-4 py-3 ${msg.role === 'user'
-                  ? 'bg-primary text-on-primary rounded-br-sm'
-                  : 'bg-surface-container text-on-surface rounded-bl-sm'
-                  }`}
-              >
-                {msg.role === 'assistant' && isLoading && msg.content === '' ? (
-                  <div className="flex items-center gap-1.5 py-1 px-1">
-                    <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </div>
-                ) : (
-                  <p className="whitespace-pre-wrap leading-relaxed text-sm">
-                    {msg.content}
-                    {msg.isTyping && (
-                      <span className="inline-block w-0.5 h-4 bg-current ml-0.5 align-middle animate-pulse" />
+          {messages.map(msg => {
+            const parsed = msg.role === 'assistant' && !msg.isTyping && msg.content
+              ? parseRecommendations(msg.content)
+              : [];
+            const recommendations = parsed.length > 0 ? parsed : (msg.role === 'assistant' && !msg.isTyping && msg.content ? MOCK_RECOMMENDATIONS : []);
+            return (
+              <div key={msg.id} className="flex flex-col gap-2">
+                <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}>
+                  {msg.role === 'assistant' && (
+                    <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
+                      <span className="material-symbols-outlined text-on-primary-container" style={{ fontSize: '16px' }}>smart_toy</span>
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[75%] rounded-2xl px-4 py-3 ${msg.role === 'user'
+                      ? 'bg-primary text-on-primary rounded-br-sm'
+                      : 'bg-surface-container text-on-surface rounded-bl-sm'
+                    }`}
+                  >
+                    {msg.role === 'assistant' && isLoading && msg.content === '' ? (
+                      <div className="flex items-center gap-1.5 py-1 px-1">
+                        <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 bg-on-surface-variant/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </div>
+                    ) : (
+                      <p className="whitespace-pre-wrap leading-relaxed text-sm">
+                        {msg.content}
+                        {msg.isTyping && (
+                          <span className="inline-block w-0.5 h-4 bg-current ml-0.5 align-middle animate-pulse" />
+                        )}
+                      </p>
                     )}
-                  </p>
+                  </div>
+                </div>
+                {recommendations.length > 0 && (
+                  <div className="ml-10">
+                    <RecommendationCards recommendations={recommendations} />
+                  </div>
                 )}
               </div>
-            </div>
-          ))}
+            );
+          })}
           <div ref={messagesEndRef} />
         </section>
       )}

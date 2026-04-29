@@ -40,6 +40,5 @@ export const fetchInbodyList = async () => {
 
 // 3. 인바디 기록 삭제
 export const deleteInbody = async (inbodyId) => {
-  const response = await api.delete(`/api/inbody/${inbodyId}`);
-  return response.data; // { success: true }
+  await api.delete(`/api/inbody/${inbodyId}`);
 };
