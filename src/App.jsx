@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import MainPage from './pages/MainPage';
-import LogInPage from './pages/LogInPage';
-import SignUpPage from './pages/SignUpPage';
-import UserProfilePage from './pages/UserProfilePage';
-import OAuthCallbackPage from './pages/OAuthCallbackPage';
-import MealDetailPage from './pages/MealDetailPage';
-import InBodyInputPage from './pages/InBodyInputPage';
-import InBodyDashboardPage from './pages/InBodyDashboardPage';
-import LandingPage from './landing/LandingPage';
-import { isLoggedIn, loginWithGoogle } from './utils/auth';
-import { SidebarProvider } from './context/SidebarContext';
+import MainPage from './features/chat/pages/MainPage';
+import LogInPage from './features/auth/pages/LogInPage';
+import SignUpPage from './features/auth/pages/SignUpPage';
+import UserProfilePage from './features/auth/pages/UserProfilePage';
+import OAuthCallbackPage from './features/auth/pages/OAuthCallbackPage';
+import MealDetailPage from './features/meal/pages/MealDetailPage';
+import InBodyInputPage from './features/inbody/pages/InBodyInputPage';
+import InBodyDashboardPage from './features/inbody/pages/InBodyDashboardPage';
+import LandingPage from './features/landing/pages/LandingPage';
+import { isLoggedIn, loginWithGoogle } from './features/auth/utils/auth';
+import { SidebarProvider } from './shared/context/SidebarContext';
 
 function ProtectedRoute({ children }) {
   return isLoggedIn() ? children : <Navigate to="/login" replace />;

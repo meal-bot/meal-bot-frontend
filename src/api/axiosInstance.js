@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from '../utils/auth';
+import { getToken } from '../features/auth/utils/auth';
 
 const instance = axios.create({
   baseURL: 'http://localhost:8080',
