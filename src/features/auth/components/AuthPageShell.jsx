@@ -48,11 +48,13 @@ export default function AuthPageShell({
           <div className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
             {children}
 
-            <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-outline-variant" />
-              <span className="text-xs text-on-surface-variant font-medium">또는</span>
-              <div className="flex-1 h-px bg-outline-variant" />
-            </div>
+            {children && (
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-outline-variant" />
+                <span className="text-xs text-on-surface-variant font-medium">또는</span>
+                <div className="flex-1 h-px bg-outline-variant" />
+              </div>
+            )}
 
             <button
               type="button"

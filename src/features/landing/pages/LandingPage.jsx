@@ -1,5 +1,6 @@
 // vite-port/src/landing/LandingPage.jsx
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Hero from '../components/Hero';
 import Features from '../components/Features';
 import { HowItWorks, FinalCTA } from '../components/HowItWorks';
@@ -13,6 +14,7 @@ const ACCENTS = {
 };
 
 export default function LandingPage({ onGoogleLogin }) {
+  const navigate = useNavigate();
   // Apply CSS variables for theme
   useEffect(() => {
     const r = document.documentElement;
@@ -30,7 +32,7 @@ export default function LandingPage({ onGoogleLogin }) {
       r.style.setProperty('--line', 'rgba(245, 243, 238, .08)');
       r.style.setProperty('--line-2', 'rgba(245, 243, 238, .14)');
     } else {
-      r.style.setProperty('--bg', '#faf8f3');
+      r.style.setProperty('--bg', '#ffffff');
       r.style.setProperty('--bg-2', '#ffffff');
       r.style.setProperty('--bg-3', '#f3f1ec');
       r.style.setProperty('--fg', '#1a1a1a');
@@ -45,6 +47,8 @@ export default function LandingPage({ onGoogleLogin }) {
     if (onGoogleLogin) onGoogleLogin();
     else console.log('[MealBot] Google login triggered — connect OAuth here');
   };
+
+  const handleGuestLogin = () => navigate('/main');
 
   const a = ACCENTS;
 
@@ -71,7 +75,7 @@ export default function LandingPage({ onGoogleLogin }) {
         </button>
       </nav>
 
-      <Hero accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onLogin={handleLogin} />
+      <Hero accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onLogin={handleLogin} onGuestLogin={handleGuestLogin} />
       <Features accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} />
       <HowItWorks accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} />
       <FinalCTA accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onLogin={handleLogin} />

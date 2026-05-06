@@ -28,16 +28,20 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
       {/* 화면 양 끝까지 확장, px-8로 최소 여백 유지 */}
       <div className="flex justify-between items-center px-8 h-20 w-full">
         {/* 사이드바 너비에 맞춰 로고 위치 이동 */}
-        <Link
-          to="/main"
-          onClick={onChatThreadStart}
-          className={`text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'ml-60' : 'ml-10.5'}`}
-        >
-          Meal-Bot
-        </Link>
-
-        {/* 오른쪽 사용자 메뉴 - 우측 끝단 고정 */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
+          <Link
+            to="/main"
+            onClick={onChatThreadStart}
+            className={`text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'ml-60' : 'ml-10.5'}`}
+          >
+            Meal-Bot
+          </Link>
+          <Link
+            to="/fridge"
+            className="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
+          >
+            냉장고를 부탁해
+          </Link>
           <Link
             to="/inbody"
             className="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
@@ -50,6 +54,10 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
           >
             측정 입력
           </Link>
+        </div>
+
+        {/* 오른쪽 사용자 메뉴 - 우측 끝단 고정 */}
+        <div className="flex items-center gap-4">
           {loggedIn && (
             <span className="inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">환영합니다 {name}님!</span>
           )}
@@ -73,15 +81,6 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
                 >
                   <span className="material-symbols-outlined text-base">login</span>
                   로그인
-                </Link>
-                <hr className="my-1 border-outline-variant/30" />
-                <Link
-                  to="/signup"
-                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-variant/40 transition-colors"
-                  onClick={() => setDropdownOpen(false)}
-                >
-                  <span className="material-symbols-outlined text-base">person_add</span>
-                  회원가입
                 </Link>
               </div>
             )}

@@ -1,0 +1,98 @@
+import { useMemo } from 'react';
+import { INGREDIENTS, CATS } from './data';
+
+export default function FridgePanel({
+  picked, onPick, onDragStart, onDragEnd,
+  search, setSearch, cat, setCat,
+}) {
+  const filtered = useMemo(() => {
+    return INGREDIENTS.filter(i => {
+      if (cat !== '전체' && i.cat !== cat) return false;
+      if (search && !i.name.includes(search)) return false;
+      return true;
+    });
+  }, [search, cat]);
+
+  const grouped = useMemo(() => {
+    if (cat !== '전체') return [{ label: cat, items: filtered }];
+    const order = ['채소', '단백질', '유제품', '곡물', '기타'];
+    return order
+      .map(c => ({ label: c, items: filtered.filter(i => i.cat === c) }))
+      .filter(g => g.items.length);
+  }, [filtered, cat]);
+
+  const counts = useMemo(() => {
+    const out = { 전체: INGREDIENTS.length };
+    INGREDIENTS.forEach(i => { out[i.cat] = (out[i.cat] || 0) + 1; });
+    return out;
+  }, []);
+
+  return (
+    <section className="fridge">
+      <div className="panel-head">
+        <div className="panel-title">
+          <span className="panel-title-num">01</span>
+          냉장고 속 재료
+        </div>
+        <div className="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="재료 검색…  예) 토마토, 닭가슴살"
+          />
+        </div>
+      </div>
+
+      <div className="cat-row">
+        {CATS.map(c => (
+          <button
+            key={c}
+            className={'cat' + (cat === c ? ' active' : '')}
+            onClick={() => setCat(c)}
+          >
+            {c}<span className="count">{counts[c]}</span>
+          </button>
+        ))}
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="empty-state">검색 결과가 없어요. 다른 키워드를 시도해 보세요.</div>
+      ) : (
+        grouped.map(g => (
+          <div className="shelf" key={g.label}>
+            <div className="shelf-label">{g.label}</div>
+            <div className="ingredients">
+              {g.items.map(i => {
+                const isPicked = picked.includes(i.id);
+                return (
+                  <div
+                    key={i.id}
+                    className={'ing' + (isPicked ? ' picked' : '')}
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData('text/plain', i.id);
+                      e.dataTransfer.effectAllowed = 'copy';
+                      onDragStart(i.id);
+                    }}
+                    onDragEnd={onDragEnd}
+                    onClick={() => onPick(i.id)}
+                    title={isPicked ? '바구니에서 빼기' : '클릭 또는 드래그해서 추가'}
+                  >
+                    <span className="ing-check">✓</span>
+                    <div className="ing-glyph">{i.glyph}</div>
+                    <div className="ing-name">{i.name}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))
+      )}
+    </section>
+  );
+}

@@ -34,7 +34,7 @@
   padding: 18px 36px;
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
-  background: rgba(15,15,16,.55);
+  background: rgba(255,255,255,.85);
   border-bottom: .5px solid var(--line);
 }
 .nav-brand {
@@ -118,6 +118,17 @@
 }
 
 .cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+.btn-guest {
+  display: inline-flex; align-items: center;
+  padding: 14px 22px;
+  background: transparent; color: var(--fg-2);
+  border: 1.5px solid var(--line-2); border-radius: 999px;
+  font-size: 14px; font-weight: 500;
+  transition: background .2s, border-color .2s, color .2s;
+  cursor: pointer;
+}
+.btn-guest:hover { background: var(--bg-3); border-color: var(--fg-3); color: var(--fg); }
 
 .btn-google {
   display: inline-flex; align-items: center; gap: 12px;
