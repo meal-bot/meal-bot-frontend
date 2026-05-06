@@ -38,19 +38,19 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
           </Link>
           <Link
             to="/fridge"
-            className="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
+            className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
           >
             냉장고를 부탁해
           </Link>
           <Link
             to="/inbody"
-            className="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
+            className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
           >
             바디 분석
           </Link>
           <Link
             to="/inbody/new"
-            className="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
+            className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
           >
             측정 입력
           </Link>
