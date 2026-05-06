@@ -3,6 +3,12 @@ import { createChatThread, sendChatMessage, sendGuestChatMessage,
          fetchChatThreads, fetchChatThreadDetail, deleteChatThread as deleteChatThreadApi } from '../api/chatApi';
 import { isLoggedIn } from '../utils/auth';
 
+const toChatThread = (chat) => ({
+  chatThreadId: chat.chatId,
+  title: chat.title,
+  createdAt: chat.createdAt,
+});
+
 // 채팅 상태 전체를 관리하는 커스텀 훅
 // - 활성 스레드: 메시지 목록, 스레드 ID, 전송/초기화/불러오기
 // - 스레드 목록: 사이드바용 목록 조회/삭제
@@ -55,15 +61,15 @@ export function useChat() {
   // 스레드 목록을 서버에서 불러와 state에 저장
   const fetchThreadList = useCallback(() => {
     fetchChatThreads()
-      .then(setChatThreads)
+      .then((serverChatList) => setChatThreads(serverChatList.map(toChatThread)))
       .catch(() => console.error('채팅 스레드 목록 로드 실패'));
   }, []);
 
   // 스레드 삭제: 백엔드 DB에서 먼저 삭제 후 로컬 state에서도 제거
-  const deleteChatThread = useCallback(async (id) => {
+  const deleteChatThread = useCallback(async (chatThreadId) => {
     try {
-      await deleteChatThreadApi(id);
-      setChatThreads(prev => prev.filter(thread => thread.chatId !== id));
+      await deleteChatThreadApi(chatThreadId);
+      setChatThreads(prev => prev.filter(thread => thread.chatThreadId !== chatThreadId));
     } catch {
       console.error('채팅 스레드 삭제 실패');
     }
@@ -139,9 +145,9 @@ export function useChat() {
   }, []);
 
   // 이전 스레드 불러오기: 사이드바 항목 클릭 시 호출
-  const openChatThread = useCallback(async (id) => {
+  const openChatThread = useCallback(async (chatThreadId) => {
     try {
-      const data = await fetchChatThreadDetail(id);
+      const data = await fetchChatThreadDetail(chatThreadId);
       if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
       // 백엔드 chatId(DB 키) → 프론트 chatThreadId state로 매핑
       setChatThreadId(data.chatId);

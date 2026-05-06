@@ -49,9 +49,9 @@ export default function MainPage() {
       onChatThreadStart={startChatThread}
       chatThreads={chatThreads}
       onChatThreadSelect={openChatThread}
-      onChatThreadDelete={(id) => {
-        deleteChatThread(id);
-        if (id === chatThreadId) startChatThread();  // 현재 스레드 삭제 시 새 채팅으로 초기화
+      onChatThreadDelete={(targetChatThreadId) => {
+        deleteChatThread(targetChatThreadId);
+        if (targetChatThreadId === chatThreadId) startChatThread();  // 현재 스레드 삭제 시 새 채팅으로 초기화
       }}
     >
       {/* 헤더 + 슬라이더: 채팅 시작 시 부드럽게 사라짐 */}

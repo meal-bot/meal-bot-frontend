@@ -7,8 +7,8 @@ import OAuthCallbackPage from './pages/OAuthCallbackPage';
 import MealDetailPage from './pages/MealDetailPage';
 import InBodyInputPage from './pages/InBodyInputPage';
 import InBodyDashboardPage from './pages/InBodyDashboardPage';
-import LandingPage from './pages/LandingPage';
-import { isLoggedIn } from './utils/auth';
+import LandingPage from './landing/LandingPage';
+import { isLoggedIn, loginWithGoogle } from './utils/auth';
 import { SidebarProvider } from './context/SidebarContext';
 
 function ProtectedRoute({ children }) {
@@ -20,7 +20,7 @@ export default function App() {
     <SidebarProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage onGoogleLogin={loginWithGoogle} />} />
         <Route path="/main" element={<MainPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
