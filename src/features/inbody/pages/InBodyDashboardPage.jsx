@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../../../shared/components/layout/Layout';
+import { Button, Card } from '../../../shared/components/ui';
 import MealCard from '../../meal/components/MealCard';
 import MEAL_DATA from '../../meal/data/mealData';
 import { ADVANCED_FIELDS, SEGMENTS, AVG_STATS } from '../data/inbodyData';
@@ -55,13 +56,14 @@ export default function InBodyDashboardPage() {
               최근 입력 · {curr?.measuredAt?.slice(0, 10)?.replace(/-/g, '. ') ?? '-'}
             </p>
           </div>
-          <button
+          <Button
             onClick={() => navigate('/inbody/new')}
-            className="flex items-center gap-2 bg-primary text-white font-bold px-5 py-3 rounded-2xl hover:opacity-90 transition-opacity shadow-sm whitespace-nowrap"
+            size="lg"
+            className="shadow-sm whitespace-nowrap"
           >
             <span className="material-symbols-outlined text-base">add</span>
             새 측정
-          </button>
+          </Button>
         </header>
 
         {isLoading && (
@@ -70,17 +72,17 @@ export default function InBodyDashboardPage() {
         {!isLoading && records.length === 0 && (
           <div className="text-center py-16">
             <p className="text-on-surface-variant mb-4">아직 측정 기록이 없습니다</p>
-            <button
+            <Button
               onClick={() => navigate('/inbody/new')}
-              className="bg-primary text-white font-bold px-6 py-3 rounded-2xl hover:opacity-90 transition-opacity"
+              size="lg"
             >
               첫 측정 기록하기
-            </button>
+            </Button>
           </div>
         )}
 
         {/* ───── 1. 점수/등급 요약 카드 ───── */}
-        <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 overflow-hidden">
+        <Card padding="none" className="overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 p-8">
             <div className="flex items-center justify-center">
               <ScoreRing score={curr?.score ?? 0} delta={scoreDelta} />
@@ -107,7 +109,7 @@ export default function InBodyDashboardPage() {
               </div>
             </div>
           </div>
-        </section>
+        </Card>
 
         {/* ───── 2. 비교 차트 ───── */}
         <ComparisonBarChart
@@ -127,7 +129,7 @@ export default function InBodyDashboardPage() {
             </div>
           )}
         </ComparisonBarChart>
-        <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+        <Card>
           <SectionTitle eyebrow="METABOLISM" title="기초대사량 (BMR)" sub="아무것도 하지 않아도 하루에 소모되는 칼로리" />
           <div className="flex items-center gap-8 mt-6 flex-wrap">
             <div>
@@ -160,11 +162,11 @@ export default function InBodyDashboardPage() {
               </div>
             )}
           </div>
-        </section>
+        </Card>
 
         {/* ───── 3. 일일 권장 칼로리 ───── */}
         {curr?.dailyCalories && (
-          <section className="bg-primary rounded-[2rem] p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <Card className="bg-primary border-primary p-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <span className="material-symbols-outlined text-white/80 text-4xl">local_fire_department</span>
               <div>
@@ -176,21 +178,21 @@ export default function InBodyDashboardPage() {
               <span className="text-6xl font-extrabold text-white tabular-nums">{curr.dailyCalories.toLocaleString()}</span>
               <span className="text-xl font-bold text-white/70">kcal</span>
             </div>
-          </section>
+          </Card>
         )}
 
         {/* ───── 4. 항목별 게이지 ───── */}
-        <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+        <Card>
           <SectionTitle eyebrow="STANDARD 8" title="항목별 분석" sub="정상 범위 대비 현재값" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6 mt-6">
             {ADVANCED_FIELDS.map(field => (
               <GaugeRow key={field.key} field={field} value={curr?.[field.key] ?? null} />
             ))}
           </div>
-        </section>
+        </Card>
 
         {/* ───── 5. 시간 추이 ───── */}
-        <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+        <Card>
           <SectionTitle eyebrow="TREND · 6 MONTHS" title="시간 추이" sub="체중·체지방률 변화" />
           <div className="mt-6">
             {chartHistory.length >= 2
@@ -217,7 +219,7 @@ export default function InBodyDashboardPage() {
               );
             })}
           </div>
-        </section>
+        </Card>
 
         {/* ───── 6. 부위별 근육 균형 **삭제 예정** ───── */}
         {/* <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
@@ -236,7 +238,7 @@ export default function InBodyDashboardPage() {
         </section> */}
 
         {/* ───── 7. 식단 추천 CTA ───── */}
-        <section className="bg-primary-container/40 rounded-[2rem] border border-outline-variant/30 p-8">
+        <Card variant="accent">
           <div className="flex items-end justify-between gap-4 mb-6 flex-wrap">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-widest text-primary mb-2 block">
@@ -249,20 +251,23 @@ export default function InBodyDashboardPage() {
                 근육량 유지·체지방 감량을 위한 고단백 위주 메뉴
               </p>
             </div>
-            <Link
+            <Button
+              as={Link}
               to="/main"
-              className="flex items-center gap-2 bg-on-surface text-white font-bold px-5 py-3 rounded-2xl hover:opacity-90 transition-opacity whitespace-nowrap"
+              variant="neutral"
+              size="lg"
+              className="whitespace-nowrap"
             >
               <span className="material-symbols-outlined text-base">forum</span>
               맞춤 채팅 시작
-            </Link>
+            </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {recommendedMeals.map(meal => (
               <MealCard key={meal.id} meal={meal} />
             ))}
           </div>
-        </section>
+        </Card>
 
         <div className="h-4" />
       </div>

@@ -1,9 +1,10 @@
 import { ResponsiveBar } from '@nivo/bar';
 import SectionTitle from './SectionTitle';
+import { Card } from '../../../shared/components/ui';
 
 export default function ComparisonBarChart({ metric, myValue, avgValue, title, sub, children }) {
   return (
-    <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+    <Card>
       <SectionTitle eyebrow="COMPARISON" title={title} sub={sub} />
       <div className="h-48 mt-6">
         <ResponsiveBar
@@ -41,6 +42,6 @@ export default function ComparisonBarChart({ metric, myValue, avgValue, title, s
         />
       </div>
       {children}
-    </section>
+    </Card>
   );
 }

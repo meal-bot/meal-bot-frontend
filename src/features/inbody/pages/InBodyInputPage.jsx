@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../../../shared/components/layout/Layout';
+import { Button, Card, TextField } from '../../../shared/components/ui';
 import { BASIC_FIELDS, ADVANCED_FIELDS, ACTIVITY_LEVELS } from '../data/inbodyData';
 import { saveInbody } from '../api/inbodyApi';
 
@@ -74,7 +75,7 @@ export default function InBodyInputPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {/* ───── STEP 1. 기본 정보 ───── */}
-          <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+          <Card>
             <SectionHeader
               step="01"
               title="기본 정보"
@@ -102,10 +103,10 @@ export default function InBodyInputPage() {
                 )
               )}
             </div>
-          </section>
+          </Card>
 
           {/* ───── STEP 1.5. 활동 수준 ───── */}
-          <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+          <Card>
             <SectionHeader
               step="02"
               title="활동 수준"
@@ -134,10 +135,10 @@ export default function InBodyInputPage() {
                 </button>
               ))}
             </div>
-          </section>
+          </Card>
 
           {/* ───── STEP 3. 상세 측정값 ───── */}
-          <section className="bg-surface-container-low rounded-[2rem] border border-outline-variant/40 p-8">
+          <Card variant="muted">
             <div className="flex items-start justify-between gap-4 mb-2">
               <SectionHeader
                 step="03"
@@ -169,7 +170,7 @@ export default function InBodyInputPage() {
                 />
               ))}
             </div>
-          </section>
+          </Card>
 
           {/* 전송 에러 메시지 */}
           {errors._global && (
@@ -178,20 +179,22 @@ export default function InBodyInputPage() {
 
           {/* 저장 액션 */}
           <div className="flex items-center gap-3 pt-2">
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="lg"
               onClick={() => navigate('/inbody')}
-              className="px-6 py-4 rounded-2xl border border-outline-variant text-sm font-semibold text-on-surface hover:bg-surface-container transition-colors"
+              className="px-6 font-semibold"
             >
               취소
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="flex-1 bg-primary text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-2"
+              size="lg"
+              className="flex-1 shadow-sm"
             >
               <span className="material-symbols-outlined">check</span>
               측정 기록 저장
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -218,29 +221,18 @@ function SectionHeader({ step, title, caption, tone }) {
 
 function NumberField({ field, value, onChange, error }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-        {field.label}
-      </label>
-      <div className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${
-        error ? 'border-red-300 focus-within:border-red-400' : 'border-outline-variant/30 focus-within:border-primary'
-      }`}>
-        <span className="material-symbols-outlined text-on-surface-variant text-xl">{field.icon}</span>
-        <input
-          type="number"
-          inputMode="decimal"
-          step="0.1"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={field.placeholder}
-          className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-medium p-0 min-w-0"
-        />
-        {field.unit && (
-          <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">{field.unit}</span>
-        )}
-      </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
-    </div>
+    <TextField
+      label={field.label}
+      icon={field.icon}
+      error={error}
+      unit={field.unit}
+      type="number"
+      inputMode="decimal"
+      step="0.1"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={field.placeholder}
+    />
   );
 }
 
@@ -279,19 +271,16 @@ function AdvancedField({ field, value, onChange }) {
         </label>
         <span className="text-[10px] text-on-surface-variant/60">{field.hint}</span>
       </div>
-      <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border border-outline-variant/30 focus-within:border-primary transition-colors">
-        <span className="material-symbols-outlined text-on-surface-variant text-xl">{field.icon}</span>
-        <input
-          type="number"
-          inputMode="decimal"
-          step="0.1"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="-"
-          className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-medium p-0 min-w-0"
-        />
-        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">{field.unit || '—'}</span>
-      </div>
+      <TextField
+        icon={field.icon}
+        unit={field.unit || '—'}
+        type="number"
+        inputMode="decimal"
+        step="0.1"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="-"
+      />
     </div>
   );
 }

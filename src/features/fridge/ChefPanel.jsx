@@ -29,8 +29,10 @@ export default function ChefPanel({ picked, setPicked, isDragging, onRecommend, 
   };
 
   useEffect(() => {
-    if (!isDragging) { setArmed(false); dragDepth.current = 0; }
+    if (!isDragging) dragDepth.current = 0;
   }, [isDragging]);
+
+  const activeArmed = isDragging && armed;
 
   const lookup = useMemo(() => {
     const m = {};
@@ -41,7 +43,7 @@ export default function ChefPanel({ picked, setPicked, isDragging, onRecommend, 
   const remove = (id) => setPicked(picked.filter(p => p !== id));
   const clear = () => setPicked([]);
 
-  const chefLine = armed
+  const chefLine = activeArmed
     ? '좋아요, 이 재료 받았습니다 — 놓으세요!'
     : picked.length === 0
       ? '안녕하세요. 냉장고에서 재료를 끌어 주세요. 멋진 한 끼를 제안해 드릴게요.'
@@ -50,7 +52,7 @@ export default function ChefPanel({ picked, setPicked, isDragging, onRecommend, 
   return (
     <section className="chef">
       <div
-        className={'chef-stage' + (armed ? ' armed' : '')}
+        className={'chef-stage' + (activeArmed ? ' armed' : '')}
         onDragOver={onDragOver}
         onDragEnter={onDragEnter}
         onDragLeave={onDragLeave}

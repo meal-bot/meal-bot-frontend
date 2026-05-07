@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import { Button } from '../../../shared/components/ui';
 //import { useConversations } from '../hooks/useConversations';
 
 // sidebarOpen: 사이드바 열림 여부 → left 값을 조정해 사이드바와 겹치지 않게 위치 이동
@@ -42,12 +43,14 @@ export default function ChatInput({ value, onChange, onSubmit, sidebarOpen = fal
             className="w-full bg-transparent border-none focus:ring-0 py-4 px-6 text-on-surface placeholder:text-on-surface-variant/40 font-medium resize-none min-h-[56px] max-h-48 overflow-y-auto"
           />
         </div>
-        <button
+        <Button
           onClick={onSubmit}
-          className="bg-[#C1D8C3] text-on-surface p-3 rounded-2xl flex items-center justify-center hover:opacity-90 transition-opacity"
+          variant="secondary"
+          size="icon"
+          className="bg-primary-container text-primary hover:bg-primary-container/80"
         >
           <span className="material-symbols-outlined">auto_awesome</span>
-        </button>
+        </Button>
       </div>
     </section>
   );

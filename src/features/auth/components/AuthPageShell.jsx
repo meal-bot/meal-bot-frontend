@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Button, Card } from '../../../shared/components/ui';
 
 const GOOGLE_SVG = (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -45,7 +46,7 @@ export default function AuthPageShell({
             <p className="text-on-surface-variant mt-2 text-sm">{subtitle}</p>
           </div>
 
-          <div className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
+          <Card>
             {children}
 
             {children && (
@@ -56,15 +57,16 @@ export default function AuthPageShell({
               </div>
             )}
 
-            <button
-              type="button"
+            <Button
               onClick={onGoogleAuth}
-              className="w-full flex items-center justify-center gap-3 border border-outline-variant rounded-2xl py-3.5 text-sm font-semibold text-on-surface hover:bg-surface-container transition-colors"
+              variant="outline"
+              size="lg"
+              className="w-full font-semibold"
             >
               {GOOGLE_SVG}
               Google로 계속하기
-            </button>
-          </div>
+            </Button>
+          </Card>
 
           <p className="text-center text-sm text-on-surface-variant mt-6">
             {bottomText}{' '}

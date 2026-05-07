@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import Layout from '../../../shared/components/layout/Layout';
+import { Button, Card, TextField } from '../../../shared/components/ui';
 import { useForm } from '../../../shared/hooks/useForm';
 import { isPasswordMinLength, doPasswordsMatch } from '../utils/validation';
 
@@ -110,7 +111,7 @@ export default function UserProfilePage() {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {/* 프로필 사진 카드 */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8 flex flex-col items-center gap-4">
+            <Card className="flex flex-col items-center gap-4">
               <div className="relative">
                 <div className="w-24 h-24 rounded-full overflow-hidden bg-primary-container flex items-center justify-center border-2 border-outline-variant/20">
                   {avatar ? (
@@ -148,72 +149,49 @@ export default function UserProfilePage() {
                 <p className="text-sm text-on-surface-variant">{form.email}</p>
               </div>
 
-              <button
+              <Button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-xs font-semibold text-primary hover:opacity-70 transition-opacity"
+                variant="ghost"
+                size="sm"
+                className="h-auto px-2 py-1 text-primary hover:text-primary"
               >
                 사진 변경
-              </button>
-            </div>
+              </Button>
+            </Card>
 
             {/* 계정 정보 카드 */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8 flex flex-col gap-5">
+            <Card className="flex flex-col gap-5">
               <h2 className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
                 계정 정보
               </h2>
 
               {/* 이름 */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-                  이름
-                </label>
-                <div
-                  className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${errors.name
-                    ? 'border-red-300 focus-within:border-red-400'
-                    : 'border-outline-variant/30 focus-within:border-primary'
-                    }`}
-                >
-                  <span className="material-symbols-outlined text-on-surface-variant text-xl">badge</span>
-                  <input
-                    type="text"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="홍길동"
-                    className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-medium p-0"
-                  />
-                </div>
-                {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
-              </div>
+              <TextField
+                label="이름"
+                icon="badge"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="홍길동"
+                error={errors.name}
+              />
 
               {/* 이메일 */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-                  이메일
-                </label>
-                <div
-                  className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${errors.email
-                    ? 'border-red-300 focus-within:border-red-400'
-                    : 'border-outline-variant/30 focus-within:border-primary'
-                    }`}
-                >
-                  <span className="material-symbols-outlined text-on-surface-variant text-xl">mail</span>
-                  <input
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="hello@mealbot.kr"
-                    className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-medium p-0"
-                  />
-                </div>
-                {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
-              </div>
-            </div>
+              <TextField
+                label="이메일"
+                icon="mail"
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="hello@mealbot.kr"
+                error={errors.email}
+              />
+            </Card>
 
             {/* 비밀번호 변경 카드 */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8 flex flex-col gap-5">
+            <Card className="flex flex-col gap-5">
               <div>
                 <h2 className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
                   비밀번호 변경
@@ -251,15 +229,16 @@ export default function UserProfilePage() {
                 error={errors.confirmPassword}
                 placeholder="새 비밀번호 재입력"
               />
-            </div>
+            </Card>
 
             {/* 저장 버튼 */}
-            <button
+            <Button
               type="submit"
-              className="w-full bg-primary text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-sm"
+              size="lg"
+              className="w-full shadow-sm"
             >
               변경사항 저장
-            </button>
+            </Button>
 
             {saved && (
               <div className="flex items-center justify-center gap-2 text-sm font-semibold text-primary">

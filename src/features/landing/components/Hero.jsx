@@ -33,6 +33,8 @@ function ChatSimulator({ accent1, accent2, accent3 }) {
     }
     const id = setTimeout(() => { setStep(step + 1); setTyped(''); }, 700);
     return () => clearTimeout(id);
+  // SCRIPT is static for this simulator; keep the interval keyed to visible typing state.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, typed]);
 
   const visible = [];
@@ -113,12 +115,12 @@ export default function Hero({ accent1, accent2, accent3, onLogin, onGuestLogin 
             AI Nutrition Coach · MealBot
           </div> */}
           <h1 className="hero-title">
-            당신의 하루에<br />
+            당신을 위한<br />
             <span className="title-accent">
-              어울리는 한 끼
-              <svg className="underline-svg" viewBox="0 0 320 14" preserveAspectRatio="none">
+              AI 식단 추천
+              {/* <svg className="underline-svg" viewBox="0 0 320 14" preserveAspectRatio="none">
                 <path d="M2 9 Q 80 2, 160 7 T 318 5" stroke={accent2} strokeWidth="3" fill="none" strokeLinecap="round"/>
-              </svg>
+              </svg> */}
             </span>
           </h1>
           <p className="hero-sub">
@@ -146,7 +148,7 @@ export default function Hero({ accent1, accent2, accent3, onLogin, onGuestLogin 
             </a>
           </div>
 
-          <div className="trust-row">
+          {/* <div className="trust-row">
             <div className="trust-stars">
               {[0,1,2,3,4].map(i => (
                 <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill={accent2}>
@@ -155,7 +157,7 @@ export default function Hero({ accent1, accent2, accent3, onLogin, onGuestLogin 
               ))}
             </div>
             <span>2,800+명이 매일 식단을 추천받고 있어요</span>
-          </div>
+          </div> */}
         </div>
 
         <div className="hero-visual">

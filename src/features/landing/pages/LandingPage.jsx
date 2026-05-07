@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Hero from '../components/Hero';
 import Features from '../components/Features';
 import { HowItWorks, FinalCTA } from '../components/HowItWorks';
+import { clearAuth } from '../../auth/utils/auth';
 import '../styles/landing.css';
 
 const ACCENTS = {
@@ -48,7 +49,10 @@ export default function LandingPage({ onGoogleLogin }) {
     else console.log('[MealBot] Google login triggered — connect OAuth here');
   };
 
-  const handleGuestLogin = () => navigate('/main');
+  const handleGuestLogin = () => {
+    clearAuth();
+    navigate('/main');
+  };
 
   const a = ACCENTS;
 

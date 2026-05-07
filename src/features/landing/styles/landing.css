@@ -12,12 +12,14 @@
   --accent-1: #9CAF88;   /* sage */
   --accent-2: #E8A87C;   /* apricot */
   --accent-3: #D87C5A;   /* tomato */
+  --font-size-lg: 17px;
+  --font-weight-bold: 600;
 }
 
 .landing-root *, .landing-root *::before, .landing-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
 .landing-root {
   background: var(--bg); color: var(--fg); min-height: 100vh;
-  font-family: 'Pretendard', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-feature-settings: 'ss01', 'ss02', 'cv11';
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -39,7 +41,7 @@
 }
 .nav-brand {
   display: flex; align-items: center; gap: 8px;
-  font-size: 17px; font-weight: 600; letter-spacing: -.01em;
+  font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); letter-spacing: -.01em;
 }
 .nav-brand-mark {
   width: 22px; height: 22px; border-radius: 7px;

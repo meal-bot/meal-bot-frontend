@@ -1,10 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { isLoggedIn, getName, clearAuth } from '../../../features/auth/utils/auth';
+import ConfirmDialog from '../ConfirmDialog';
 
 // sidebarOpen: 사이드바 너비만큼 로고를 우측으로 밀어 사이드바와 겹치지 않게 함
 export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }) {
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const dropdownRef = useRef(null);
   const loggedIn = isLoggedIn();
   const name = getName();
@@ -21,6 +24,7 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
   }, []);
 
   return (
+    <>
     <nav
       className="fixed top-0 w-full border-b border-outline-variant/30"
       style={{ background: 'rgb(255, 255, 255)', backdropFilter: 'blur(12px)', zIndex: 'var(--z-navbar)' }}
@@ -97,19 +101,29 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
                   사용자 프로필 편집
                 </Link>
                 <hr className="my-1 border-outline-variant/30" />
-                <Link
+                <button
+                  type="button"
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-on-surface hover:bg-surface-variant/40 transition-colors"
-                  onClick={() => { clearAuth(); setDropdownOpen(false); }}
-                  to="/main" // 로그아웃 후 로그인 페이지로 이동
+                  onClick={() => { setDropdownOpen(false); setLogoutDialogOpen(true); }}
                 >
                   <span className="material-symbols-outlined text-base">logout</span>
                   로그아웃
-                </Link>
+                </button>
               </div>
             )}
           </div>
         </div>
       </div>
     </nav>
+
+    <ConfirmDialog
+      open={logoutDialogOpen}
+      title="로그아웃"
+      message="정말 로그아웃 하시겠습니까?"
+      confirmLabel="로그아웃"
+      onConfirm={() => { clearAuth(); setLogoutDialogOpen(false); navigate('/main'); }}
+      onCancel={() => setLogoutDialogOpen(false)}
+    />
+    </>
   );
 }

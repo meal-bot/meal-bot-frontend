@@ -1,11 +1,14 @@
 import { useNavigate } from 'react-router-dom';
+import { Card } from '../../../shared/components/ui';
 
 export default function MealCard({ meal }) {
   const navigate = useNavigate();
 
   return (
-    <div
-      className="min-w-[300px] md:min-w-[350px] flex-1 bg-white rounded-[2rem] overflow-hidden shadow-sm border border-outline-variant/20 snap-start group cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl"
+    <Card
+      as="article"
+      padding="none"
+      className="min-w-[300px] md:min-w-[350px] flex-1 overflow-hidden snap-start group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
       onClick={() => navigate(`/meal/${meal.id}`)}
     >
       <div className="h-56 overflow-hidden">
@@ -31,6 +34,6 @@ export default function MealCard({ meal }) {
           </span>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
