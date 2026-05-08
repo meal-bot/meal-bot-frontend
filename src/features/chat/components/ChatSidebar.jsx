@@ -38,10 +38,10 @@ export default function ChatSidebar({ isOpen, onToggle, onChatThreadStart, chatT
 
           {/* 새 채팅 버튼 */}
           <div>
+            {/* 임시: 게스트도 새 채팅 허용 (원복 시 disabled={!loggedIn} 추가, className에 disabled:opacity-40 추가) */}
             <button
-              disabled={!loggedIn}  // 로그인한 사용자만 새 채팅 가능
               onClick={onChatThreadStart}
-              className="disabled:opacity-40 flex items-center gap-2 w-full px-3 py-2.5 rounded-xl hover:bg-surface-container transition-colors text-sm text-on-surface-variant"
+              className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl hover:bg-surface-container transition-colors text-sm text-on-surface-variant"
             >
               <span className="material-symbols-outlined text-base">add</span>
               새 채팅
@@ -107,7 +107,9 @@ export default function ChatSidebar({ isOpen, onToggle, onChatThreadStart, chatT
                 <p className="text-xs text-on-surface-variant px-3 py-2">채팅 내역이 없습니다</p>
               )
             ) : (
-              <p className="text-xs text-on-surface-variant px-3 py-2">로그인해서 대화를 저장하세요</p>
+              // 임시: 로그인 유도 문구 숨김
+              // <p className="text-xs text-on-surface-variant px-3 py-2">로그인해서 대화를 저장하세요</p>
+              <p className="text-xs text-on-surface-variant px-3 py-2">채팅 내역이 없습니다</p>
             )}
           </div>
         </>
