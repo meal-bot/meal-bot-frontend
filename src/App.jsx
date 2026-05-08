@@ -26,9 +26,10 @@ export default function App() {
         <Route path="/profile" element={<UserProfilePage />} />
         <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
         <Route path="/meal/:id" element={<MealDetailPage />} />
-        <Route path="/fridge" element={<ProtectedRoute><FridgePage /></ProtectedRoute>} />
-        <Route path="/inbody" element={<ProtectedRoute><InBodyDashboardPage /></ProtectedRoute>} />
-        <Route path="/inbody/new" element={<ProtectedRoute><InBodyInputPage /></ProtectedRoute>} />
+        {/* 임시: 게스트 접근 허용 (원복 시 ProtectedRoute로 감싸기) */}
+        <Route path="/fridge" element={<FridgePage />} />
+        <Route path="/inbody" element={<InBodyDashboardPage />} />
+        <Route path="/inbody/new" element={<InBodyInputPage />} />
       </Routes>
     </BrowserRouter>
     </SidebarProvider>
