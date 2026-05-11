@@ -22,7 +22,7 @@ import api from '../../../api/axiosInstance';
 // }
 //
 // 저장만 담당 — 반환값 없음
-// 백엔드가 저장 후 bmi, bmr, dailyCalorie 계산·저장 → fetchInbodyList로 조회
+// 백엔드가 저장 후 bmi, bmr, dailyCalories 계산·저장 → fetchInbodyList로 조회
 export const saveInbody = async (form) => {
   const body = Object.fromEntries(
     Object.entries(form).map(([k, v]) => [k, v === '' ? null : v])
@@ -31,7 +31,7 @@ export const saveInbody = async (form) => {
 };
 
 // 2. 내 인바디 기록 목록 조회 (최신순)
-// bmi, bmr, dailyCalorie 등 백엔드 계산값 포함
+// bmi, bmr, dailyCalories 등 백엔드 계산값 포함
 export const fetchInbodyList = async () => {
   const response = await api.get('/api/inbody');
   console.log("받는 데이터:", response.data);

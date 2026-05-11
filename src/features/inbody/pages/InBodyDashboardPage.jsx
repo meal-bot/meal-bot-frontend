@@ -165,8 +165,8 @@ export default function InBodyDashboardPage() {
         </Card>
 
         {/* ───── 3. 일일 권장 칼로리 ───── */}
-        {curr?.dailyCalories && (
-          <Card className="bg-primary border-primary p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        {curr && (
+          <Card variant="primary" className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <span className="material-symbols-outlined text-white/80 text-4xl">local_fire_department</span>
               <div>
@@ -175,8 +175,10 @@ export default function InBodyDashboardPage() {
               </div>
             </div>
             <div className="flex items-baseline gap-2 shrink-0">
-              <span className="text-6xl font-extrabold text-white tabular-nums">{curr.dailyCalories.toLocaleString()}</span>
-              <span className="text-xl font-bold text-white/70">kcal</span>
+              {curr.dailyCalories != null
+                ? <><span className="text-6xl font-extrabold text-white tabular-nums">{curr.dailyCalories.toLocaleString()}</span><span className="text-xl font-bold text-white/70">kcal</span></>
+                : <span className="text-2xl font-bold text-white/60">계산 중...</span>
+              }
             </div>
           </Card>
         )}

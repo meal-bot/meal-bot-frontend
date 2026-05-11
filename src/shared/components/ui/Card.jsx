@@ -4,6 +4,7 @@ const variants = {
   default: 'bg-white border border-outline-variant/20 shadow-sm',
   muted: 'bg-surface-container-low border border-outline-variant/40',
   accent: 'bg-primary-container/40 border border-outline-variant/30',
+  primary: 'bg-primary border border-primary',
 };
 
 const padding = {
