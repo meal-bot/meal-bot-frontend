@@ -14,7 +14,7 @@ const ACCENTS = {
   darkMode: false,
 };
 
-export default function LandingPage({ onGoogleLogin }) {
+export default function LandingPage({ onGoogleLogin, onKakaoLogin }) {
   const navigate = useNavigate();
   // Apply CSS variables for theme
   useEffect(() => {
@@ -49,6 +49,10 @@ export default function LandingPage({ onGoogleLogin }) {
     else console.log('[MealBot] Google login triggered — connect OAuth here');
   };
 
+  const handleKakaoLogin = () => {
+    if (onKakaoLogin) onKakaoLogin();
+  };
+
   const handleGuestLogin = () => {
     clearAuth();
     navigate('/main');
@@ -79,7 +83,7 @@ export default function LandingPage({ onGoogleLogin }) {
         </button>
       </nav>
 
-      <Hero accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onLogin={handleLogin} onGuestLogin={handleGuestLogin} />
+      <Hero accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onLogin={handleLogin} onGuestLogin={handleGuestLogin} onKakaoLogin={handleKakaoLogin} />
       <Features accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} />
       <HowItWorks accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} />
       <FinalCTA accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onLogin={handleLogin} />

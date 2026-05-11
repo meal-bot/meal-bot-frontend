@@ -16,6 +16,7 @@ export default function AuthPageShell({
   subtitle,
   mainClassName = 'flex-1 flex items-center justify-center px-6 pt-20',
   onGoogleAuth,
+  onKakaoAuth,
   bottomText,
   bottomLink,
   bottomLinkText,
@@ -65,6 +66,18 @@ export default function AuthPageShell({
             >
               {GOOGLE_SVG}
               Google로 계속하기
+            </Button>
+
+            <Button
+              onClick={onKakaoAuth}
+              variant="outline"
+              size="lg"
+              className="w-full font-semibold"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#191919" aria-hidden="true">
+                <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.599 1.576 4.878 3.938 6.3-.173.616-.627 2.233-.717 2.58-.112.43.158.425.332.31.137-.092 2.167-1.47 3.046-2.065.457.063.926.095 1.401.095 5.523 0 10-3.477 10-7.72C22 6.477 17.523 3 12 3z"/>
+              </svg>
+              카카오로 계속하기
             </Button>
           </Card>
 

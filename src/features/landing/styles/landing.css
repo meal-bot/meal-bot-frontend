@@ -119,11 +119,11 @@
   text-wrap: pretty;
 }
 
-.cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.cta-row { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 
 .btn-guest {
-  display: inline-flex; align-items: center;
-  padding: 14px 22px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 260px; padding: 14px 22px;
   background: transparent; color: var(--fg-2);
   border: 1.5px solid var(--line-2); border-radius: 999px;
   font-size: 14px; font-weight: 500;
@@ -133,8 +133,8 @@
 .btn-guest:hover { background: var(--bg-3); border-color: var(--fg-3); color: var(--fg); }
 
 .btn-google {
-  display: inline-flex; align-items: center; gap: 12px;
-  padding: 14px 22px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  width: 260px; padding: 14px 22px;
   background: var(--fg); color: var(--bg);
   border: 0; border-radius: 999px;
   font-size: 14.5px; font-weight: 600; letter-spacing: -.005em;
@@ -146,6 +146,17 @@
 .btn-google-lg {
   padding: 18px 28px; font-size: 16px; gap: 14px;
 }
+
+.btn-kakao {
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  width: 260px; padding: 14px 22px;
+  background: #FEE500; color: #191919;
+  border: 0; border-radius: 999px;
+  font-size: 14px; font-weight: 600;
+  transition: transform .2s, box-shadow .25s;
+  box-shadow: 0 6px 18px rgba(254,229,0,.35);
+}
+.btn-kakao:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(254,229,0,.45); }
 
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 8px;
