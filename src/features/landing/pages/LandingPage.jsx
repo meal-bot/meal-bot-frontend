@@ -83,10 +83,10 @@ export default function LandingPage({ onGoogleLogin, onKakaoLogin }) {
         </button>
       </nav>
 
-      <Hero accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onLogin={handleLogin} onGuestLogin={handleGuestLogin} onKakaoLogin={handleKakaoLogin} />
+      <Hero accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onGoogleLogin={handleLogin} onGuestLogin={handleGuestLogin} onKakaoLogin={handleKakaoLogin} />
       <Features accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} />
       <HowItWorks accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} />
-      <FinalCTA accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onLogin={handleLogin} />
+      <FinalCTA accent1={a.accent1} accent2={a.accent2} accent3={a.accent3} onGoogleLogin={handleLogin}  onKakaoLogin={handleKakaoLogin}/>
     </div>
   );
 }

@@ -124,13 +124,13 @@
 .btn-guest {
   display: inline-flex; align-items: center; justify-content: center;
   width: 260px; padding: 14px 22px;
-  background: transparent; color: var(--fg-2);
-  border: 1.5px solid var(--line-2); border-radius: 999px;
+  background: #e0e0e0; color: #555;
+  border: 1.5px solid #c8c8c8; border-radius: 999px;
   font-size: 14px; font-weight: 500;
   transition: background .2s, border-color .2s, color .2s;
   cursor: pointer;
 }
-.btn-guest:hover { background: var(--bg-3); border-color: var(--fg-3); color: var(--fg); }
+.btn-guest:hover { background: #d0d0d0; border-color: #b0b0b0; color: #333; }
 
 .btn-google {
   display: inline-flex; align-items: center; justify-content: center; gap: 12px;
