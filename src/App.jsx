@@ -8,6 +8,7 @@ import InBodyInputPage from './features/inbody/pages/InBodyInputPage';
 import InBodyDashboardPage from './features/inbody/pages/InBodyDashboardPage';
 import LandingPage from './features/landing/pages/LandingPage';
 import FridgePage from './features/fridge/FridgePage';
+import CalendarPage from './features/calender/pages/CalendarPage';
 import { isLoggedIn, loginWithGoogle, loginWithKakao } from './features/auth/utils/auth';
 import { SidebarProvider } from './shared/context/SidebarContext';
 
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
         <Route path="/meal/:id" element={<MealDetailPage />} />
         <Route path="/fridge" element={<ProtectedRoute><FridgePage /></ProtectedRoute>} />
+        <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
         <Route path="/inbody" element={<ProtectedRoute><InBodyDashboardPage /></ProtectedRoute>} />
         <Route path="/inbody/new" element={<ProtectedRoute><InBodyInputPage /></ProtectedRoute>} />
       </Routes>
