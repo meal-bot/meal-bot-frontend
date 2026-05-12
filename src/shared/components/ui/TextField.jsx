@@ -20,7 +20,7 @@ export default function TextField({
       <div
         className={cn(
           'flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors',
-          error ? 'border-red-300 focus-within:border-red-400' : 'border-outline-variant/30 focus-within:border-primary',
+          error ? 'border-error/60 focus-within:border-error' : 'border-outline-variant/30 focus-within:border-primary',
         )}
       >
         {icon && <span className="material-symbols-outlined text-on-surface-variant text-xl">{icon}</span>}
@@ -34,7 +34,7 @@ export default function TextField({
         />
         {unit && <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">{unit}</span>}
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-error">{error}</p>}
     </div>
   );
 }

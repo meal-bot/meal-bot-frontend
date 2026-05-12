@@ -4,7 +4,6 @@ import ChefPanel from './ChefPanel';
 import ResultsPanel from './ResultsPanel';
 import { scoreRecipes } from './data';
 import Layout from '../../shared/components/layout/Layout';
-import './fridge.css';
 
 export default function FridgePage({ loadingMs = 1800 }) {
   const [picked, setPicked] = useState([]);

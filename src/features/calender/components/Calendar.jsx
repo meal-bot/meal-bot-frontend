@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { cn } from '../../../shared/utils/cn.js';
 import {
-  MONTH_NAMES, DOW_SUN, buildMonthGrid, isoDate, isToday, isFuture, getCount, SAMPLE_CONVOS
+  MONTH_NAMES, DOW_SUN, buildMonthGrid, isoDate, isToday, isFuture, getCount, SAMPLE_CONVOS, TODAY
 } from '../style/sampleData.js';
 
-function useMonth(initialY, initialM) {
-  const [y, setY] = useState(initialY);
-  const [m, setM] = useState(initialM);
+const TAG_LABEL = { bf: 'breakfast', ln: 'lunch', dn: 'dinner' };
+
+function useMonth() {
+  const [y, setY] = useState(TODAY.y);
+  const [m, setM] = useState(TODAY.m);
   const [dir, setDir] = useState(0);
   const [anim, setAnim] = useState(false);
-  const go = (delta) => {
+  const t1 = useRef(null);
+  const t2 = useRef(null);
+
+  const go = useCallback((delta) => {
+    clearTimeout(t1.current);
+    clearTimeout(t2.current);
     setDir(delta);
     setAnim(true);
-    setTimeout(() => {
-      let mm = m + delta;
-      let nY = y;
-      if (mm > 12) { mm = 1; nY = y + 1; }
-      if (mm < 1) { mm = 12; nY = y - 1; }
-      setY(nY); setM(mm);
-      setTimeout(() => setAnim(false), 320);
+    t1.current = setTimeout(() => {
+      setM(prev => {
+        const next = prev + delta;
+        if (next > 12) { setY(y => y + 1); return 1; }
+        if (next < 1)  { setY(y => y - 1); return 12; }
+        return next;
+      });
+      t2.current = setTimeout(() => setAnim(false), 320);
     }, 200);
-  };
+  }, []);
+
   return { y, m, dir, anim, go };
 }
 
@@ -55,11 +65,11 @@ function DowRow() {
 
 export default function Calendar() {
   const navigate = useNavigate();
-  const now = new Date();
-  const { y, m, dir, anim, go } = useMonth(now.getFullYear(), now.getMonth() + 1);
-  const cells = buildMonthGrid(y, m, 0);
+  const { y, m, dir, anim, go } = useMonth();
+  const cells = useMemo(() => buildMonthGrid(y, m, 0), [y, m]);
   const [sel, setSel] = useState(null);
   const [closing, setClosing] = useState(false);
+  const closeTimer = useRef(null);
 
   const animClass = anim
     ? (dir > 0 ? 'cal-page-anim-slide-out-left' : 'cal-page-anim-slide-out-right')
@@ -67,11 +77,11 @@ export default function Calendar() {
 
   const openDay = (c) => { setClosing(false); setSel({ y: c.y, m: c.m, d: c.d }); };
   const closeDay = () => {
+    clearTimeout(closeTimer.current);
     setClosing(true);
-    setTimeout(() => { setSel(null); setClosing(false); }, 240);
+    closeTimer.current = setTimeout(() => { setSel(null); setClosing(false); }, 240);
   };
 
-  // keyboard nav
   React.useEffect(() => {
     const onKey = (e) => {
       if (sel) return;
@@ -80,10 +90,10 @@ export default function Calendar() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  });
+  }, [sel, go]);
 
   const convos = sel ? (SAMPLE_CONVOS[isoDate(sel.y, sel.m, sel.d)] || []) : [];
-  const selCount = sel ? getCount(sel.y, sel.m, sel.d) : 0;
+  const selCount = convos.length;
 
   return (
     <div className="ab">
@@ -97,18 +107,11 @@ export default function Calendar() {
             const today = isToday(c.y, c.m, c.d);
             const future = isFuture(c.y, c.m, c.d);
             const inactive = !c.outside && (count === 0 || future);
-            const active = !c.outside && !inactive && count > 0;
-            const cls = [
-              'cal-cell',
-              c.outside ? 'outside' : '',
-              today ? 'today' : '',
-              active ? 'active' : '',
-              inactive ? 'inactive' : '',
-            ].join(' ');
+            const active = !c.outside && count > 0 && !future;
             return (
               <div
                 key={i}
-                className={cls}
+                className={cn('cal-cell', c.outside && 'outside', today && 'today', active && 'active', inactive && 'inactive')}
                 style={{ '--i': i }}
                 onClick={() => active && openDay(c)}
               >
@@ -155,12 +158,10 @@ export default function Calendar() {
                 <div className="empty">no conversation snippets in sample data for this date</div>
               )}
               {convos.map((c, i) => (
-                <div key={i} className="convo-card" style={{ '--i': i }} onClick={() => navigate('/main')}>
+                <div key={`${c.time}-${i}`} className="convo-card" style={{ '--i': i }} onClick={() => navigate('/main')}>
                   <div className="top">
                     <span className="time">{c.time}</span>
-                    <span className={`tag ${c.tag}`}>
-                      {c.tag === 'bf' ? 'breakfast' : c.tag === 'ln' ? 'lunch' : 'dinner'}
-                    </span>
+                    <span className={`tag ${c.tag}`}>{TAG_LABEL[c.tag]}</span>
                   </div>
                   <div className="title">{c.title}</div>
                   <div className="snippet">

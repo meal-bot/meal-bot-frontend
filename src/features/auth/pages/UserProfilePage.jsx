@@ -12,7 +12,7 @@ function PasswordField({ label, name, value, onChange, show, onToggle, error, pl
       </label>
       <div
         className={`flex items-center gap-3 bg-surface-container rounded-xl px-4 py-3.5 border transition-colors ${error
-          ? 'border-red-300 focus-within:border-red-400'
+          ? 'border-error/60 focus-within:border-error'
           : 'border-outline-variant/30 focus-within:border-primary'
           }`}
       >
@@ -35,7 +35,7 @@ function PasswordField({ label, name, value, onChange, show, onToggle, error, pl
           </span>
         </button>
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-error">{error}</p>}
     </div>
   );
 }

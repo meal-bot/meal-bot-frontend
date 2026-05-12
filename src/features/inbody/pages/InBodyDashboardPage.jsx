@@ -278,10 +278,10 @@ export default function InBodyDashboardPage() {
 }
 
 function getBmiGrade(bmi) {
-  if (bmi < 18.5) return { label: '저체중',    color: 'bg-blue-100 text-blue-700' };
+  if (bmi < 18.5) return { label: '저체중',    color: 'bg-surface-container text-on-surface-variant' };
   if (bmi < 23)   return { label: '정상',       color: 'bg-primary-container text-primary' };
-  if (bmi < 25)   return { label: '과체중',     color: 'bg-amber-100 text-amber-700' };
-  if (bmi < 30)   return { label: '비만 1단계', color: 'bg-orange-100 text-orange-700' };
-  if (bmi < 35)   return { label: '비만 2단계', color: 'bg-red-100 text-red-600' };
-  return           { label: '고도비만',         color: 'bg-red-200 text-red-700' };
+  if (bmi < 25)   return { label: '과체중',     color: 'bg-secondary-container text-secondary' };
+  if (bmi < 30)   return { label: '비만 1단계', color: 'bg-error-container text-error' };
+  if (bmi < 35)   return { label: '비만 2단계', color: 'bg-error-container text-error' };
+  return           { label: '고도비만',         color: 'bg-error-container text-error font-extrabold' };
 }

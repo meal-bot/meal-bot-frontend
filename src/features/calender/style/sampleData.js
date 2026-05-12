@@ -43,11 +43,16 @@ export function firstWeekday(y, m) { return new Date(y, m - 1, 1).getDay(); }
 export function isoDate(y, m, d) {
   return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 }
-export function isToday(y, m, d) { return y === TODAY.y && m === TODAY.m && d === TODAY.d; }
+export function isToday(y, m, d) {
+  const t = new Date();
+  return y === t.getFullYear() && m === t.getMonth() + 1 && d === t.getDate();
+}
 export function isFuture(y, m, d) {
-  if (y !== TODAY.y) return y > TODAY.y;
-  if (m !== TODAY.m) return m > TODAY.m;
-  return d > TODAY.d;
+  const t = new Date();
+  const ty = t.getFullYear(), tm = t.getMonth() + 1, td = t.getDate();
+  if (y !== ty) return y > ty;
+  if (m !== tm) return m > tm;
+  return d > td;
 }
 export function buildMonthGrid(y, m, weekStart = 0) {
   const first = firstWeekday(y, m);
