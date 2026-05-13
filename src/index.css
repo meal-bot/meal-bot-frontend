@@ -130,7 +130,7 @@ body {
 
 .ab .cal-cell {
   position: relative;
-  border: 1px solid var(--line); border-radius: 12px; background: var(--paper);
+  border: 1px solid rgba(233,226,217,0.30); border-radius: 12px; background: var(--paper);
   padding: 16px; min-height: 110px;
   display: flex; flex-direction: column;
   transition: transform 220ms cubic-bezier(.2,.7,.25,1), box-shadow 220ms ease, background 220ms ease;
@@ -140,9 +140,9 @@ body {
 @keyframes cell-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .ab .cal-cell.inactive { border-style: dashed; border-color: var(--line-soft); background: transparent; color: var(--muted-2); cursor: not-allowed; }
 .ab .cal-cell.outside { opacity: 0.35; border-style: dashed; border-color: var(--line-soft); background: transparent; color: var(--muted-2); cursor: not-allowed; }
-.ab .cal-cell.active { cursor: pointer; }
-.ab .cal-cell.active:hover { transform: translateY(-3px); box-shadow: 4px 6px 0 var(--ink); }
-.ab .cal-cell.active:active { transform: translateY(-1px); box-shadow: 2px 3px 0 var(--ink); }
+.ab .cal-cell.active { cursor: pointer; background: var(--sage-soft); border-color: var(--sage-deep); }
+.ab .cal-cell.active:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(31,31,29,.10); }
+.ab .cal-cell.active:active { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(31,31,29,.08); }
 
 .ab .cal-cell .cal-num { font-family: var(--sans); font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
 
@@ -276,7 +276,7 @@ body {
   --ink-2: rgba(26, 26, 26, .68);
   --ink-3: rgba(26, 26, 26, .42);
   --line: rgba(26, 26, 26, .08);
-  --line-2: rgba(26, 26, 26, .14);
+  --line-2: rgba(233,226,217,0.30);
   --line-3: rgba(26, 26, 26, .22);
 
   --sage:    #9CAF88;
@@ -474,7 +474,7 @@ body {
 .fridge-page .ing {
   position: relative;
   padding: 12px 8px 12px;
-  background: #fff;
+  background: rgba(232,168,124,0.10);
   border: 1px solid var(--line-2);
   border-radius: 12px;
   display: flex; flex-direction: column; align-items: center; gap: 8px;

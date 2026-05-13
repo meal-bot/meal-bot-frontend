@@ -100,7 +100,7 @@ function ChatSimulator({ accent1, accent2, accent3 }) {
   );
 }
 
-export default function Hero({ accent1, accent2, accent3, onLogin, onGuestLogin, onKakaoLogin }) {
+export default function Hero({ accent1, accent2, accent3, onGoogleLogin, onGuestLogin, onKakaoLogin }) {
   return (
     <section className="hero">
       <div className="blob blob-1" style={{ background: accent1 }}></div>
@@ -133,7 +133,7 @@ export default function Hero({ accent1, accent2, accent3, onLogin, onGuestLogin,
               <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"></svg>
               게스트로 둘러보기
             </button>
-            <button className="btn-google" onClick={onLogin}>
+            <button className="btn-google" onClick={onGoogleLogin}>
               <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
                 <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6 8-11.3 8a12 12 0 1 1 0-24c3 0 5.8 1.1 7.9 3l5.7-5.7C33.6 6.1 29 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
                 <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C33.6 6.1 29 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
