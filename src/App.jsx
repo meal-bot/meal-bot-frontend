@@ -8,7 +8,8 @@ import InBodyInputPage from './features/inbody/pages/InBodyInputPage';
 import InBodyDashboardPage from './features/inbody/pages/InBodyDashboardPage';
 import LandingPage from './features/landing/pages/LandingPage';
 import FridgePage from './features/fridge/FridgePage';
-import { isLoggedIn, loginWithGoogle } from './features/auth/utils/auth';
+import CalendarPage from './features/calender/pages/CalendarPage';
+import { isLoggedIn, loginWithGoogle, loginWithKakao } from './features/auth/utils/auth';
 import { SidebarProvider } from './shared/context/SidebarContext';
 
 function ProtectedRoute({ children }) {
@@ -20,16 +21,16 @@ export default function App() {
     <SidebarProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage onGoogleLogin={loginWithGoogle} />} />
+        <Route path="/" element={<LandingPage onGoogleLogin={loginWithGoogle} onKakaoLogin={loginWithKakao} />} />
         <Route path="/main" element={<MainPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/profile" element={<UserProfilePage />} />
         <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
         <Route path="/meal/:id" element={<MealDetailPage />} />
-        {/* 임시: 게스트 접근 허용 (원복 시 ProtectedRoute로 감싸기) */}
-        <Route path="/fridge" element={<FridgePage />} />
-        <Route path="/inbody" element={<InBodyDashboardPage />} />
-        <Route path="/inbody/new" element={<InBodyInputPage />} />
+        <Route path="/fridge" element={<ProtectedRoute><FridgePage /></ProtectedRoute>} />
+        <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
+        <Route path="/inbody" element={<ProtectedRoute><InBodyDashboardPage /></ProtectedRoute>} />
+        <Route path="/inbody/new" element={<ProtectedRoute><InBodyInputPage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
     </SidebarProvider>

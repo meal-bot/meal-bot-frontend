@@ -58,6 +58,12 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
           >
             측정 입력
           </Link>
+          <Link
+            to="/calendar"
+            className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
+          >
+            식단 캘린더
+          </Link>
         </div>
 
         {/* 오른쪽 사용자 메뉴 - 우측 끝단 고정 */}
@@ -71,6 +77,7 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
           <div className="relative flex items-center" ref={dropdownRef}>
             <span
               className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors select-none"
+              style={{ fontSize: '32px' }}
               onClick={() => setDropdownOpen((prev) => !prev)}
             >
               account_circle

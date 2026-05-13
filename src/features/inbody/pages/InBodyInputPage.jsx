@@ -174,7 +174,7 @@ export default function InBodyInputPage() {
 
           {/* 전송 에러 메시지 */}
           {errors._global && (
-            <p className="text-sm text-red-500 font-medium text-center">{errors._global}</p>
+            <p className="text-sm text-error font-medium text-center">{errors._global}</p>
           )}
 
           {/* 저장 액션 */}

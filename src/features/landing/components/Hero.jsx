@@ -100,7 +100,7 @@ function ChatSimulator({ accent1, accent2, accent3 }) {
   );
 }
 
-export default function Hero({ accent1, accent2, accent3, onLogin, onGuestLogin }) {
+export default function Hero({ accent1, accent2, accent3, onGoogleLogin, onGuestLogin, onKakaoLogin }) {
   return (
     <section className="hero">
       <div className="blob blob-1" style={{ background: accent1 }}></div>
@@ -133,7 +133,7 @@ export default function Hero({ accent1, accent2, accent3, onLogin, onGuestLogin 
               <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"></svg>
               게스트로 둘러보기
             </button>
-            <button className="btn-google" onClick={onLogin}>
+            <button className="btn-google" onClick={onGoogleLogin}>
               <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
                 <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6 8-11.3 8a12 12 0 1 1 0-24c3 0 5.8 1.1 7.9 3l5.7-5.7C33.6 6.1 29 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
                 <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C33.6 6.1 29 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
@@ -141,6 +141,12 @@ export default function Hero({ accent1, accent2, accent3, onLogin, onGuestLogin 
                 <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.1 4.1-3.9 5.5l6 5C40.9 35.5 44 30.2 44 24c0-1.3-.1-2.3-.4-3.5z"/>
               </svg>
               Google 계정으로 시작하기
+            </button>
+            <button className="btn-kakao" onClick={onKakaoLogin}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#191919" aria-hidden="true">
+                <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.599 1.576 4.878 3.938 6.3-.173.616-.627 2.233-.717 2.58-.112.43.158.425.332.31.137-.092 2.167-1.47 3.046-2.065.457.063.926.095 1.401.095 5.523 0 10-3.477 10-7.72C22 6.477 17.523 3 12 3z"/>
+              </svg>
+              카카오로 시작하기
             </button>
             <a href="#how" className="btn-ghost">
               어떻게 동작하나요?

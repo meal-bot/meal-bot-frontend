@@ -12,7 +12,11 @@ export const clearAuth = () => {
 };
 
 export const loginWithGoogle = () => {
-  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/oauth2/authorization/google`;
+};
+
+export const loginWithKakao = () => {
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/oauth2/authorization/kakao`;
 };
 
 export const decodeJWT = (token) => {

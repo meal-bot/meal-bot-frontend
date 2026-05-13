@@ -165,8 +165,8 @@ export default function InBodyDashboardPage() {
         </Card>
 
         {/* ───── 3. 일일 권장 칼로리 ───── */}
-        {curr?.dailyCalories && (
-          <Card className="bg-primary border-primary p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        {curr && (
+          <Card variant="primary" className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <span className="material-symbols-outlined text-white/80 text-4xl">local_fire_department</span>
               <div>
@@ -175,8 +175,10 @@ export default function InBodyDashboardPage() {
               </div>
             </div>
             <div className="flex items-baseline gap-2 shrink-0">
-              <span className="text-6xl font-extrabold text-white tabular-nums">{curr.dailyCalories.toLocaleString()}</span>
-              <span className="text-xl font-bold text-white/70">kcal</span>
+              {curr.dailyCalories != null
+                ? <><span className="text-6xl font-extrabold text-white tabular-nums">{curr.dailyCalories.toLocaleString()}</span><span className="text-xl font-bold text-white/70">kcal</span></>
+                : <span className="text-2xl font-bold text-white/60">계산 중...</span>
+              }
             </div>
           </Card>
         )}
@@ -276,10 +278,10 @@ export default function InBodyDashboardPage() {
 }
 
 function getBmiGrade(bmi) {
-  if (bmi < 18.5) return { label: '저체중',    color: 'bg-blue-100 text-blue-700' };
+  if (bmi < 18.5) return { label: '저체중',    color: 'bg-surface-container text-on-surface-variant' };
   if (bmi < 23)   return { label: '정상',       color: 'bg-primary-container text-primary' };
-  if (bmi < 25)   return { label: '과체중',     color: 'bg-amber-100 text-amber-700' };
-  if (bmi < 30)   return { label: '비만 1단계', color: 'bg-orange-100 text-orange-700' };
-  if (bmi < 35)   return { label: '비만 2단계', color: 'bg-red-100 text-red-600' };
-  return           { label: '고도비만',         color: 'bg-red-200 text-red-700' };
+  if (bmi < 25)   return { label: '과체중',     color: 'bg-secondary-container text-secondary' };
+  if (bmi < 30)   return { label: '비만 1단계', color: 'bg-error-container text-error' };
+  if (bmi < 35)   return { label: '비만 2단계', color: 'bg-error-container text-error' };
+  return           { label: '고도비만',         color: 'bg-error-container text-error font-extrabold' };
 }
