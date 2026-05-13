@@ -1,11 +1,12 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../../shared/utils/cn.js';
 import {
-  MONTH_NAMES, DOW_SUN, buildMonthGrid, isoDate, isToday, isFuture, getCount, SAMPLE_CONVOS, TODAY
+  MONTH_NAMES, DOW_SUN, buildMonthGrid, isoDate, isToday, isFuture, TODAY
 } from '../style/sampleData.js';
+import { fetchCalendarMonthData, getMealTag, formatTime } from '../api/calendarApi.js';
 
-const TAG_LABEL = { bf: 'breakfast', ln: 'lunch', dn: 'dinner' };
+const TAG_LABEL = { bf: '아침', ln: '점심', dn: '저녁' };
 
 function useMonth() {
   const [y, setY] = useState(TODAY.y);
@@ -70,6 +71,21 @@ export default function Calendar() {
   const [sel, setSel] = useState(null);
   const [closing, setClosing] = useState(false);
   const closeTimer = useRef(null);
+  const [threadsByDate, setThreadsByDate] = useState({});
+  const [loadedYM, setLoadedYM] = useState(null);
+  const isLoading = loadedYM !== `${y}-${m}`;
+
+  useEffect(() => {
+    fetchCalendarMonthData(y, m)
+      .then(data => {
+        setThreadsByDate(data);
+        setLoadedYM(`${y}-${m}`);
+      })
+      .catch(() => {
+        console.error('캘린더 데이터 로드 실패');
+        setLoadedYM(`${y}-${m}`);
+      });
+  }, [y, m]);
 
   const animClass = anim
     ? (dir > 0 ? 'cal-page-anim-slide-out-left' : 'cal-page-anim-slide-out-right')
@@ -92,38 +108,44 @@ export default function Calendar() {
     return () => window.removeEventListener('keydown', onKey);
   }, [sel, go]);
 
-  const convos = sel ? (SAMPLE_CONVOS[isoDate(sel.y, sel.m, sel.d)] || []) : [];
-  const selCount = convos.length;
+  const threads = sel ? (threadsByDate[isoDate(sel.y, sel.m, sel.d)] || []) : [];
+  const selCount = threads.length;
 
   return (
     <div className="ab">
       <MonthHeader y={y} m={m} onPrev={() => go(-1)} onNext={() => go(1)} />
 
-      <div className={`cal-page ${animClass}`} key={`${y}-${m}-${dir}-${anim}`}>
-        <DowRow />
-        <div className="cal-grid">
-          {cells.map((c, i) => {
-            const count = getCount(c.y, c.m, c.d);
-            const today = isToday(c.y, c.m, c.d);
-            const future = isFuture(c.y, c.m, c.d);
-            const inactive = !c.outside && (count === 0 || future);
-            const active = !c.outside && count > 0 && !future;
-            return (
-              <div
-                key={i}
-                className={cn('cal-cell', c.outside && 'outside', today && 'today', active && 'active', inactive && 'inactive')}
-                style={{ '--i': i }}
-                onClick={() => active && openDay(c)}
-              >
-                <div className="cal-num">{c.d}</div>
-                {count > 0 && !c.outside && (
-                  <span className={`badge-num ${count === 1 ? 'single' : 'sage'}`}>{count}</span>
-                )}
-              </div>
-            );
-          })}
+      {isLoading ? (
+        <div style={{ textAlign: 'center', padding: '60px', color: '#aaa', fontSize: '14px' }}>
+          불러오는 중...
         </div>
-      </div>
+      ) : (
+        <div className={`cal-page ${animClass}`} key={`${y}-${m}-${dir}-${anim}`}>
+          <DowRow />
+          <div className="cal-grid">
+            {cells.map((c, i) => {
+              const count = (threadsByDate[isoDate(c.y, c.m, c.d)] || []).length;
+              const today = isToday(c.y, c.m, c.d);
+              const future = isFuture(c.y, c.m, c.d);
+              const inactive = !c.outside && (count === 0 || future);
+              const active = !c.outside && count > 0 && !future;
+              return (
+                <div
+                  key={i}
+                  className={cn('cal-cell', c.outside && 'outside', today && 'today', active && 'active', inactive && 'inactive')}
+                  style={{ '--i': i }}
+                  onClick={() => active && openDay(c)}
+                >
+                  <div className="cal-num">{c.d}</div>
+                  {count > 0 && !c.outside && (
+                    <span className={`badge-num ${count === 1 ? 'single' : 'sage'}`}>{count}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="foot">
         <div className="legend">
@@ -131,48 +153,51 @@ export default function Calendar() {
           <span className="key"><span className="swatch has">●</span> has conversation</span>
           <span className="key"><span className="swatch none"></span> inactive</span>
         </div>
-        <div>V1 · standard grid · click a date to open detail</div>
       </div>
 
       {sel && (
         <>
-          <div className={`detail-backdrop ${closing ? 'closing' : ''}`} onClick={closeDay}></div>
+          <div className={`detail-backdrop ${closing ? 'closing' : ''}`} onClick={closeDay} />
           <div className={`detail-overlay ${closing ? 'closing' : ''}`}>
             <div className="head">
               <div className="ttl">
                 {MONTH_NAMES[sel.m - 1]} {sel.d}
                 <span className="day">
-                  {new Date(sel.y, sel.m - 1, sel.d).toLocaleDateString('en-US', { weekday: 'long' })} · {sel.y}
+                  {new Date(sel.y, sel.m - 1, sel.d).toLocaleDateString('ko-KR', { weekday: 'long' })} · {sel.y}
                 </span>
               </div>
               <button className="close" onClick={closeDay} aria-label="close">×</button>
             </div>
             <div className="meta">
-              <span><b>{selCount}</b> conversations</span>
-              <span><b>{convos.filter(c => c.tag === 'bf').length}</b> breakfast</span>
-              <span><b>{convos.filter(c => c.tag === 'ln').length}</b> lunch</span>
-              <span><b>{convos.filter(c => c.tag === 'dn').length}</b> dinner</span>
+              <span><b>{selCount}</b> 대화</span>
+              <span><b>{threads.filter(t => getMealTag(t.createdAt) === 'bf').length}</b> 아침</span>
+              <span><b>{threads.filter(t => getMealTag(t.createdAt) === 'ln').length}</b> 점심</span>
+              <span><b>{threads.filter(t => getMealTag(t.createdAt) === 'dn').length}</b> 저녁</span>
             </div>
             <div className="body">
-              {convos.length === 0 && (
-                <div className="empty">no conversation snippets in sample data for this date</div>
+              {threads.length === 0 && (
+                <div className="empty">대화 기록이 없습니다</div>
               )}
-              {convos.map((c, i) => (
-                <div key={`${c.time}-${i}`} className="convo-card" style={{ '--i': i }} onClick={() => navigate('/main')}>
-                  <div className="top">
-                    <span className="time">{c.time}</span>
-                    <span className={`tag ${c.tag}`}>{TAG_LABEL[c.tag]}</span>
+              {threads.map((t, i) => {
+                const tag = getMealTag(t.createdAt);
+                return (
+                  <div
+                    key={t.chatId}
+                    className="convo-card"
+                    style={{ '--i': i }}
+                    onClick={() => navigate('/main', { state: { chatThreadId: t.chatId } })}
+                  >
+                    <div className="top">
+                      <span className="time">{formatTime(t.createdAt)}</span>
+                      {tag && <span className={`tag ${tag}`}>{TAG_LABEL[tag]}</span>}
+                    </div>
+                    <div className="title">{t.title || '제목 없음'}</div>
                   </div>
-                  <div className="title">{c.title}</div>
-                  <div className="snippet">
-                    <div className={`ln ${c.snippet}`}></div>
-                    <div className="ln short"></div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="hint">
-              {selCount === 1 ? 'tap to jump straight to the conversation' : `${selCount} conversations · pick one to open`}
+              {selCount === 1 ? '탭하여 대화로 이동' : `${selCount}개 대화 · 선택하여 열기`}
             </div>
           </div>
         </>
