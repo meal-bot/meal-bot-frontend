@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setToken, setName, decodeJWT } from '../utils/auth';
 
-// 구글 OAuth 로그인 후 리디렉션되는 페이지
+// OAuth 로그인 후 리디렉션되는 페이지
 export default function OAuthCallbackPage() {
     const navigate = useNavigate();
     // handled: useEffect가 여러 번 실행되어도 토큰 처리를 딱 한 번만 하기 위한 방어 코드
