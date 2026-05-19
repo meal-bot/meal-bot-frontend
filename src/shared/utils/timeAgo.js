@@ -1,9 +1,6 @@
 export function timeAgo(dateString) {
     const now = new Date();
-    const normalized = dateString && !dateString.includes('+') && !dateString.endsWith('Z')
-        ? dateString + '+09:00'
-        : dateString;
-    const past = new Date(normalized);
+    const past = new Date(dateString);
     const diffInSeconds = Math.floor((now - past) / 1000);
 
     if (diffInSeconds < 60) return '방금 전';
