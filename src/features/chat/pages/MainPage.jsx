@@ -9,14 +9,6 @@ import { useSlider } from '../../../shared/hooks/useSlider';
 import { useChat } from '../hooks/useChat';
 import { isLoggedIn } from '../../auth/utils/auth';
 import MEAL_DATA from '../../meal/data/mealData';
-import { parseRecommendations } from '../utils/parseRecommendations';
-// 파이썬 서버에서 구조화된 JSON 대신 마크다운 테이블로 레시피를 보내는 경우를 위한 임시 파싱 함수
-// 실제 서버가 JSON을 반환하도록 변경되면 이 파일 전체 삭제 예정
-const MOCK_RECOMMENDATIONS = [
-  { rank: 1, name: '닭가슴살 샐러드', category: '샐러드', cookingWay: '삶기', description: '구운 고구마와 담백한 닭가슴살로 만든 고단백 샐러드입니다. 구운 고구마와 담백한 닭가슴살로 만든 고단백 샐러드입니다. 구운 고구마와 담백한 닭가슴살로 만든 고단백 샐러드입니다. 구운 고구마와 담백한 닭가슴살로 만든 고단백 샐러드입니다. 구운 고구마와 담백한 닭가슴살로 만든 고단백 샐러드입니다.', },
-  { rank: 2, name: '연어 스테이크', category: '생선', cookingWay: '굽기', description: '신선한 연어를 구워낸 담백한 스테이크입니다.', },
-  { rank: 3, name: '두부 스크램블', category: '채식', cookingWay: '볶기', description: '부드러운 두부와 야채를 볶아낸 건강한 메뉴입니다.', },
-];
 export default function MainPage() {
   const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
   const location = useLocation();
@@ -109,10 +101,7 @@ export default function MainPage() {
       {hasMessages && (
         <section className="max-w-3xl mx-auto flex flex-col gap-4">
           {messages.map(msg => {
-            const parsed = msg.role === 'assistant' && !msg.isTyping && msg.content
-              ? parseRecommendations(msg.content)
-              : [];
-            const recommendations = parsed.length > 0 ? parsed : (msg.role === 'assistant' && !msg.isTyping && msg.content ? MOCK_RECOMMENDATIONS : []);
+            const recommendations = msg.recommendations || [];
             return (
               <div key={msg.id} className="flex flex-col gap-2">
                 <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}>

@@ -4,7 +4,7 @@ import { cn } from '../../../shared/utils/cn.js';
 import {
   MONTH_NAMES, DOW_SUN, buildMonthGrid, isoDate, isToday, isFuture, TODAY
 } from '../style/sampleData.js';
-import { fetchCalendarMonthData, getMealTag, formatTime } from '../api/calendarApi.js';
+import { fetchCalendarMonthData, fetchCalendarDateData, getMealTag, formatTime } from '../api/calendarApi.js';
 
 const TAG_LABEL = { bf: '아침', ln: '점심', dn: '저녁' };
 
@@ -72,26 +72,34 @@ export default function Calendar() {
   const [closing, setClosing] = useState(false);
   const closeTimer = useRef(null);
   const [threadsByDate, setThreadsByDate] = useState({});
-  const [loadedYM, setLoadedYM] = useState(null);
-  const isLoading = loadedYM !== `${y}-${m}`;
+  const [isLoaded, setIsLoaded] = useState(false);
+  const isLoading = !isLoaded;
+  const [detailThreads, setDetailThreads] = useState([]);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
 
   useEffect(() => {
-    fetchCalendarMonthData(y, m)
+    fetchCalendarMonthData()
       .then(data => {
         setThreadsByDate(data);
-        setLoadedYM(`${y}-${m}`);
+        setIsLoaded(true);
       })
-      .catch(() => {
-        console.error('캘린더 데이터 로드 실패');
-        setLoadedYM(`${y}-${m}`);
-      });
-  }, [y, m]);
+      .catch(() => setIsLoaded(true));
+  }, []);
 
   const animClass = anim
     ? (dir > 0 ? 'cal-page-anim-slide-out-left' : 'cal-page-anim-slide-out-right')
     : (dir > 0 ? 'cal-page-anim-slide-in-right' : dir < 0 ? 'cal-page-anim-slide-in-left' : '');
 
-  const openDay = (c) => { setClosing(false); setSel({ y: c.y, m: c.m, d: c.d }); };
+  const openDay = (c) => {
+    setClosing(false);
+    setSel({ y: c.y, m: c.m, d: c.d });
+    setDetailThreads([]);
+    setIsDetailLoading(true);
+    fetchCalendarDateData(isoDate(c.y, c.m, c.d))
+      .then(data => setDetailThreads(data))
+      .catch(() => setDetailThreads([]))
+      .finally(() => setIsDetailLoading(false));
+  };
   const closeDay = () => {
     clearTimeout(closeTimer.current);
     setClosing(true);
@@ -108,7 +116,7 @@ export default function Calendar() {
     return () => window.removeEventListener('keydown', onKey);
   }, [sel, go]);
 
-  const threads = sel ? (threadsByDate[isoDate(sel.y, sel.m, sel.d)] || []) : [];
+  const threads = detailThreads;
   const selCount = threads.length;
 
   return (
@@ -175,10 +183,13 @@ export default function Calendar() {
               <span><b>{threads.filter(t => getMealTag(t.createdAt) === 'dn').length}</b> 저녁</span>
             </div>
             <div className="body">
-              {threads.length === 0 && (
+              {isDetailLoading && (
+                <div className="empty">불러오는 중...</div>
+              )}
+              {!isDetailLoading && threads.length === 0 && (
                 <div className="empty">대화 기록이 없습니다</div>
               )}
-              {threads.map((t, i) => {
+              {!isDetailLoading && threads.map((t, i) => {
                 const tag = getMealTag(t.createdAt);
                 return (
                   <div
@@ -192,6 +203,9 @@ export default function Calendar() {
                       {tag && <span className={`tag ${tag}`}>{TAG_LABEL[tag]}</span>}
                     </div>
                     <div className="title">{t.title || '제목 없음'}</div>
+                    {t.lastRecommendation && (
+                      <div className="preview">{t.lastRecommendation}</div>
+                    )}
                   </div>
                 );
               })}

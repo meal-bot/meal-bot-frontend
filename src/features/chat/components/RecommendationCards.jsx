@@ -1,58 +1,54 @@
 import { Card } from '../../../shared/components/ui';
 
-const COOKING_ICONS = {
-  '굽기': 'outdoor_grill',
-  '찌기': 'soup_kitchen',
-  '볶기': 'skillet',
-  '기타': 'restaurant',
-};
-
 export default function RecommendationCards({ recommendations }) {
   if (!recommendations?.length) return null;
 
   return (
     <div className="grid grid-cols-2 gap-3 mt-3 w-full">
-      {recommendations.slice(0, 2).map(rec => (
+      {recommendations.slice(0, 2).map((rec, index) => (
         <Card
           as="article"
           padding="none"
-          key={rec.rank}
+          key={rec.recipeId}
           className="overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-shadow"
         >
-          {/* 이미지 영역 */}
-          <div className="h-56 bg-surface-container flex items-center justify-center relative">
-            {rec.imageUrl
-              ? <img src={rec.imageUrl} alt={rec.name} className="w-full h-full object-cover" />
-              : <span className="material-symbols-outlined text-outline-variant text-4xl">image</span>
-            }
-            <span className="absolute top-2 left-2 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-extrabold flex items-center justify-center">
-              {rec.rank}
-            </span>
-          </div>
-
-          {/* 텍스트 영역 */}
+          {/* 순서 뱃지 + 제목 영역 */}
           <div className="p-3 flex flex-col gap-2 flex-1">
-            <span className="text-sm font-bold text-on-surface leading-snug line-clamp-2">
-              {rec.name}
-            </span>
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">
+                {index + 1}
+              </span>
+              <span className="text-sm font-bold text-on-surface leading-snug line-clamp-2">
+                {rec.name}
+              </span>
+            </div>
+
+            {/* 주재료 + 조리시간 */}
             <div className="flex items-center gap-1.5 flex-wrap">
-              {rec.category && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-container text-primary">
-                  {rec.category}
+              {rec.mainIngredients?.slice(0, 2).map((ingredient, i) => (
+                <span key={i} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-container text-primary">
+                  {ingredient}
                 </span>
-              )}
-              {rec.cookingWay && (
+              ))}
+              {rec.cookingTime && (
                 <span className="flex items-center gap-0.5 text-[10px] font-bold text-on-surface-variant">
-                  <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>
-                    {COOKING_ICONS[rec.cookingWay] ?? 'restaurant'}
-                  </span>
-                  {rec.cookingWay}
+                  <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>timer</span>
+                  {rec.cookingTime}분
                 </span>
               )}
             </div>
-            {rec.description && (
-              <p className="text-[11px] text-on-surface-variant leading-relaxed line-clamp-3 mt-0.5">
-                {rec.description}
+
+            {/* 요약 */}
+            {rec.summary && (
+              <p className="text-[11px] text-on-surface-variant leading-relaxed line-clamp-2 mt-0.5">
+                {rec.summary}
+              </p>
+            )}
+
+            {/* 추천 이유 */}
+            {rec.reason && (
+              <p className="text-[11px] text-primary leading-relaxed line-clamp-2 mt-0.5">
+                {rec.reason}
               </p>
             )}
           </div>

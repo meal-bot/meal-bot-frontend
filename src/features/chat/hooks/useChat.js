@@ -103,7 +103,7 @@ export function useChat() {
     setMessages(prev => [
       ...prev,
       { id: userMsgId, role: 'user', content: currentQuery },
-      { id: assistantMsgId, role: 'assistant', content: '', isTyping: false },
+      { id: assistantMsgId, role: 'assistant', content: '', isTyping: false, recommendations: [] },
     ]);
     setQuery('');
     setIsLoading(true);
@@ -121,7 +121,11 @@ export function useChat() {
         ];
         result = await sendGuestChatMessage(guestChatHistory);
       }
-      const fullReply = result || '응답을 받지 못했습니다.';
+      const fullReply = result?.answer || '응답을 받지 못했습니다.';
+      const recommendations = result?.recommendations || [];
+      setMessages(prev => prev.map(msg =>
+        msg.id === assistantMsgId ? { ...msg, recommendations } : msg
+      ));
       setIsLoading(false);
       typeMessage(fullReply, assistantMsgId);
       // AI 응답 완료 후 갱신 → 백엔드가 타이틀을 생성한 뒤이므로 올바른 제목이 반영됨
