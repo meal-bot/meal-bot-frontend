@@ -23,7 +23,7 @@ export default function ChatInput({ value, onChange, onSubmit, sidebarOpen = fal
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
       e.preventDefault();
       onSubmit();
     }
