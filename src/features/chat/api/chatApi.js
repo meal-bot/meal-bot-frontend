@@ -16,14 +16,18 @@ export const createChatThread = async () => {
 // 대화 히스토리 전체를 매 요청마다 전송 → 백엔드는 stateless, DB 저장 없음
 // messages: [{ role: 'user'|'assistant', content: string }, ...]
 export const sendGuestChatMessage = async (messages) => {
+  console.log('[chatApi] sendGuestChatMessage 요청:', messages);
   const response = await api.post('/api/chat/guest/sendMessage', { messages }, { timeout: CHAT_TIMEOUT });
+  console.log('[chatApi] sendGuestChatMessage 응답:', response.data);
   return response.data; // { answer, recommendations?, intent?, flags? }
 };
 
 // 3. 단건 메시지 전송 및 AI 응답 수신 (로그인용)
 // 백엔드가 메시지 저장 → title 업데이트 → AI 호출을 한 번에 처리하고 응답 반환
 export const sendChatMessage = async (chatThreadId, content) => {
+  console.log('[chatApi] sendChatMessage 요청 - threadId:', chatThreadId, '/ content:', content);
   const response = await api.post(`/api/chat/${chatThreadId}/sendMessage`, { content }, { timeout: CHAT_TIMEOUT });
+  console.log('[chatApi] sendChatMessage 응답:', response.data);
   return response.data; // { messageId, intent, answer, recommendations, flags }
 };
 
@@ -38,12 +42,16 @@ export const fetchChatThreads = async () => {
 // 5. 특정 스레드의 전체 메시지 조회
 // 사이드바에서 이전 스레드를 클릭했을 때 해당 스레드의 메시지를 불러옴
 export const fetchChatThreadDetail = async (chatThreadId) => {
+  console.log('[chatApi] fetchChatThreadDetail 요청 - threadId:', chatThreadId);
   const response = await api.get(`/api/chat/${chatThreadId}`);
+  console.log('[chatApi] fetchChatThreadDetail 응답:', response.data);
   return response.data; // { chatId, title, messages: [{ role, content }, ...] }
 };
 
 // 6. 채팅 스레드 삭제
 // 사이드바에서 X 버튼 클릭했을 때 해당 스레드를 DB에서 제거
 export const deleteChatThread = async (chatThreadId) => {
+  console.log('[chatApi] deleteChatThread 요청 - threadId:', chatThreadId);
   await api.delete(`/api/chat/${chatThreadId}`);
+  console.log('[chatApi] deleteChatThread 완료 - threadId:', chatThreadId);
 };

@@ -3,6 +3,7 @@ import { fetchChatThreads } from '../../chat/api/chatApi';
 
 // GET /api/chat 재활용 (사이드바 API) — 전체 스레드를 날짜별로 그룹핑
 export const fetchCalendarMonthData = async () => {
+  console.log('[calendarApi] fetchCalendarMonthData 요청');
   const threads = await fetchChatThreads();
   const byDate = {};
   threads.forEach(thread => {
@@ -11,12 +12,15 @@ export const fetchCalendarMonthData = async () => {
     if (!byDate[date]) byDate[date] = [];
     byDate[date].push(thread);
   });
+  console.log('[calendarApi] fetchCalendarMonthData 결과 (날짜별 그룹):', byDate);
   return byDate;
 };
 
 // GET /api/calendar/{date} — 날짜 클릭 시 상세 (lastRecommendation 포함)
 export const fetchCalendarDateData = async (date) => {
+  console.log('[calendarApi] fetchCalendarDateData 요청 - date:', date);
   const response = await api.get(`/api/calendar/${date}`);
+  console.log('[calendarApi] fetchCalendarDateData 응답:', response.data);
   return response.data; // [{ chatId, title, lastRecommendation, createdAt }]
 };
 

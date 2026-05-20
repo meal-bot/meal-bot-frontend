@@ -27,7 +27,9 @@ export const saveInbody = async (form) => {
   const body = Object.fromEntries(
     Object.entries(form).map(([k, v]) => [k, v === '' ? null : v])
   );
+  console.log('[inbodyApi] saveInbody 요청:', body);
   await api.post('/api/inbody', body);
+  console.log('[inbodyApi] saveInbody 완료');
 };
 
 // 2. 내 인바디 기록 목록 조회 (최신순)
@@ -40,5 +42,7 @@ export const fetchInbodyList = async () => {
 
 // 3. 인바디 기록 삭제
 export const deleteInbody = async (inbodyId) => {
+  console.log('[inbodyApi] deleteInbody 요청 - inbodyId:', inbodyId);
   await api.delete(`/api/inbody/${inbodyId}`);
+  console.log('[inbodyApi] deleteInbody 완료 - inbodyId:', inbodyId);
 };
