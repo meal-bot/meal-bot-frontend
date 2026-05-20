@@ -203,8 +203,8 @@ export default function Calendar() {
                       {tag && <span className={`tag ${tag}`}>{TAG_LABEL[tag]}</span>}
                     </div>
                     <div className="title">{t.title || '제목 없음'}</div>
-                    {t.lastRecommendation && (
-                      <div className="preview">{t.lastRecommendation}</div>
+                    {t.recommendations?.length > 0 && (
+                      <div className="preview">{t.recommendations.join(', ')}</div>
                     )}
                   </div>
                 );

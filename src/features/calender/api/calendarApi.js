@@ -16,12 +16,12 @@ export const fetchCalendarMonthData = async () => {
   return byDate;
 };
 
-// GET /api/calendar/{date} — 날짜 클릭 시 상세 (lastRecommendation 포함)
+// GET /api/calendar/{date} — 날짜 클릭 시 상세 (추천 레시피 이름 목록 포함)
 export const fetchCalendarDateData = async (date) => {
   console.log('[calendarApi] fetchCalendarDateData 요청 - date:', date);
   const response = await api.get(`/api/calendar/${date}`);
   console.log('[calendarApi] fetchCalendarDateData 응답:', response.data);
-  return response.data; // [{ chatId, title, lastRecommendation, createdAt }]
+  return response.data; // [{ chatId, title, recommendations: string[], createdAt }]
 };
 
 // createdAt 시간 기준 끼니 태그 (6-10시 아침 / 11-14시 점심 / 17-21시 저녁)
