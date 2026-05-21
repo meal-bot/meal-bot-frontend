@@ -8,7 +8,7 @@ const CHAT_TIMEOUT = 60000; // 60초
 // 비로그인 사용자는 chatId가 null로 유지되고 대화 내용도 저장되지 않음
 export const createChatThread = async () => {
   const response = await api.post('/api/chat');
-  console.log('createChatThread response:', response.data);
+  console.log('[chatApi] createChatThread 응답:', response.data);
   return response.data.chatId; // 새로 생성된 스레드 ID 반환
 };
 
@@ -35,7 +35,7 @@ export const sendChatMessage = async (chatThreadId, content) => {
 // 로그인 사용자의 스레드 목록을 최신순으로 반환
 export const fetchChatThreads = async () => {
   const response = await api.get('/api/chat');
-  console.log('채팅 스레드 목록 응답:', response.data);  // 디버깅 로그
+  console.log('[chatApi] fetchChatThreads 응답:', response.data);
   return response.data; // [{ chatId, title, createdAt }, ...]
 };
 
