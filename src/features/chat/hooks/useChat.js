@@ -107,7 +107,7 @@ export function useChat() {
     setMessages(prev => [
       ...prev,
       { id: userMsgId, role: 'user', content: currentQuery },
-      { id: assistantMsgId, role: 'assistant', content: '', isTyping: false, recommendations: [] },
+      { id: assistantMsgId, role: 'assistant', content: '', isTyping: false, recommendations: [], flags: null },
     ]);
     setQuery('');
     setIsLoading(true);
@@ -127,8 +127,9 @@ export function useChat() {
       }
       const fullReply = result?.answer || '응답을 받지 못했습니다.';
       const recommendations = result?.recommendations || [];
+      const flags = result?.flags ?? null;
       setMessages(prev => prev.map(msg =>
-        msg.id === assistantMsgId ? { ...msg, recommendations } : msg
+        msg.id === assistantMsgId ? { ...msg, recommendations, flags } : msg
       ));
       setIsLoading(false);
       typeMessage(fullReply, assistantMsgId);

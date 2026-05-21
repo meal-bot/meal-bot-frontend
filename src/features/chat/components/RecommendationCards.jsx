@@ -4,7 +4,7 @@ export default function RecommendationCards({ recommendations }) {
   if (!recommendations?.length) return null;
 
   return (
-    <div className="grid grid-cols-2 gap-3 mt-3 w-full">
+    <div className={`grid gap-3 mt-3 w-full ${recommendations.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
       {recommendations.slice(0, 2).map((rec, index) => (
         <Card
           as="article"
