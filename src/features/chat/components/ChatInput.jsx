@@ -40,7 +40,7 @@ export default function ChatInput({ value, onChange, onSubmit, sidebarOpen = fal
   };
 
   return (
-    <section className={`fixed bottom-10 right-0 flex justify-center px-6 z-50 pointer-events-none transition-all duration-300 ${sidebarOpen ? 'left-60' : 'left-12'}`}>
+    <section className={`fixed bottom-6 md:bottom-10 right-0 left-0 flex justify-center px-4 md:px-6 z-50 pointer-events-none transition-all duration-300 ${sidebarOpen ? 'md:left-60' : 'md:left-12'}`}>
       <div className="w-full max-w-3xl bg-white/90 backdrop-blur-xl shadow-xl shadow-on-surface/5 rounded-3xl p-2 flex items-center gap-2 border border-outline-variant/30 pointer-events-auto">
         <div className="flex-grow relative">
           <textarea

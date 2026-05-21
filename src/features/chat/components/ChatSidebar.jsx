@@ -14,10 +14,19 @@ export default function ChatSidebar({ isOpen, onToggle, onChatThreadStart, chatT
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
   return (
+    <>
+      {/* 모바일 backdrop: 사이드바 열릴 때 배경 어둡게, 클릭 시 닫힘 */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 md:hidden"
+          style={{ zIndex: 'var(--z-sidebar)' }}
+          onClick={onToggle}
+        />
+      )}
     <aside
-      style={{ zIndex: 'var(--z-sidebar)' }}
+      style={{ zIndex: 'calc(var(--z-sidebar) + 1)' }}
       className={`fixed left-0 top-0 h-screen border-r border-outline-variant/30 bg-gray-100/80
-      backdrop-blur-sm flex flex-col py-4 gap-1 transition-all duration-300 ${isOpen ? 'w-60 px-3' : 'w-10.5 px-1'}`}
+      backdrop-blur-sm flex flex-col py-4 gap-1 transition-all duration-300 ${isOpen ? 'w-60 px-3' : 'w-0 md:w-10.5 px-0 md:px-1 overflow-hidden'}`}
     >
       {/* 토글 버튼: 열림이면 menu_open, 닫힘이면 menu 아이콘 */}
       <button
@@ -115,5 +124,6 @@ export default function ChatSidebar({ isOpen, onToggle, onChatThreadStart, chatT
         </>
       )}
     </aside>
+    </>
   );
 }

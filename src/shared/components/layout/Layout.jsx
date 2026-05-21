@@ -33,8 +33,8 @@ export default function Layout({ children, sidebarOpen, onSidebarToggle, onChatT
       )}
 
       <main
-        className={`pt-32 pb-40 pr-6 md:pr-12 max-w-screen-2xl mx-auto transition-all duration-300 ${
-          onSidebarToggle && sidebarOpen ? 'pl-64' : 'pl-16'
+        className={`pt-24 md:pt-32 pb-40 px-4 md:pr-12 max-w-screen-2xl mx-auto transition-all duration-300 ${
+          onSidebarToggle && sidebarOpen ? 'md:pl-64' : 'md:pl-16'
         }`}
       >
         {children}

@@ -3,25 +3,35 @@ import { useState, useRef, useEffect } from 'react';
 import { isLoggedIn, getName, clearAuth } from '../../../features/auth/utils/auth';
 import ConfirmDialog from '../ConfirmDialog';
 
-// sidebarOpen: 사이드바 너비만큼 로고를 우측으로 밀어 사이드바와 겹치지 않게 함
 export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }) {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
   const loggedIn = isLoggedIn();
   const name = getName();
 
-  // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
     function handleClickOutside(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const navLinks = [
+    { to: '/fridge', label: '냉장고를 부탁해' },
+    { to: '/inbody', label: '바디 분석' },
+    { to: '/inbody/new', label: '측정 입력' },
+    { to: '/calendar', label: '식단 캘린더' },
+  ];
 
   return (
     <>
@@ -29,51 +39,35 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
       className="fixed top-0 w-full border-b border-outline-variant/30"
       style={{ background: 'rgb(255, 255, 255)', backdropFilter: 'blur(12px)', zIndex: 'var(--z-navbar)' }}
     >
-      {/* 화면 양 끝까지 확장, px-8로 최소 여백 유지 */}
-      <div className="flex justify-between items-center px-8 h-20 w-full">
-        {/* 사이드바 너비에 맞춰 로고 위치 이동 */}
+      <div className="flex justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full">
+
+        {/* 왼쪽: 로고 + 데스크톱 nav 링크 */}
         <div className="flex items-center gap-6">
           <Link
             to="/main"
             onClick={onChatThreadStart}
-            className={`text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'ml-60' : 'ml-10.5'}`}
+            className={`text-xl md:text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'md:ml-60' : 'md:ml-10.5'}`}
           >
             Meal-Bot
           </Link>
-          <Link
-            to="/fridge"
-            className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
-          >
-            냉장고를 부탁해
-          </Link>
-          <Link
-            to="/inbody"
-            className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
-          >
-            바디 분석
-          </Link>
-          <Link
-            to="/inbody/new"
-            className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
-          >
-            측정 입력
-          </Link>
-          <Link
-            to="/calendar"
-            className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
-          >
-            식단 캘린더
-          </Link>
+          {/* 데스크톱 전용 링크 목록 */}
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map(({ to, label }) => (
+              <Link key={to} to={to} className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors">
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
 
-        {/* 오른쪽 사용자 메뉴 - 우측 끝단 고정 */}
-        <div className="flex items-center gap-4">
-          {loggedIn && (
-            <span className="inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">환영합니다 {name}님!</span>
-          )}
-          {!loggedIn && (
-            <span className="inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">로그인하여 맞춤 식단을 받아보세요</span>
-          )}
+        {/* 오른쪽: 사용자 메뉴 + 모바일 햄버거 */}
+        <div className="flex items-center gap-3">
+          {/* 환영 문구: md 이상에서만 표시 */}
+          <span className="hidden md:inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">
+            {loggedIn ? `환영합니다 ${name}님!` : '로그인하여 맞춤 식단을 받아보세요'}
+          </span>
+
+          {/* 계정 아이콘 드롭다운 */}
           <div className="relative flex items-center" ref={dropdownRef}>
             <span
               className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors select-none"
@@ -82,7 +76,6 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
             >
               account_circle
             </span>
-            {/* 드롭다운 메뉴 NOT 로그인 */}
             {dropdownOpen && !loggedIn && (
               <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-outline-variant/30 bg-white/95 shadow-lg backdrop-blur-sm py-1">
                 <Link
@@ -95,8 +88,6 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
                 </Link>
               </div>
             )}
-
-            {/* 드롭다운 메뉴 로그인 상태 */}
             {dropdownOpen && loggedIn && (
               <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-outline-variant/30 bg-white/95 shadow-lg backdrop-blur-sm py-1">
                 <Link
@@ -116,6 +107,37 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
                   <span className="material-symbols-outlined text-base">logout</span>
                   로그아웃
                 </button>
+              </div>
+            )}
+          </div>
+
+          {/* 모바일 햄버거 버튼 */}
+          <div className="md:hidden relative" ref={mobileMenuRef}>
+            <button
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-surface-container transition-colors"
+            >
+              <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '24px' }}>
+                {mobileMenuOpen ? 'close' : 'menu'}
+              </span>
+            </button>
+            {mobileMenuOpen && (
+              <div className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-outline-variant/30 bg-white/95 shadow-lg backdrop-blur-sm py-1 z-50">
+                {loggedIn && (
+                  <p className="px-4 py-2 text-xs font-bold text-on-surface-variant border-b border-outline-variant/20">
+                    {name}님
+                  </p>
+                )}
+                {navLinks.map(({ to, label }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className="flex items-center px-4 py-2.5 text-sm text-on-surface hover:bg-surface-variant/40 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {label}
+                  </Link>
+                ))}
               </div>
             )}
           </div>
