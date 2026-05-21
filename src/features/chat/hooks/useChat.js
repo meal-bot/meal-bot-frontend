@@ -21,6 +21,7 @@ export function useChat() {
   const [chatThreads, setChatThreads] = useState([]);
   const messagesEndRef = useRef(null);
   const typingIntervalRef = useRef(null);
+  const isSubmittingRef = useRef(false);
 
   const hasMessages = messages.length > 0;
 
@@ -79,7 +80,10 @@ export function useChat() {
 
   // 메시지 전송 핸들러
   const handleSubmit = async () => {
+    if (isSubmittingRef.current) return;
     if (!query.trim() || isLoading) return;
+
+    isSubmittingRef.current = true;
 
     const currentQuery = query;
     const userMsgId = Date.now();
@@ -136,6 +140,8 @@ export function useChat() {
       const fallback = '임시 답변입니다. (서버 연결 대기 중)';
       setIsLoading(false);
       typeMessage(fallback, assistantMsgId);
+    } finally {
+      isSubmittingRef.current = false;
     }
   };
 

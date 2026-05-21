@@ -5,15 +5,24 @@ import { Button } from '../../../shared/components/ui';
 // sidebarOpen: 사이드바 열림 여부 → left 값을 조정해 사이드바와 겹치지 않게 위치 이동
 export default function ChatInput({ value, onChange, onSubmit, sidebarOpen = false }) {
   const textareaRef = useRef(null);
+  const isComposingRef = useRef(false);
+  const compositionEndTimerRef = useRef(null);
 
   //const { conversations, loadConversations } = useConversations(onSubmit);
-
 
   useEffect(() => {
     if (!value && textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
   }, [value]);
+
+  useEffect(() => {
+    return () => {
+      if (compositionEndTimerRef.current) {
+        clearTimeout(compositionEndTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleInput = (e) => {
     const el = e.target;
@@ -22,8 +31,23 @@ export default function ChatInput({ value, onChange, onSubmit, sidebarOpen = fal
     onChange(e.target.value);
   };
 
+  const handleCompositionStart = () => {
+    if (compositionEndTimerRef.current) {
+      clearTimeout(compositionEndTimerRef.current);
+      compositionEndTimerRef.current = null;
+    }
+    isComposingRef.current = true;
+  };
+
+  const handleCompositionEnd = () => {
+    compositionEndTimerRef.current = setTimeout(() => {
+      isComposingRef.current = false;
+      compositionEndTimerRef.current = null;
+    }, 0);
+  };
+
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !isComposingRef.current) {
       e.preventDefault();
       onSubmit();
     }
@@ -37,6 +61,8 @@ export default function ChatInput({ value, onChange, onSubmit, sidebarOpen = fal
             ref={textareaRef}
             value={value}
             onChange={handleInput}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
             onKeyDown={handleKeyDown}
             placeholder="어떤 식단이든 물어보세요... '저탄수화물 식단 추천해줘'"
             rows={1}
