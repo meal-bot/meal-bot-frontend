@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { Card } from '../../../shared/components/ui';
 
 // 추천 카드 클릭 시 뜨는 상세 모달 (read-only)
@@ -16,7 +17,7 @@ export default function RecipeDetailModal({ recipe, onClose }) {
     { key: 'fat',      label: '지방',   unit: 'g',   color: 'bg-error-container text-error' },
   ];
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4">
       {/* 백드롭: 클릭으로 닫히지 않음 (X 버튼만으로 닫기) */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
@@ -116,6 +117,7 @@ export default function RecipeDetailModal({ recipe, onClose }) {
 
         </div>
       </Card>
-    </div>
+    </div>,
+    document.body
   );
 }
