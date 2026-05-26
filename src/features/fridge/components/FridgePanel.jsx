@@ -1,10 +1,27 @@
-import { useMemo } from 'react';
-import { INGREDIENTS, CATS } from './data';
+import { useMemo, useState } from 'react';
+import { INGREDIENTS, CATS } from '../data/fridgeData';
 
 export default function FridgePanel({
-  picked, onPick, onDragStart, onDragEnd,
+  picked, onPick, onAddCustom, onDragStart, onDragEnd,
   search, setSearch, cat, setCat,
 }) {
+  // 직접 입력 카드 상태: false면 "+" 카드, true면 입력 필드
+  const [isAdding, setIsAdding] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+
+  const handleCustomKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const value = inputValue.trim();
+      if (value) onAddCustom(value);
+      setInputValue('');
+      setIsAdding(false);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setInputValue('');
+      setIsAdding(false);
+    }
+  };
   const filtered = useMemo(() => {
     return INGREDIENTS.filter(i => {
       if (cat !== '전체' && i.cat !== cat) return false;
@@ -93,6 +110,46 @@ export default function FridgePanel({
           </div>
         ))
       )}
+
+      {/* 직접 입력 카드: 카테고리/검색 필터 무관하게 항상 표시 */}
+      <div className="shelf">
+        <div className="shelf-label">직접 추가</div>
+        <div className="ingredients">
+          {isAdding ? (
+            <div className="ing" style={{ cursor: 'text' }}>
+              <div className="ing-glyph">➕</div>
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleCustomKeyDown}
+                placeholder="재료 이름"
+                autoFocus
+                style={{
+                  width: '100%',
+                  border: 'none',
+                  background: 'transparent',
+                  textAlign: 'center',
+                  fontSize: '11.5px',
+                  fontFamily: 'inherit',
+                  outline: 'none',
+                  color: 'var(--ink)',
+                }}
+              />
+            </div>
+          ) : (
+            <div
+              className="ing"
+              onClick={() => setIsAdding(true)}
+              style={{ cursor: 'pointer' }}
+              title="없는 재료를 직접 입력해서 추가"
+            >
+              <div className="ing-glyph">➕</div>
+              <div className="ing-name">직접 입력</div>
+            </div>
+          )}
+        </div>
+      </div>
     </section>
   );
 }

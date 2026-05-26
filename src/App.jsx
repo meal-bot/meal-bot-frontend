@@ -7,7 +7,7 @@ import MealDetailPage from './features/meal/pages/MealDetailPage';
 import InBodyInputPage from './features/inbody/pages/InBodyInputPage';
 import InBodyDashboardPage from './features/inbody/pages/InBodyDashboardPage';
 import LandingPage from './features/landing/pages/LandingPage';
-import FridgePage from './features/fridge/FridgePage';
+import FridgePage from './features/fridge/pages/FridgePage';
 import CalendarPage from './features/calender/pages/CalendarPage';
 import { isLoggedIn, loginWithGoogle, loginWithKakao } from './features/auth/utils/auth';
 import { SidebarProvider } from './shared/context/SidebarContext';

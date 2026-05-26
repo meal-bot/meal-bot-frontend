@@ -1,7 +1,11 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { INGREDIENTS } from './data';
+import { INGREDIENTS } from '../data/fridgeData';
 
-export default function ChefPanel({ picked, setPicked, isDragging, onRecommend, isLoading }) {
+export default function ChefPanel({
+  picked, setPicked,
+  customIngredients, onRemoveCustom, onClearAll,
+  isDragging, onRecommend, isLoading,
+}) {
   const [armed, setArmed] = useState(false);
   const dragDepth = useRef(0);
 
@@ -40,14 +44,16 @@ export default function ChefPanel({ picked, setPicked, isDragging, onRecommend, 
     return m;
   }, []);
 
-  const remove = (id) => setPicked(picked.filter(p => p !== id));
-  const clear = () => setPicked([]);
+  const removePreset = (id) => setPicked(picked.filter(p => p !== id));
+
+  // preset + custom 합쳐서 총 개수 (UI 카운트/disabled 판단에 사용)
+  const totalCount = picked.length + customIngredients.length;
 
   const chefLine = activeArmed
     ? '좋아요, 이 재료 받았습니다 — 놓으세요!'
-    : picked.length === 0
+    : totalCount === 0
       ? '안녕하세요. 냉장고에서 재료를 끌어 주세요. 멋진 한 끼를 제안해 드릴게요.'
-      : `${picked.length}가지 재료로 무엇을 만들까 고민 중이에요. 더 추가하셔도 좋아요.`;
+      : `${totalCount}가지 재료로 무엇을 만들까 고민 중이에요. 더 추가하셔도 좋아요.`;
 
   return (
     <section className="chef">
@@ -66,36 +72,46 @@ export default function ChefPanel({ picked, setPicked, isDragging, onRecommend, 
       <div className="basket">
         <div className="basket-head">
           <span className="basket-label">선택한 재료</span>
-          {picked.length > 0 ? (
+          {totalCount > 0 ? (
             <span style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <span className="basket-count">{picked.length}</span>
-              <button className="basket-clear" onClick={clear}>모두 비우기</button>
+              <span className="basket-count">{totalCount}</span>
+              <button className="basket-clear" onClick={onClearAll}>모두 비우기</button>
             </span>
           ) : (
             <span className="basket-count" style={{ color: 'var(--ink-3)' }}>0</span>
           )}
         </div>
         <div className="tags">
-          {picked.length === 0 ? (
+          {totalCount === 0 ? (
             <span className="tag-empty">아직 비어 있어요</span>
-          ) : picked.map(id => (
-            <span className="tag" key={id}>
-              {lookup[id]?.glyph} {lookup[id]?.name}
-              <button className="tag-x" onClick={() => remove(id)} aria-label="제거">×</button>
-            </span>
-          ))}
+          ) : (
+            <>
+              {picked.map(id => (
+                <span className="tag" key={id}>
+                  {lookup[id]?.glyph} {lookup[id]?.name}
+                  <button className="tag-x" onClick={() => removePreset(id)} aria-label="제거">×</button>
+                </span>
+              ))}
+              {customIngredients.map(name => (
+                <span className="tag" key={`custom-${name}`}>
+                  ✏️ {name}
+                  <button className="tag-x" onClick={() => onRemoveCustom(name)} aria-label="제거">×</button>
+                </span>
+              ))}
+            </>
+          )}
         </div>
       </div>
 
       <button
         className="recommend-btn"
-        disabled={picked.length === 0 || isLoading}
+        disabled={totalCount === 0 || isLoading}
         onClick={onRecommend}
       >
         {isLoading ? (
           <><span className="spin"></span> 셰프가 고민 중…</>
         ) : (
-          <>✨ 추천받기 {picked.length > 0 && `· ${picked.length}개 재료`}</>
+          <>✨ 추천받기 {totalCount > 0 && `· ${totalCount}개 재료`}</>
         )}
       </button>
 
