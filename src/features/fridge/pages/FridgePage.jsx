@@ -42,7 +42,8 @@ export default function FridgePage() {
     setCustomIngredients([]);
   };
 
-  // 추천 요청: preset 재료(ID)는 이름으로 변환, custom 재료와 합쳐서 API 호출
+  // 추천 요청: preset 재료(ID)는 이름으로 변환, custom 재료는 그대로 분리해서 전송
+  // Spring DTO 구조: ingredients(표준) / extras(추가) / count(받을 개수) 로 분리
   const handleRecommend = async () => {
     setIsLoading(true);
     setResults([]);
@@ -51,10 +52,9 @@ export default function FridgePage() {
       const item = INGREDIENTS.find(i => i.id === id);
       return item?.name || id;
     });
-    const allIngredients = [...presetNames, ...customIngredients];
 
     try {
-      const data = await fetchFridgeRecommendation(allIngredients, '');
+      const data = await fetchFridgeRecommendation(presetNames, customIngredients, 2);
       setResults(data.recommendations || []);
     } catch (error) {
       console.error('냉장고 추천 실패:', error);

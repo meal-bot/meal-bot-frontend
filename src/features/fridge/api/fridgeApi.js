@@ -4,15 +4,16 @@ import api from '../../../api/axiosInstance';
 const FRIDGE_TIMEOUT = 60000; // 60초
 
 // 냉장고 재료 기반 메뉴 추천 요청
-// ingredients: 선택한 재료 이름 배열 (예: ["새우", "양파", "마늘"])
-// extras: 사용자가 직접 입력한 추가 재료 텍스트 (예: "에멘탈 치즈"), 없으면 빈 문자열
-export const fetchFridgeRecommendation = async (ingredients, extras = '') => {
-  console.log('[fridgeApi] fetchFridgeRecommendation 요청:', { ingredients, extras });
+// ingredients: 표준 재료 이름 배열 (preset 목록에서 고른 것, 예: ["새우", "양파"])
+// extras: 사용자가 직접 입력한 추가 재료 배열 (예: ["에멘탈 치즈"]), 없으면 빈 배열
+// count: 받고 싶은 추천 개수 (기본 2)
+export const fetchFridgeRecommendation = async (ingredients, extras = [], count = 2) => {
+  console.log('[fridgeApi] fetchFridgeRecommendation 요청:', { ingredients, extras, count });
   const response = await api.post(
     '/api/fridge/recommend',
-    { ingredients, extras },
+    { ingredients, extras, count },
     { timeout: FRIDGE_TIMEOUT }
   );
   console.log('[fridgeApi] fetchFridgeRecommendation 응답:', response.data);
-  return response.data; // { answer, recommendations, flags }
+  return response.data; // { recommendations: [...] }
 };
