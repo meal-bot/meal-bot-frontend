@@ -71,16 +71,16 @@ export default function Calendar() {
   const [sel, setSel] = useState(null);
   const [closing, setClosing] = useState(false);
   const closeTimer = useRef(null);
-  const [threadsByDate, setThreadsByDate] = useState({});
+  const [chatsByDate, setChatsByDate] = useState({});
   const [isLoaded, setIsLoaded] = useState(false);
   const isLoading = !isLoaded;
-  const [detailThreads, setDetailThreads] = useState([]);
+  const [selectedDateChats, setSelectedDateChats] = useState([]);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
 
   useEffect(() => {
     fetchCalendarMonthData()
       .then(data => {
-        setThreadsByDate(data);
+        setChatsByDate(data);
         setIsLoaded(true);
       })
       .catch(() => setIsLoaded(true));
@@ -93,11 +93,11 @@ export default function Calendar() {
   const openDay = (c) => {
     setClosing(false);
     setSel({ y: c.y, m: c.m, d: c.d });
-    setDetailThreads([]);
+    setSelectedDateChats([]);
     setIsDetailLoading(true);
     fetchCalendarDateData(isoDate(c.y, c.m, c.d))
-      .then(data => setDetailThreads(data))
-      .catch(() => setDetailThreads([]))
+      .then(data => setSelectedDateChats(data))
+      .catch(() => setSelectedDateChats([]))
       .finally(() => setIsDetailLoading(false));
   };
   const closeDay = () => {
@@ -116,8 +116,8 @@ export default function Calendar() {
     return () => window.removeEventListener('keydown', onKey);
   }, [sel, go]);
 
-  const threads = detailThreads;
-  const selCount = threads.length;
+  const chatsForSelectedDate = selectedDateChats;
+  const selCount = chatsForSelectedDate.length;
 
   return (
     <div className="ab">
@@ -132,7 +132,7 @@ export default function Calendar() {
           <DowRow />
           <div className="cal-grid">
             {cells.map((c, i) => {
-              const count = (threadsByDate[isoDate(c.y, c.m, c.d)] || []).length;
+              const count = (chatsByDate[isoDate(c.y, c.m, c.d)] || []).length;
               const today = isToday(c.y, c.m, c.d);
               const future = isFuture(c.y, c.m, c.d);
               const inactive = !c.outside && (count === 0 || future);
@@ -178,33 +178,33 @@ export default function Calendar() {
             </div>
             <div className="meta">
               <span><b>{selCount}</b> 대화</span>
-              <span><b>{threads.filter(t => getMealTag(t.createdAt) === 'bf').length}</b> 아침</span>
-              <span><b>{threads.filter(t => getMealTag(t.createdAt) === 'ln').length}</b> 점심</span>
-              <span><b>{threads.filter(t => getMealTag(t.createdAt) === 'dn').length}</b> 저녁</span>
+              <span><b>{chatsForSelectedDate.filter(chat => getMealTag(chat.createdAt) === 'bf').length}</b> 아침</span>
+              <span><b>{chatsForSelectedDate.filter(chat => getMealTag(chat.createdAt) === 'ln').length}</b> 점심</span>
+              <span><b>{chatsForSelectedDate.filter(chat => getMealTag(chat.createdAt) === 'dn').length}</b> 저녁</span>
             </div>
             <div className="body">
               {isDetailLoading && (
                 <div className="empty">불러오는 중...</div>
               )}
-              {!isDetailLoading && threads.length === 0 && (
+              {!isDetailLoading && chatsForSelectedDate.length === 0 && (
                 <div className="empty">대화 기록이 없습니다</div>
               )}
-              {!isDetailLoading && threads.map((t, i) => {
-                const tag = getMealTag(t.createdAt);
+              {!isDetailLoading && chatsForSelectedDate.map((chat, i) => {
+                const tag = getMealTag(chat.createdAt);
                 return (
                   <div
-                    key={t.chatId}
+                    key={chat.chatId}
                     className="convo-card"
                     style={{ '--i': i }}
-                    onClick={() => navigate('/main', { state: { chatThreadId: t.chatId } })}
+                    onClick={() => navigate('/main', { state: { chatIdToOpen: chat.chatId } })}
                   >
                     <div className="top">
-                      <span className="time">{formatTime(t.createdAt)}</span>
+                      <span className="time">{formatTime(chat.createdAt)}</span>
                       {tag && <span className={`tag ${tag}`}>{TAG_LABEL[tag]}</span>}
                     </div>
-                    <div className="title">{t.title || '제목 없음'}</div>
-                    {t.recommendations?.length > 0 && (
-                      <div className="preview">{t.recommendations.join(', ')}</div>
+                    <div className="title">{chat.title || '제목 없음'}</div>
+                    {chat.recommendations?.length > 0 && (
+                      <div className="preview">{chat.recommendations.join(', ')}</div>
                     )}
                   </div>
                 );

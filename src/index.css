@@ -437,9 +437,9 @@ body {
 }
 .fridge-page .cat:hover { border-color: var(--line-3); color: var(--ink); }
 .fridge-page .cat.active {
-  background: var(--ink);
+  background: var(--sage);
   color: #fff;
-  border-color: var(--ink);
+  border-color: var(--sage);
 }
 .fridge-page .cat .count {
   font-family: inherit;
@@ -639,7 +639,7 @@ body {
 .fridge-page .tag {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 8px 8px 8px 12px;
-  background: var(--ink);
+  background: var(--sage);
   color: #fff;
   border-radius: 999px;
   font-size: 12px;
@@ -669,7 +669,7 @@ body {
   width: 100%;
   padding: 16px 24px;
   display: flex; align-items: center; justify-content: center; gap: 12px;
-  background: var(--ink);
+  background: var(--sage);
   color: #fff;
   border-radius: 12px;
   font-size: 14.5px;
@@ -679,10 +679,10 @@ body {
 }
 .fridge-page .recommend-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 10px 28px rgba(26,26,26,.18);
+  box-shadow: 0 10px 28px rgba(156,175,136,.34);
 }
 .fridge-page .recommend-btn:disabled {
-  background: rgba(26,26,26,.18);
+  background: rgba(156,175,136,.48);
   color: #fff;
   cursor: not-allowed;
 }
@@ -794,7 +794,7 @@ body {
   transition: background .15s, color .15s, transform .15s;
 }
 .fridge-page .rcard:hover .rcard-cta {
-  background: var(--ink);
+  background: var(--sage);
   color: var(--bg-paper);
   transform: rotate(-45deg);
 }

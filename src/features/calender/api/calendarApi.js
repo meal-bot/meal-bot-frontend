@@ -1,16 +1,16 @@
 import api from '../../../api/axiosInstance';
-import { fetchChatThreads } from '../../chat/api/chatApi';
+import { fetchChats } from '../../chat/api/chatApi';
 
-// GET /api/chat 재활용 (사이드바 API) — 전체 스레드를 날짜별로 그룹핑
+// GET /api/chat 재활용 (사이드바 API) — 전체 채팅을 날짜별로 그룹핑
 export const fetchCalendarMonthData = async () => {
   console.log('[calendarApi] fetchCalendarMonthData 요청');
-  const threads = await fetchChatThreads();
+  const chats = await fetchChats();
   const byDate = {};
-  threads.forEach(thread => {
-    const date = thread.createdAt?.slice(0, 10);
+  chats.forEach(chat => {
+    const date = chat.createdAt?.slice(0, 10);
     if (!date) return;
     if (!byDate[date]) byDate[date] = [];
-    byDate[date].push(thread);
+    byDate[date].push(chat);
   });
   console.log('[calendarApi] fetchCalendarMonthData 결과 (날짜별 그룹):', byDate);
   return byDate;

@@ -17,32 +17,32 @@ export default function MainPage() {
 
   const { query, setQuery,
           messages, isLoading, hasMessages, messagesEndRef,
-          handleSubmit, startChatThread, openChatThread, chatThreadId,
-          chatThreads, fetchThreadList, deleteChatThread,
+          handleSubmit, startNewChat, openExistingChat, chatId,
+          chats, refreshChats, deleteChat,
         } = useChat();
 
-  // 사이드바가 열릴 때마다 스레드 목록 갱신 (기존 Sidebar의 useEffect 역할을 MainPage가 담당)
+  // 사이드바가 열릴 때마다 채팅 목록 갱신 (기존 Sidebar의 useEffect 역할을 MainPage가 담당)
   useEffect(() => {
-    if (sidebarOpen && isLoggedIn()) fetchThreadList();
-  }, [sidebarOpen, fetchThreadList]);
+    if (sidebarOpen && isLoggedIn()) refreshChats();
+  }, [sidebarOpen, refreshChats]);
 
-  // 인바디 등 다른 페이지 사이드바에서 스레드 클릭 시 해당 스레드 자동 로드
+  // 캘린더 등 다른 페이지에서 채팅 클릭 시 해당 채팅 자동 로드
   // ref로 마운트 시점의 state만 캡처 → location 변경에 재반응하지 않음
-  const incomingThreadId = useRef(location.state?.chatThreadId);
+  const chatIdToOpen = useRef(location.state?.chatIdToOpen);
   useEffect(() => {
-    if (incomingThreadId.current) openChatThread(incomingThreadId.current);
-  }, [openChatThread]);
+    if (chatIdToOpen.current) openExistingChat(chatIdToOpen.current);
+  }, [openExistingChat]);
 
   return (
     <Layout
       sidebarOpen={sidebarOpen}
       onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
-      onChatThreadStart={startChatThread}
-      chatThreads={chatThreads}
-      onChatThreadSelect={openChatThread}
-      onChatThreadDelete={(targetChatThreadId) => {
-        deleteChatThread(targetChatThreadId);
-        if (targetChatThreadId === chatThreadId) startChatThread();  // 현재 스레드 삭제 시 새 채팅으로 초기화
+      onStartNewChat={startNewChat}
+      chats={chats}
+      onOpenExistingChat={openExistingChat}
+      onDeleteChat={(chatIdToDelete) => {
+        deleteChat(chatIdToDelete);
+        if (chatIdToDelete === chatId) startNewChat();  // 현재 채팅 삭제 시 새 채팅으로 초기화
       }}
     >
       {/* 헤더 + 슬라이더: 채팅 시작 시 부드럽게 사라짐 */}

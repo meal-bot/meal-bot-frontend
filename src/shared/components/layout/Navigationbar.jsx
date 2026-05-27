@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { isLoggedIn, getName, clearAuth } from '../../../features/auth/utils/auth';
 import ConfirmDialog from '../ConfirmDialog';
 
-export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }) {
+export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -45,7 +45,7 @@ export default function Navigationbar({ sidebarOpen = false, onChatThreadStart }
         <div className="flex items-center gap-6">
           <Link
             to="/main"
-            onClick={onChatThreadStart}
+            onClick={onStartNewChat}
             className={`text-xl md:text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'md:ml-60' : 'md:ml-10.5'}`}
           >
             Meal-Bot
