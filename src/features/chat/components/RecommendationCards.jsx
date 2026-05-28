@@ -1,11 +1,38 @@
 import { useState } from 'react';
 import { Card } from '../../../shared/components/ui';
 import RecipeDetailModal from '../../meal/components/RecipeDetailModal';
-import { MOCK_RECIPE_DETAIL } from '../../meal/data/mockRecipeDetail';
+import { fetchRecipeDetail } from '../../meal/api/recipeApi';
 
 export default function RecommendationCards({ recommendations }) {
-  // 클릭된 카드 객체 (모달 열림 여부 = selected !== null)
   const [selected, setSelected] = useState(null);
+  const [detail, setDetail] = useState(null);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState('');
+
+  const loadRecipeDetail = async (rec) => {
+    if (!rec?.recipeId) return;
+
+    setSelected(rec);
+    setDetail(null);
+    setDetailError('');
+    setIsDetailLoading(true);
+
+    try {
+      const data = await fetchRecipeDetail(rec.recipeId);
+      setDetail(data);
+    } catch (error) {
+      setDetailError(error?.message || '레시피 상세 정보를 불러오지 못했습니다.');
+    } finally {
+      setIsDetailLoading(false);
+    }
+  };
+
+  const closeModal = () => {
+    setSelected(null);
+    setDetail(null);
+    setDetailError('');
+    setIsDetailLoading(false);
+  };
 
   if (!recommendations?.length) return null;
 
@@ -17,7 +44,7 @@ export default function RecommendationCards({ recommendations }) {
           as="article"
           padding="none"
           key={rec.recipeId}
-          onClick={() => setSelected(rec)}
+          onClick={() => loadRecipeDetail(rec)}
           className="overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-shadow"
         >
           {/* 순서 뱃지 + 제목 영역 */}
@@ -64,11 +91,13 @@ export default function RecommendationCards({ recommendations }) {
       ))}
     </div>
 
-    {/* 백엔드 상세 데이터 연결 시 ...MOCK_RECIPE_DETAIL 제거 */}
     {selected && (
       <RecipeDetailModal
-        recipe={{ ...selected, ...MOCK_RECIPE_DETAIL }}
-        onClose={() => setSelected(null)}
+        recipe={detail || selected}
+        isLoading={isDetailLoading}
+        error={detailError}
+        onRetry={() => loadRecipeDetail(selected)}
+        onClose={closeModal}
       />
     )}
     </>

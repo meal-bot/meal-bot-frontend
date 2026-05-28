@@ -1,20 +1,42 @@
 import { createPortal } from 'react-dom';
 import { Card } from '../../../shared/components/ui';
 
-// 추천 카드 클릭 시 뜨는 상세 모달 (read-only)
-// recipe: 카드 데이터 + 백엔드 상세 데이터(nutrition/ingredients/instructions) 머지된 객체
-// onClose: X 버튼 클릭 핸들러 (backdrop 클릭으로는 닫히지 않음)
-export default function RecipeDetailModal({ recipe, onClose }) {
+export default function RecipeDetailModal({ recipe, isLoading = false, error = '', onRetry, onClose }) {
   if (!recipe) return null;
 
-  const { name, mainIngredients, cookingTime, summary, reason,
-          nutrition, ingredients, instructions } = recipe;
+  const {
+    name,
+    summary,
+    category,
+    mainIngredients,
+    tasteTags,
+    dishTypeTags,
+    cookingTime,
+    difficulty,
+    spicyLevel,
+    nutrition,
+    ingredientsStructured,
+    manuals,
+    imgMain,
+    imgThumb,
+  } = recipe;
+
+  const canShowDetail = !isLoading && !error;
+  const heroImage = imgMain || imgThumb;
+  const detailTags = [...(tasteTags || []), ...(dishTypeTags || [])].filter(Boolean);
 
   const NUTRITION_LABELS = [
-    { key: 'calories', label: '칼로리', unit: 'kcal', color: 'bg-primary-container text-primary' },
-    { key: 'protein',  label: '단백질', unit: 'g',   color: 'bg-tertiary-container text-tertiary' },
-    { key: 'carbs',    label: '탄수화물', unit: 'g', color: 'bg-secondary-container text-secondary' },
-    { key: 'fat',      label: '지방',   unit: 'g',   color: 'bg-error-container text-error' },
+    { key: 'energyKcal', label: '칼로리', unit: 'kcal', color: 'bg-primary-container text-primary' },
+    { key: 'proteinG', label: '단백질', unit: 'g', color: 'bg-tertiary-container text-tertiary' },
+    { key: 'carbsG', label: '탄수화물', unit: 'g', color: 'bg-secondary-container text-secondary' },
+    { key: 'fatG', label: '지방', unit: 'g', color: 'bg-error-container text-error' },
+    { key: 'sodiumMg', label: '나트륨', unit: 'mg', color: 'bg-surface-container text-on-surface-variant' },
+  ];
+
+  const INGREDIENT_SECTIONS = [
+    { key: 'main', label: '주재료' },
+    { key: 'sauce', label: '양념' },
+    { key: 'garnish', label: '고명' },
   ];
 
   return createPortal(
@@ -52,20 +74,72 @@ export default function RecipeDetailModal({ recipe, onClose }) {
 
         <div className="px-6 py-5 flex flex-col gap-6">
 
-          {/* 요약 / 추천 이유 */}
-          {(summary || reason) && (
-            <div className="flex flex-col gap-2">
-              {summary && (
-                <p className="text-sm text-on-surface-variant leading-relaxed">{summary}</p>
-              )}
-              {reason && (
-                <p className="text-sm text-primary leading-relaxed font-medium">{reason}</p>
+          {isLoading && (
+            <div className="flex items-center gap-2 rounded-xl bg-surface-container px-4 py-3 text-sm font-bold text-on-surface-variant">
+              <span className="material-symbols-outlined animate-spin" style={{ fontSize: '18px' }}>progress_activity</span>
+              레시피 상세 정보를 불러오는 중입니다
+            </div>
+          )}
+
+          {error && (
+            <div className="flex flex-col gap-3 rounded-xl bg-error-container px-4 py-3 text-error">
+              <p className="text-sm font-bold">{error}</p>
+              {onRetry && (
+                <button
+                  type="button"
+                  onClick={onRetry}
+                  className="self-start rounded-lg bg-white/70 px-3 py-1.5 text-xs font-extrabold hover:bg-white transition-colors"
+                >
+                  다시 시도
+                </button>
               )}
             </div>
           )}
 
+          {canShowDetail && (
+            heroImage ? (
+              <img
+                src={heroImage}
+                alt={name}
+                className="h-56 w-full rounded-xl object-cover bg-surface-container"
+              />
+            ) : (
+              <div className="h-40 w-full rounded-xl bg-surface-container flex items-center justify-center text-sm font-bold text-on-surface-variant">
+                레시피 이미지가 없습니다
+              </div>
+            )
+          )}
+
+          {canShowDetail && summary && (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-on-surface-variant leading-relaxed">{summary}</p>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {category && (
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant">
+                    {category}
+                  </span>
+                )}
+                {difficulty && (
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant">
+                    {difficulty}
+                  </span>
+                )}
+                {spicyLevel != null && (
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant">
+                    매운맛 {spicyLevel}
+                  </span>
+                )}
+                {detailTags.map((tag, i) => (
+                  <span key={`${tag}-${i}`} className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary-container text-primary">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* 영양 정보 */}
-          {nutrition && (
+          {canShowDetail && nutrition && (
             <section className="flex flex-col gap-2">
               <h3 className="text-sm font-extrabold text-on-surface tracking-tight">영양 정보</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -84,34 +158,63 @@ export default function RecipeDetailModal({ recipe, onClose }) {
           )}
 
           {/* 식재료 */}
-          {ingredients?.length > 0 && (
+          {canShowDetail && ingredientsStructured && (
             <section className="flex flex-col gap-2">
               <h3 className="text-sm font-extrabold text-on-surface tracking-tight">식재료</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-                {ingredients.map((ing, i) => (
-                  <div key={i} className="flex justify-between items-baseline border-b border-outline-variant/20 py-1.5">
-                    <span className="text-sm text-on-surface">{ing.name}</span>
-                    <span className="text-xs font-medium text-on-surface-variant">{ing.amount}</span>
-                  </div>
-                ))}
+              <div className="flex flex-col gap-4">
+                {INGREDIENT_SECTIONS.map(({ key, label }) => {
+                  const items = ingredientsStructured[key] || [];
+                  if (items.length === 0) return null;
+
+                  return (
+                    <div key={key} className="flex flex-col gap-1.5">
+                      <h4 className="text-xs font-extrabold text-primary">{label}</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                        {items.map((ing, i) => (
+                          <div key={`${ing.name}-${i}`} className="flex justify-between gap-3 items-baseline border-b border-outline-variant/20 py-1.5">
+                            <span className="text-sm text-on-surface">{ing.name}</span>
+                            <span className="text-xs font-medium text-on-surface-variant text-right">
+                              {ing.amount}{ing.note ? ` (${ing.note})` : ''}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}
 
           {/* 조리법 */}
-          {instructions?.length > 0 && (
+          {canShowDetail && (
             <section className="flex flex-col gap-2">
               <h3 className="text-sm font-extrabold text-on-surface tracking-tight">조리법</h3>
-              <ol className="flex flex-col gap-3">
-                {instructions.map((step, i) => (
-                  <li key={i} className="flex gap-3 items-start">
-                    <span className="w-6 h-6 rounded-full bg-primary text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">
-                      {i + 1}
-                    </span>
-                    <p className="text-sm text-on-surface leading-relaxed flex-1">{step}</p>
-                  </li>
-                ))}
-              </ol>
+              {manuals?.length > 0 ? (
+                <ol className="flex flex-col gap-4">
+                  {manuals.map((manual, i) => (
+                    <li key={manual.step || i} className="flex gap-3 items-start">
+                      <span className="w-6 h-6 rounded-full bg-primary text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">
+                        {manual.step || i + 1}
+                      </span>
+                      <div className="flex-1 flex flex-col gap-2">
+                        <p className="text-sm text-on-surface leading-relaxed">{manual.desc}</p>
+                        {manual.img && (
+                          <img
+                            src={manual.img}
+                            alt={`${name} ${manual.step || i + 1}단계`}
+                            className="max-h-48 w-full rounded-lg object-cover bg-surface-container"
+                          />
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p className="rounded-xl bg-surface-container px-4 py-3 text-sm font-medium text-on-surface-variant">
+                  조리법 정보가 없습니다
+                </p>
+              )}
             </section>
           )}
 
