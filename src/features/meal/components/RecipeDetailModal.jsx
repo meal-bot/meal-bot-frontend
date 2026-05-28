@@ -44,9 +44,9 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
       {/* 백드롭: 클릭으로 닫히지 않음 (X 버튼만으로 닫기) */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
 
-      <Card as="div" padding="none" className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl">
+      <Card as="div" padding="none" className="relative w-full max-w-2xl h-[85vh] overflow-hidden shadow-2xl flex flex-col">
         {/* 헤더: 제목 + X 버튼 */}
-        <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-outline-variant/20 px-6 py-4 flex items-start justify-between gap-4 z-10">
+        <div className="shrink-0 bg-white/95 backdrop-blur-md border-b border-outline-variant/20 px-6 py-4 flex items-start justify-between gap-4 z-10">
           <div className="flex flex-col gap-2 flex-1">
             <h2 className="text-xl font-extrabold text-on-surface tracking-tight">{name}</h2>
             <div className="flex items-center gap-1.5 flex-wrap">
@@ -72,7 +72,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
           </button>
         </div>
 
-        <div className="px-6 py-5 flex flex-col gap-6">
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5 flex flex-col gap-6">
 
           {isLoading && (
             <div className="flex items-center gap-2 rounded-xl bg-surface-container px-4 py-3 text-sm font-bold text-on-surface-variant">
