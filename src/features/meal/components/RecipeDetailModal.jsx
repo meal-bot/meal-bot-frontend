@@ -110,7 +110,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                 <img
                   src={heroImage}
                   alt={name}
-                  className="relative z-10 h-full w-auto max-w-none"
+                  className="relative z-10 h-full w-full object-contain"
                 />
               </div>
             ) : (
