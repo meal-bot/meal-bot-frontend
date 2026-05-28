@@ -99,19 +99,18 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
           {canShowDetail && (
             heroImage ? (
               <div
-                className="relative w-full overflow-hidden rounded-xl bg-surface-container"
+                className="relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-surface-container"
                 style={{ aspectRatio: '3 / 2' }}
               >
-                <img
-                  src={heroImage}
-                  alt=""
+                <div
                   aria-hidden="true"
-                  className="absolute inset-0 h-full w-full object-cover blur-xl scale-110 opacity-40"
+                  className="absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat opacity-40 blur-xl"
+                  style={{ backgroundImage: `url("${heroImage}")` }}
                 />
                 <img
                   src={heroImage}
                   alt={name}
-                  className="absolute left-1/2 top-1/2 z-10 h-full w-auto max-w-none -translate-x-1/2 -translate-y-1/2"
+                  className="relative z-10 h-full w-auto max-w-none"
                 />
               </div>
             ) : (
