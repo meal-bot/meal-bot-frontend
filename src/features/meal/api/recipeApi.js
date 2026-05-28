@@ -16,9 +16,12 @@ export class AiServerError extends Error {
 
 export const fetchRecipeDetail = async (recipeId) => {
   try {
+    console.log('[recipeApi] fetchRecipeDetail 요청 - recipeId:', recipeId);
     const response = await api.get(`/api/recipes/${encodeURIComponent(recipeId)}`);
+    console.log('[recipeApi] fetchRecipeDetail 응답:', response.data);
     return response.data;
   } catch (error) {
+    console.error('[recipeApi] fetchRecipeDetail 실패:', error?.response?.data || error);
     const status = error?.response?.status;
     const message = error?.response?.data?.message;
 
