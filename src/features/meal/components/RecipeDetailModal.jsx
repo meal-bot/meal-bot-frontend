@@ -20,7 +20,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
   } = recipe || {};
 
   const canShowDetail = !isLoading && !error;
-  const heroImage = imgMain || imgThumb;
+  const heroImage = imgThumb || imgMain ;
   const detailTags = [...(tasteTags || []), ...(dishTypeTags || [])].filter(Boolean);
 
   console.log('[Modal]', { isLoading, error, canShowDetail, heroImage, imgMain, imgThumb });
@@ -100,18 +100,11 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
 
           {canShowDetail && (
             heroImage ? (
-              <div className="relative w-full overflow-hidden rounded-xl bg-surface-container">
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat opacity-40 blur-xl"
-                  style={{ backgroundImage: `url("${heroImage}")` }}
-                />
-                <img
-                  src={heroImage}
-                  alt={name}
-                  className="relative z-10 w-full block"
-                />
-              </div>
+              <img
+                src={heroImage}
+                alt={name}
+                className="w-full aspect-[3/2] rounded-xl object-cover bg-surface-container"
+              />
             ) : (
               <div className="h-40 w-full rounded-xl bg-surface-container flex items-center justify-center text-sm font-bold text-on-surface-variant">
                 레시피 이미지가 없습니다
