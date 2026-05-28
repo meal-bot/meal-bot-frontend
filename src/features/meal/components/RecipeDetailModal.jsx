@@ -98,7 +98,10 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
 
           {canShowDetail && (
             heroImage ? (
-              <div className="relative w-full aspect-[3/2] overflow-hidden rounded-xl bg-surface-container">
+              <div
+                className="relative w-full overflow-hidden rounded-xl bg-surface-container"
+                style={{ aspectRatio: '3 / 2' }}
+              >
                 <img
                   src={heroImage}
                   alt=""
