@@ -193,22 +193,20 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
             <section className="flex flex-col gap-2">
               <h3 className="text-sm font-extrabold text-on-surface tracking-tight">조리법</h3>
               {manuals?.length > 0 ? (
-                <ol className="flex flex-col gap-4">
+                <ol className="grid grid-cols-2 gap-3">
                   {manuals.map((manual, i) => (
-                    <li key={manual.step || i} className="flex gap-3 items-start">
-                      <span className="w-6 h-6 rounded-full bg-primary text-white text-xs font-extrabold flex items-center justify-center flex-shrink-0 mt-0.5">
-                        {manual.step || i + 1}
-                      </span>
-                      <div className="flex-1 flex flex-col gap-2">
-                        {manual.img && (
-                          <img
-                            src={manual.img}
-                            alt={`${name} ${manual.step || i + 1}단계`}
-                            className="w-full aspect-[3/2] rounded-lg object-cover bg-surface-container"
-                          />
-                        )}
-                        <p className="text-sm text-on-surface leading-relaxed">{manual.desc}</p>
+                    <li key={manual.step || i} className="flex flex-col gap-1.5">
+                      <div className="relative">
+                        <img
+                          src={manual.img || ''}
+                          alt={`${name} ${manual.step || i + 1}단계`}
+                          className="w-full aspect-[3/2] rounded-lg object-cover bg-surface-container"
+                        />
+                        <span className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-primary text-white text-xs font-extrabold flex items-center justify-center shadow">
+                          {manual.step || i + 1}
+                        </span>
                       </div>
+                      <p className="text-xs text-on-surface leading-relaxed">{manual.desc}</p>
                     </li>
                   ))}
                 </ol>
