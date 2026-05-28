@@ -98,7 +98,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
 
           {canShowDetail && (
             heroImage ? (
-              <div className="relative flex w-full aspect-[3/2] items-center justify-center overflow-hidden rounded-xl bg-surface-container">
+              <div className="relative w-full aspect-[3/2] overflow-hidden rounded-xl bg-surface-container">
                 <img
                   src={heroImage}
                   alt=""
@@ -108,7 +108,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                 <img
                   src={heroImage}
                   alt={name}
-                  className="relative z-10 h-full w-auto max-w-none"
+                  className="absolute left-1/2 top-1/2 z-10 h-full w-auto max-w-none -translate-x-1/2 -translate-y-1/2"
                 />
               </div>
             ) : (
