@@ -98,7 +98,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
 
           {canShowDetail && (
             heroImage ? (
-              <div className="relative w-full aspect-[3/2] overflow-hidden rounded-xl bg-surface-container">
+              <div className="relative flex w-full aspect-[3/2] items-center justify-center overflow-hidden rounded-xl bg-surface-container">
                 <img
                   src={heroImage}
                   alt=""
@@ -108,7 +108,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                 <img
                   src={heroImage}
                   alt={name}
-                  className="relative z-10 h-full w-full object-contain"
+                  className="relative z-10 h-full w-auto max-w-none"
                 />
               </div>
             ) : (
@@ -207,19 +207,11 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                       </span>
                       <div className="flex-1 flex flex-col gap-2">
                         {manual.img && (
-                          <div className="relative w-full aspect-[3/2] overflow-hidden rounded-lg bg-surface-container">
-                            <img
-                              src={manual.img}
-                              alt=""
-                              aria-hidden="true"
-                              className="absolute inset-0 h-full w-full object-cover blur-xl scale-110 opacity-40"
-                            />
-                            <img
-                              src={manual.img}
-                              alt={`${name} ${manual.step || i + 1}단계`}
-                              className="relative z-10 h-full w-full object-contain"
-                            />
-                          </div>
+                          <img
+                            src={manual.img}
+                            alt={`${name} ${manual.step || i + 1}단계`}
+                            className="w-full aspect-[3/2] rounded-lg object-cover bg-surface-container"
+                          />
                         )}
                         <p className="text-sm text-on-surface leading-relaxed">{manual.desc}</p>
                       </div>
