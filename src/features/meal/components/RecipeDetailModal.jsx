@@ -98,14 +98,11 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
 
           {canShowDetail && (
             heroImage ? (
-              <figure className="h-64 w-full rounded-xl bg-surface-container overflow-hidden">
-                <div
-                  role="img"
-                  aria-label={name}
-                  className="h-full w-full bg-center bg-no-repeat bg-contain"
-                  style={{ backgroundImage: `url("${heroImage}")` }}
-                />
-              </figure>
+              <img
+                src={heroImage}
+                alt={name}
+                className="h-56 w-full rounded-xl object-cover bg-surface-container"
+              />
             ) : (
               <div className="h-40 w-full rounded-xl bg-surface-container flex items-center justify-center text-sm font-bold text-on-surface-variant">
                 레시피 이미지가 없습니다
