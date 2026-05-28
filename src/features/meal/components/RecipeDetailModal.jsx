@@ -1,9 +1,10 @@
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Card } from '../../../shared/components/ui';
 
-export default function RecipeDetailModal({ recipe, isLoading = false, error = '', onRetry, onClose }) {
-  if (!recipe) return null;
+const firstString = (...values) => values.find((value) => typeof value === 'string' && value.trim().length > 0) || null;
 
+export default function RecipeDetailModal({ recipe, isLoading = false, error = '', onRetry, onClose }) {
   const {
     name,
     summary,
@@ -19,23 +20,52 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
     manuals,
     imgMain,
     imgThumb,
-  } = recipe;
+    mainImage,
+    image,
+    imageUrl,
+    thumbnail,
+    thumbnailUrl,
+  } = recipe || {};
 
   const canShowDetail = !isLoading && !error;
-  const heroImage = imgMain || imgThumb;
-  const fallbackHeroImage = imgThumb;
+  const heroImage = useMemo(
+    () => firstString(imgMain, mainImage, imageUrl, image, imgThumb, thumbnailUrl, thumbnail),
+    [image, imageUrl, imgMain, imgThumb, mainImage, thumbnail, thumbnailUrl]
+  );
+  const fallbackHeroImage = useMemo(
+    () => firstString(imgThumb, thumbnailUrl, thumbnail),
+    [imgThumb, thumbnail, thumbnailUrl]
+  );
+  const [failedHeroImage, setFailedHeroImage] = useState(null);
+  const heroImageFailed = failedHeroImage === heroImage;
+
+  useEffect(() => {
+    console.log('[RecipeDetailModal] 상단 이미지 후보:', {
+      imgMain,
+      imgThumb,
+      mainImage,
+      image,
+      imageUrl,
+      thumbnail,
+      thumbnailUrl,
+      heroImage,
+    });
+  }, [heroImage, image, imageUrl, imgMain, imgThumb, mainImage, thumbnail, thumbnailUrl]);
+
   const handleHeroImageError = (event) => {
     console.error('[RecipeDetailModal] 상단 이미지 로드 실패:', event.currentTarget.currentSrc || heroImage);
 
-    if (fallbackHeroImage && event.currentTarget.dataset.fallbackApplied !== 'true') {
+    if (fallbackHeroImage && fallbackHeroImage !== heroImage && event.currentTarget.dataset.fallbackApplied !== 'true') {
       event.currentTarget.dataset.fallbackApplied = 'true';
       event.currentTarget.src = fallbackHeroImage;
       return;
     }
 
-    event.currentTarget.style.display = 'none';
+    setFailedHeroImage(heroImage);
   };
   const detailTags = [...(tasteTags || []), ...(dishTypeTags || [])].filter(Boolean);
+
+  if (!recipe) return null;
 
   const NUTRITION_LABELS = [
     { key: 'energyKcal', label: '칼로리', unit: 'kcal', color: 'bg-primary-container text-primary' },
@@ -109,7 +139,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
           )}
 
           {canShowDetail && (
-            heroImage ? (
+            heroImage && !heroImageFailed ? (
               <div className="h-64 w-full rounded-xl bg-surface-container overflow-hidden flex items-center justify-center">
                 <img
                   src={heroImage}
@@ -118,7 +148,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                     console.log('[RecipeDetailModal] 상단 이미지 로드 완료:', event.currentTarget.currentSrc || heroImage);
                   }}
                   onError={handleHeroImageError}
-                  className="max-h-full max-w-full object-contain"
+                  className="h-full w-full object-contain"
                 />
               </div>
             ) : (
