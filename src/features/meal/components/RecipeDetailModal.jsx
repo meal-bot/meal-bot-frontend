@@ -1,8 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Card } from '../../../shared/components/ui';
-
-const firstString = (...values) => values.find((value) => typeof value === 'string' && value.trim().length > 0) || null;
 
 export default function RecipeDetailModal({ recipe, isLoading = false, error = '', onRetry, onClose }) {
   const {
@@ -20,49 +17,10 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
     manuals,
     imgMain,
     imgThumb,
-    mainImage,
-    image,
-    imageUrl,
-    thumbnail,
-    thumbnailUrl,
   } = recipe || {};
 
   const canShowDetail = !isLoading && !error;
-  const heroImage = useMemo(
-    () => firstString(imgMain, mainImage, imageUrl, image, imgThumb, thumbnailUrl, thumbnail),
-    [image, imageUrl, imgMain, imgThumb, mainImage, thumbnail, thumbnailUrl]
-  );
-  const fallbackHeroImage = useMemo(
-    () => firstString(imgThumb, thumbnailUrl, thumbnail),
-    [imgThumb, thumbnail, thumbnailUrl]
-  );
-  const [failedHeroImage, setFailedHeroImage] = useState(null);
-  const heroImageFailed = failedHeroImage === heroImage;
-
-  useEffect(() => {
-    console.log('[RecipeDetailModal] 상단 이미지 후보:', {
-      imgMain,
-      imgThumb,
-      mainImage,
-      image,
-      imageUrl,
-      thumbnail,
-      thumbnailUrl,
-      heroImage,
-    });
-  }, [heroImage, image, imageUrl, imgMain, imgThumb, mainImage, thumbnail, thumbnailUrl]);
-
-  const handleHeroImageError = (event) => {
-    console.error('[RecipeDetailModal] 상단 이미지 로드 실패:', event.currentTarget.currentSrc || heroImage);
-
-    if (fallbackHeroImage && fallbackHeroImage !== heroImage && event.currentTarget.dataset.fallbackApplied !== 'true') {
-      event.currentTarget.dataset.fallbackApplied = 'true';
-      event.currentTarget.src = fallbackHeroImage;
-      return;
-    }
-
-    setFailedHeroImage(heroImage);
-  };
+  const heroImage = imgMain || imgThumb;
   const detailTags = [...(tasteTags || []), ...(dishTypeTags || [])].filter(Boolean);
 
   if (!recipe) return null;
@@ -139,18 +97,15 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
           )}
 
           {canShowDetail && (
-            heroImage && !heroImageFailed ? (
-              <div className="h-64 w-full rounded-xl bg-surface-container overflow-hidden flex items-center justify-center">
-                <img
-                  src={heroImage}
-                  alt={name}
-                  onLoad={(event) => {
-                    console.log('[RecipeDetailModal] 상단 이미지 로드 완료:', event.currentTarget.currentSrc || heroImage);
-                  }}
-                  onError={handleHeroImageError}
-                  className="h-full w-full object-contain"
+            heroImage ? (
+              <figure className="h-64 w-full rounded-xl bg-surface-container overflow-hidden">
+                <div
+                  role="img"
+                  aria-label={name}
+                  className="h-full w-full bg-center bg-no-repeat bg-contain"
+                  style={{ backgroundImage: `url("${heroImage}")` }}
                 />
-              </div>
+              </figure>
             ) : (
               <div className="h-40 w-full rounded-xl bg-surface-container flex items-center justify-center text-sm font-bold text-on-surface-variant">
                 레시피 이미지가 없습니다
