@@ -98,11 +98,19 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
 
           {canShowDetail && (
             heroImage ? (
-              <img
-                src={heroImage}
-                alt={name}
-                className="w-full aspect-[3/2] rounded-xl object-cover bg-surface-container"
-              />
+              <div className="relative w-full aspect-[3/2] overflow-hidden rounded-xl bg-surface-container">
+                <img
+                  src={heroImage}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full object-cover blur-xl scale-110 opacity-40"
+                />
+                <img
+                  src={heroImage}
+                  alt={name}
+                  className="relative z-10 h-full w-full object-contain"
+                />
+              </div>
             ) : (
               <div className="h-40 w-full rounded-xl bg-surface-container flex items-center justify-center text-sm font-bold text-on-surface-variant">
                 레시피 이미지가 없습니다
@@ -199,11 +207,19 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                       </span>
                       <div className="flex-1 flex flex-col gap-2">
                         {manual.img && (
-                          <img
-                            src={manual.img}
-                            alt={`${name} ${manual.step || i + 1}단계`}
-                            className="w-full aspect-[3/2] rounded-lg object-cover bg-surface-container"
-                          />
+                          <div className="relative w-full aspect-[3/2] overflow-hidden rounded-lg bg-surface-container">
+                            <img
+                              src={manual.img}
+                              alt=""
+                              aria-hidden="true"
+                              className="absolute inset-0 h-full w-full object-cover blur-xl scale-110 opacity-40"
+                            />
+                            <img
+                              src={manual.img}
+                              alt={`${name} ${manual.step || i + 1}단계`}
+                              className="relative z-10 h-full w-full object-contain"
+                            />
+                          </div>
                         )}
                         <p className="text-sm text-on-surface leading-relaxed">{manual.desc}</p>
                       </div>
