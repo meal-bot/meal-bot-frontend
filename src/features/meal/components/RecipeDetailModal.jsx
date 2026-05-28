@@ -23,6 +23,8 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
   const heroImage = imgMain || imgThumb;
   const detailTags = [...(tasteTags || []), ...(dishTypeTags || [])].filter(Boolean);
 
+  console.log('[Modal]', { isLoading, error, canShowDetail, heroImage, imgMain, imgThumb });
+
   if (!recipe) return null;
 
   const NUTRITION_LABELS = [
