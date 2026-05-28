@@ -24,6 +24,17 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
   const canShowDetail = !isLoading && !error;
   const heroImage = imgMain || imgThumb;
   const fallbackHeroImage = imgThumb;
+  const handleHeroImageError = (event) => {
+    console.error('[RecipeDetailModal] 상단 이미지 로드 실패:', event.currentTarget.currentSrc || heroImage);
+
+    if (fallbackHeroImage && event.currentTarget.dataset.fallbackApplied !== 'true') {
+      event.currentTarget.dataset.fallbackApplied = 'true';
+      event.currentTarget.src = fallbackHeroImage;
+      return;
+    }
+
+    event.currentTarget.style.display = 'none';
+  };
   const detailTags = [...(tasteTags || []), ...(dishTypeTags || [])].filter(Boolean);
 
   const NUTRITION_LABELS = [
@@ -99,16 +110,15 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
 
           {canShowDetail && (
             heroImage ? (
-              <div className="h-64 w-full rounded-xl bg-surface-container overflow-hidden">
+              <div className="h-64 w-full rounded-xl bg-surface-container overflow-hidden flex items-center justify-center">
                 <img
                   src={heroImage}
                   alt={name}
-                  onError={(event) => {
-                    if (fallbackHeroImage && event.currentTarget.src !== fallbackHeroImage) {
-                      event.currentTarget.src = fallbackHeroImage;
-                    }
+                  onLoad={(event) => {
+                    console.log('[RecipeDetailModal] 상단 이미지 로드 완료:', event.currentTarget.currentSrc || heroImage);
                   }}
-                  className="h-full w-full object-cover"
+                  onError={handleHeroImageError}
+                  className="max-h-full max-w-full object-contain"
                 />
               </div>
             ) : (
