@@ -99,7 +99,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
           {canShowDetail && (
             heroImage ? (
               <div
-                className="relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-surface-container"
+                className="relative w-full overflow-hidden rounded-xl bg-surface-container"
                 style={{ aspectRatio: '3 / 2' }}
               >
                 <div
@@ -110,7 +110,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                 <img
                   src={heroImage}
                   alt={name}
-                  className="relative z-10 h-full w-full object-contain"
+                  className="absolute inset-0 z-10 w-full h-full object-contain"
                 />
               </div>
             ) : (
