@@ -23,6 +23,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
 
   const canShowDetail = !isLoading && !error;
   const heroImage = imgMain || imgThumb;
+  const fallbackHeroImage = imgThumb;
   const detailTags = [...(tasteTags || []), ...(dishTypeTags || [])].filter(Boolean);
 
   const NUTRITION_LABELS = [
@@ -102,6 +103,11 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                 <img
                   src={heroImage}
                   alt={name}
+                  onError={(event) => {
+                    if (fallbackHeroImage && event.currentTarget.src !== fallbackHeroImage) {
+                      event.currentTarget.src = fallbackHeroImage;
+                    }
+                  }}
                   className="h-full w-full object-cover"
                 />
               </div>
