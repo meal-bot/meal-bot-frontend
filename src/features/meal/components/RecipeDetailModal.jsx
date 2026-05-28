@@ -101,7 +101,7 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
               <img
                 src={heroImage}
                 alt={name}
-                className="w-full max-w-md h-auto rounded-xl bg-surface-container mx-auto"
+                className="w-full aspect-[3/2] rounded-xl object-cover bg-surface-container"
               />
             ) : (
               <div className="h-40 w-full rounded-xl bg-surface-container flex items-center justify-center text-sm font-bold text-on-surface-variant">
@@ -198,14 +198,14 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
                         {manual.step || i + 1}
                       </span>
                       <div className="flex-1 flex flex-col gap-2">
-                        <p className="text-sm text-on-surface leading-relaxed">{manual.desc}</p>
                         {manual.img && (
                           <img
                             src={manual.img}
                             alt={`${name} ${manual.step || i + 1}단계`}
-                            className="w-full max-w-sm h-auto rounded-lg bg-surface-container mx-auto"
+                            className="w-full aspect-[3/2] rounded-lg object-cover bg-surface-container"
                           />
                         )}
+                        <p className="text-sm text-on-surface leading-relaxed">{manual.desc}</p>
                       </div>
                     </li>
                   ))}
