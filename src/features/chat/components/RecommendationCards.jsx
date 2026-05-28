@@ -33,7 +33,7 @@ export default function RecommendationCards({ recommendations }) {
 
             {/* 주재료 + 조리시간 */}
             <div className="flex items-center gap-1.5 flex-wrap">
-              {rec.mainIngredients?.slice(0, 2).map((ingredient, i) => (
+              {rec.mainIngredients?.map((ingredient, i) => (
                 <span key={i} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-container text-primary">
                   {ingredient}
                 </span>
