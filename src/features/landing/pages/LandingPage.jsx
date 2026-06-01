@@ -46,7 +46,7 @@ export default function LandingPage({ onGoogleLogin, onKakaoLogin }) {
 
   const handleLogin = () => {
     if (onGoogleLogin) onGoogleLogin();
-    else console.log('[MealBot] Google login triggered — connect OAuth here');
+    else console.log('[OBOB] Google login triggered — connect OAuth here');
   };
 
   const handleKakaoLogin = () => {
@@ -65,7 +65,7 @@ export default function LandingPage({ onGoogleLogin, onKakaoLogin }) {
       <nav className="nav">
         <div className="nav-brand">
           <div className="nav-brand-mark"></div>
-          MealBot
+          OBOB
         </div>
         {/* <div className="nav-links">
           <a href="#how">How it works</a>

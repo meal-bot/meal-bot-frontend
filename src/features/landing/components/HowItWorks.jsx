@@ -91,13 +91,13 @@ export function FinalCTA({ accent1, accent2, accent3, onGoogleLogin, onKakaoLogi
       </div>
 
       <footer className="footer">
-        <div className="footer-brand">MealBot</div>
+        <div className="footer-brand">OBOB</div>
         <div className="footer-links">
           <a href="#">About</a>
           <a href="#">Privacy</a>
           <a href="#">Contact</a>
         </div>
-        <div className="footer-copy">© 2026 MealBot · 당신의 하루에 어울리는 한 끼</div>
+        <div className="footer-copy">© 2026 OBOB · 당신의 하루에 어울리는 한 끼</div>
       </footer>
     </section>
   );

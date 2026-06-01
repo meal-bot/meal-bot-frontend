@@ -52,7 +52,7 @@ function ChatSimulator({ accent1, accent2, accent3 }) {
         <div className="chat-header">
           <span className="chat-dot" style={{ background: accent1 }}></span>
           <span style={{ fontSize: 11, color: 'rgba(255,255,255,.55)', letterSpacing: '.04em' }}>
-            MealBot · AI 영양 어시스턴트
+            OBOB · AI 영양 어시스턴트
           </span>
         </div>
         <div className="chat-body">
@@ -112,7 +112,7 @@ export default function Hero({ accent1, accent2, accent3, onGoogleLogin, onGuest
         <div className="hero-copy">
           {/* <div className="eyebrow">
             <span className="eyebrow-dot" style={{ background: accent1 }}></span>
-            AI Nutrition Coach · MealBot
+            AI Nutrition Coach · OBOB
           </div> */}
           <h1 className="hero-title">
             당신을 위한<br />

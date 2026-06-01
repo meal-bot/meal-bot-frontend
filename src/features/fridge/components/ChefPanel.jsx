@@ -65,7 +65,7 @@ export default function ChefPanel({
         onDrop={onDrop}
       >
         <div className="chef-avatar">👩‍🍳</div>
-        <div className="chef-name">Chef MealBot</div>
+        <div className="chef-name">Chef OBOB</div>
         <div className="chef-line">{chefLine}</div>
       </div>
 
