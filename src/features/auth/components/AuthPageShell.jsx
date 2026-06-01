@@ -30,7 +30,7 @@ export default function AuthPageShell({
       >
         <div className="flex justify-between items-center px-8 h-20 max-w-7xl mx-auto w-full">
           <Link to="/" className="text-2xl font-bold tracking-tighter text-on-surface ml-12">
-            Meal-Bot
+            OBOB
           </Link>
         </div>
       </nav>

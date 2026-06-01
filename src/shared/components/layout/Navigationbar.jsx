@@ -48,7 +48,7 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
             onClick={onStartNewChat}
             className={`text-xl md:text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'md:ml-60' : 'md:ml-10.5'}`}
           >
-            Meal-Bot
+            OBOB
           </Link>
           {/* 데스크톱 전용 링크 목록 */}
           <div className="hidden md:flex items-center gap-6">
