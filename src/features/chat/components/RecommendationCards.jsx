@@ -67,7 +67,7 @@ export default function RecommendationCards({ recommendations }) {
                     key={i}
                     className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                       isMissing
-                        ? 'bg-surface-variant text-on-surface-variant line-through opacity-70'
+                        ? 'bg-surface-variant text-on-surface-variant opacity-70'
                         : 'bg-primary-container text-primary'
                     }`}
                   >
