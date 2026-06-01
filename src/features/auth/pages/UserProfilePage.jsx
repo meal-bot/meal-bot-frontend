@@ -43,7 +43,7 @@ function PasswordField({ label, name, value, onChange, show, onToggle, error, pl
 export default function UserProfilePage() {
   const { form, setForm, handleChange: formHandleChange } = useForm({
     name: '홍길동',
-    email: 'user@mealbot.kr',
+    email: 'user@obob.site',
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
@@ -185,7 +185,7 @@ export default function UserProfilePage() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="hello@mealbot.kr"
+                placeholder="hello@obob.site"
                 error={errors.email}
               />
             </Card>
