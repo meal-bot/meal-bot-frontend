@@ -14,11 +14,15 @@ export default function FridgePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState([]);
+  const [messageText, setMessageText] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   // preset + custom 재료가 모두 비워지면 이전 추천 결과 자동 초기화
   useEffect(() => {
     if (picked.length === 0 && customIngredients.length === 0) {
       setResults([]);
+      setMessageText('');
+      setErrorMessage('');
     }
   }, [picked, customIngredients]);
 
@@ -47,18 +51,34 @@ export default function FridgePage() {
   const handleRecommend = async () => {
     setIsLoading(true);
     setResults([]);
+    setMessageText('');
+    setErrorMessage('');
 
     const presetNames = picked.map(id => {
       const item = INGREDIENTS.find(i => i.id === id);
       return item?.name || id;
     });
 
+    // missingIngredients 계산용 보유 재료 집합 (preset + custom, 공백 정규화 후 exact match)
+    const providedSet = new Set(
+      [...presetNames, ...customIngredients].map(n => n.trim())
+    );
+
     try {
       const data = await fetchFridgeRecommendation(presetNames, customIngredients, 2);
-      setResults(data.recommendations || []);
+      const recs = (data.recommendations || []).map(rec => ({
+        ...rec,
+        missingIngredients: (rec.mainIngredients || []).filter(
+          ing => !providedSet.has(ing.trim())
+        ),
+      }));
+      setResults(recs);
+      setMessageText(data.message || '');
     } catch (error) {
       console.error('냉장고 추천 실패:', error);
       setResults([]);
+      setMessageText('');
+      setErrorMessage('추천 요청 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -91,6 +111,8 @@ export default function FridgePage() {
             <ResultsPanel
               isLoading={isLoading}
               results={results}
+              messageText={messageText}
+              errorMessage={errorMessage}
             />
           </div>
         </div>

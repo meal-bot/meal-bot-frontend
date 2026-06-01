@@ -58,13 +58,23 @@ export default function RecommendationCards({ recommendations }) {
               </span>
             </div>
 
-            {/* 주재료 + 조리시간 */}
+            {/* 주재료 + 조리시간. 냉장고 추천 시 보유하지 않은 재료는 회색 배지로 구분(backward compatible) */}
             <div className="flex items-center gap-1.5 flex-wrap">
-              {rec.mainIngredients?.map((ingredient, i) => (
-                <span key={i} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-container text-primary">
-                  {ingredient}
-                </span>
-              ))}
+              {rec.mainIngredients?.map((ingredient, i) => {
+                const isMissing = rec.missingIngredients?.includes(ingredient);
+                return (
+                  <span
+                    key={i}
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      isMissing
+                        ? 'bg-surface-variant text-on-surface-variant line-through opacity-70'
+                        : 'bg-primary-container text-primary'
+                    }`}
+                  >
+                    {ingredient}
+                  </span>
+                );
+              })}
               {rec.cookingTime && (
                 <span className="flex items-center gap-0.5 text-[10px] font-bold text-on-surface-variant">
                   <span className="material-symbols-outlined" style={{ fontSize: '12px' }}>timer</span>

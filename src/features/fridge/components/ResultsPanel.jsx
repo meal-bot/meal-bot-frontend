@@ -1,6 +1,6 @@
 import RecommendationCards from '../../chat/components/RecommendationCards';
 
-export default function ResultsPanel({ isLoading, results }) {
+export default function ResultsPanel({ isLoading, results, messageText, errorMessage }) {
   return (
     <section className="results">
       <div className="results-head">
@@ -33,7 +33,20 @@ export default function ResultsPanel({ isLoading, results }) {
         </>
       )}
 
-      {!isLoading && results.length === 0 && (
+      {/* 네트워크/서버 오류: 가장 우선해서 노출 */}
+      {!isLoading && errorMessage && (
+        <div className="card-empty" style={{ color: 'var(--danger, #c0392b)' }}>
+          {errorMessage}
+        </div>
+      )}
+
+      {/* 0건 폴백 안내 (백엔드가 FALLBACK_MESSAGE 보낸 경우) */}
+      {!isLoading && !errorMessage && results.length === 0 && messageText && (
+        <div className="card-empty">{messageText}</div>
+      )}
+
+      {/* 완전 초기 상태 */}
+      {!isLoading && !errorMessage && results.length === 0 && !messageText && (
         <div className="card-empty">
           왼쪽 냉장고에서 재료를 골라{' '}
           <span style={{ color: 'var(--ink)', fontWeight: 600 }}>셰프</span>에게 건네주세요.<br />
@@ -41,9 +54,16 @@ export default function ResultsPanel({ isLoading, results }) {
         </div>
       )}
 
-      {/* 챗봇과 동일한 추천 카드 컴포넌트 재사용 → 클릭 시 상세 모달 자동 동작 */}
-      {!isLoading && results.length > 0 && (
-        <RecommendationCards recommendations={results} />
+      {/* 정상 추천: AI 안내 문구 + 추천 카드 (챗봇과 동일 컴포넌트 재사용) */}
+      {!isLoading && !errorMessage && results.length > 0 && (
+        <>
+          {messageText && (
+            <div className="results-message" style={{ margin: '8px 0 4px', fontSize: 13, color: 'var(--ink-muted, #555)' }}>
+              {messageText}
+            </div>
+          )}
+          <RecommendationCards recommendations={results} />
+        </>
       )}
     </section>
   );
