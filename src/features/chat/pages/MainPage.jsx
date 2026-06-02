@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSidebar } from '../../../shared/context/useSidebar';
 import MealCard from '../../meal/components/MealCard';
@@ -8,8 +8,7 @@ import RecommendationCards from '../components/RecommendationCards';
 import { useSlider } from '../../../shared/hooks/useSlider';
 import { useChat } from '../hooks/useChat';
 import { isLoggedIn } from '../../auth/utils/auth';
-import { fetchRandomRecipes } from '../../meal/api/recipeApi';
-import RecipeDetailModal from '../../meal/components/RecipeDetailModal';
+import MEAL_DATA from '../../meal/data/mealData';
 export default function MainPage() {
   const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
   const location = useLocation();
@@ -34,17 +33,6 @@ export default function MainPage() {
     if (chatIdToOpen.current) openExistingChat(chatIdToOpen.current);
   }, [openExistingChat]);
 
-  // 슬라이딩 카드용 레시피 목록 — Spring 연결 전까지 빈 배열 유지 (섹션 미표시)
-  const [meals, setMeals] = useState([]);
-  // 카드 클릭 시 세팅 → RecipeDetailModal 오픈. null이면 모달 닫힘
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
-
-  // TODO: Spring GET /api/recipes/random 엔드포인트 구현 후 실제 데이터 표시
-  useEffect(() => {
-    fetchRandomRecipes(10)
-      .then(setMeals)
-      .catch(() => {}); // 미연결 시 빈 배열 유지
-  }, []);
 
   return (
     <Layout
@@ -58,9 +46,9 @@ export default function MainPage() {
         if (chatIdToDelete === chatId) startNewChat();  // 현재 채팅 삭제 시 새 채팅으로 초기화
       }}
     >
-      {/* 헤더 + 슬라이더: 채팅 시작 시 / 데이터 미로드 시 숨김 */}
+      {/* 헤더 + 슬라이더: 채팅 시작 시 숨김 */}
       <section
-        className={`mb-16 transition-all duration-500 ease-in-out overflow-hidden ${hasMessages || meals.length === 0 ? 'opacity-0 max-h-0 mb-0 pointer-events-none' : 'opacity-100 max-h-[1000px]'}`}
+        className={`mb-16 transition-all duration-500 ease-in-out overflow-hidden ${hasMessages ? 'opacity-0 max-h-0 mb-0 pointer-events-none' : 'opacity-100 max-h-[1000px]'}`}
       >
         <div className="flex flex-col items-center justify-center mb-8">
           <h2 className="text-3xl font-extrabold text-on-surface tracking-tight">당신을 위한 추천 식단</h2>
@@ -103,8 +91,8 @@ export default function MainPage() {
                     : 'none',
             }}
           >
-            {meals.map((recipe) => (
-              <MealCard key={recipe.recipeId} recipe={recipe} onClick={() => setSelectedRecipe(recipe)} />
+            {MEAL_DATA.map((meal) => (
+              <MealCard key={meal.id} meal={meal} />
             ))}
           </div>
         </div>
@@ -160,8 +148,6 @@ export default function MainPage() {
       {/* sidebarOpen 전달 → ChatInput이 사이드바 너비에 맞게 위치 조정 */}
       <ChatInput value={query} onChange={setQuery} onSubmit={handleSubmit} sidebarOpen={sidebarOpen} />
 
-      {/* 슬라이딩 카드 클릭 시 상세 모달 — createPortal로 body에 마운트되므로 위치 무관 */}
-      <RecipeDetailModal recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />
     </Layout>
   );
 }
