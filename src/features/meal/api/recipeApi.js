@@ -14,6 +14,14 @@ export class AiServerError extends Error {
   }
 }
 
+// 메인 슬라이딩 카드용: 무작위 레시피 N개를 한 번에 로드
+// 카드 표시 + 클릭 시 모달까지 동일 데이터를 쓰므로 API 호출은 최초 1회
+// Spring: GET /api/recipes/random?count=N → fetchRecipeDetail과 동일 구조 배열 반환
+export const fetchRandomRecipes = async (count = 10) => {
+  const response = await api.get(`/api/recipes/random?count=${count}`);
+  return response.data;
+};
+
 export const fetchRecipeDetail = async (recipeId) => {
   try {
     console.log('[recipeApi] fetchRecipeDetail 요청 - recipeId:', recipeId);
