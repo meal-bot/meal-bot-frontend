@@ -29,5 +29,5 @@ export function useSlider() {
     };
   }, [updateButtons]);
 
-  return { sliderRef, canScrollLeft, canScrollRight };
+  return { sliderRef, canScrollLeft, canScrollRight, updateButtons };
 }

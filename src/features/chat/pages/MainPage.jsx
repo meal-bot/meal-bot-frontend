@@ -11,7 +11,7 @@ import { isLoggedIn } from '../../auth/utils/auth';
 import RecipeDetailModal from '../../meal/components/RecipeDetailModal';
 import { fetchRandomRecipes, fetchRecipeDetail } from '../../meal/api/recipeApi';
 export default function MainPage() {
-  const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
+  const { sliderRef, canScrollLeft, canScrollRight, updateButtons } = useSlider();
   const location = useLocation();
 
   const { sidebarOpen, setSidebarOpen } = useSidebar();
@@ -58,6 +58,11 @@ export default function MainPage() {
       ignore = true;
     };
   }, []);
+
+  useEffect(() => {
+    const frameId = requestAnimationFrame(updateButtons);
+    return () => cancelAnimationFrame(frameId);
+  }, [randomMeals.length, updateButtons]);
 
   const loadRecipeDetail = async (meal) => {
     const recipeId = meal?.recipeId || meal?.id;
