@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSidebar } from '../../../shared/context/useSidebar';
 import MealCard from '../../meal/components/MealCard';
@@ -8,7 +8,8 @@ import RecommendationCards from '../components/RecommendationCards';
 import { useSlider } from '../../../shared/hooks/useSlider';
 import { useChat } from '../hooks/useChat';
 import { isLoggedIn } from '../../auth/utils/auth';
-import MEAL_DATA from '../../meal/data/mealData';
+import RecipeDetailModal from '../../meal/components/RecipeDetailModal';
+import { fetchRandomRecipes, fetchRecipeDetail } from '../../meal/api/recipeApi';
 export default function MainPage() {
   const { sliderRef, canScrollLeft, canScrollRight } = useSlider();
   const location = useLocation();
@@ -20,6 +21,11 @@ export default function MainPage() {
           handleSubmit, startNewChat, openExistingChat, chatId,
           chats, refreshChats, deleteChat,
         } = useChat();
+  const [randomMeals, setRandomMeals] = useState([]);
+  const [selectedMeal, setSelectedMeal] = useState(null);
+  const [detail, setDetail] = useState(null);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState('');
 
   // 사이드바가 열릴 때마다 채팅 목록 갱신 (기존 Sidebar의 useEffect 역할을 MainPage가 담당)
   useEffect(() => {
@@ -32,6 +38,52 @@ export default function MainPage() {
   useEffect(() => {
     if (chatIdToOpen.current) openExistingChat(chatIdToOpen.current);
   }, [openExistingChat]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    const loadRandomMeals = async () => {
+      try {
+        const recipes = await fetchRandomRecipes(10);
+        if (!ignore) setRandomMeals(Array.isArray(recipes) ? recipes : []);
+      } catch (error) {
+        console.error('랜덤 레시피 로딩 실패:', error?.response?.data || error);
+        if (!ignore) setRandomMeals([]);
+      }
+    };
+
+    loadRandomMeals();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const loadRecipeDetail = async (meal) => {
+    const recipeId = meal?.recipeId || meal?.id;
+    if (!recipeId) return;
+
+    setSelectedMeal(meal);
+    setDetail(null);
+    setDetailError('');
+    setIsDetailLoading(true);
+
+    try {
+      const data = await fetchRecipeDetail(recipeId);
+      setDetail(data);
+    } catch (error) {
+      setDetailError(error?.message || '레시피 상세 정보를 불러오지 못했습니다.');
+    } finally {
+      setIsDetailLoading(false);
+    }
+  };
+
+  const closeRecipeDetail = () => {
+    setSelectedMeal(null);
+    setDetail(null);
+    setDetailError('');
+    setIsDetailLoading(false);
+  };
 
 
   return (
@@ -91,14 +143,28 @@ export default function MainPage() {
                     : 'none',
             }}
           >
-            {MEAL_DATA.map((meal) => (
-              <MealCard key={meal.id} meal={meal} />
+            {randomMeals.map((meal) => (
+              <MealCard
+                key={meal.recipeId || meal.id}
+                meal={meal}
+                onClick={() => loadRecipeDetail(meal)}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* 채팅 메시지 영역 */}
+      {selectedMeal && (
+        <RecipeDetailModal
+          recipe={detail || selectedMeal}
+          isLoading={isDetailLoading}
+          error={detailError}
+          onRetry={() => loadRecipeDetail(selectedMeal)}
+          onClose={closeRecipeDetail}
+        />
+      )}
+
       {hasMessages && (
         <section className="max-w-3xl mx-auto flex flex-col gap-4">
           {messages.map(msg => {
