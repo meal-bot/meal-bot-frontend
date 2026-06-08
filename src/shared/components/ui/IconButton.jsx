@@ -4,13 +4,14 @@ import { cn } from '../../utils/cn';
 export default function IconButton({
   icon,
   label,
+  size = 'icon',
   className,
   iconClassName,
   ...props
 }) {
   return (
     <Button
-      size="icon"
+      size={size}
       variant="ghost"
       aria-label={label}
       title={label}

@@ -13,6 +13,8 @@ const sizes = {
   md: 'h-11 px-4 text-sm',
   lg: 'h-12 px-5 text-sm',
   icon: 'h-11 w-11 p-0',
+  iconSm: 'h-8 w-8 p-0',
+  iconXs: 'h-6 w-6 p-0',
 };
 
 export default function Button({

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { EmptyState, IconButton } from '../../../shared/components/ui';
 import { timeAgo } from '../../../shared/utils/timeAgo';
 import { isLoggedIn } from '../../auth/utils/auth';
 
@@ -29,14 +30,14 @@ export default function ChatSidebar({ isOpen, onToggle, onStartNewChat, chats, o
       backdrop-blur-sm flex flex-col py-4 gap-1 transition-all duration-300 ${isOpen ? 'w-60 px-3' : 'w-0 md:w-10.5 px-0 md:px-1 overflow-hidden'}`}
     >
       {/* 토글 버튼: 열림이면 menu_open, 닫힘이면 menu 아이콘 */}
-      <button
+      <IconButton
+        icon={isOpen ? 'menu_open' : 'menu'}
+        label={isOpen ? '사이드바 닫기' : '사이드바 열기'}
+        size="iconSm"
         onClick={onToggle}
-        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-surface-container transition-colors self-end mb-1"
-      >
-        <span className="material-symbols-outlined text-base text-on-surface-variant">
-          {isOpen ? 'menu_open' : 'menu'}
-        </span>
-      </button>
+        className="self-end mb-1 rounded-lg"
+        iconClassName="text-base text-on-surface-variant"
+      />
 
       {/* 사이드바가 열린 경우에만 내용 렌더링 */}
       {isOpen && (
@@ -71,18 +72,22 @@ export default function ChatSidebar({ isOpen, onToggle, onStartNewChat, chats, o
                         <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-error/5">
                           <span className="text-xs text-error font-medium">삭제할까요?</span>
                           <div className="flex gap-1">
-                            <button
+                            <IconButton
+                              icon="check"
+                              label="삭제 확인"
+                              size="iconXs"
                               onClick={(e) => { e.stopPropagation(); onDeleteChat(chat.chatId); setChatIdPendingDelete(null); }}
-                              className="w-6 h-6 flex items-center justify-center rounded hover:bg-error/20 transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-error" style={{ fontSize: '14px' }}>check</span>
-                            </button>
-                            <button
+                              className="rounded hover:bg-error/20"
+                              iconClassName="text-error text-sm"
+                            />
+                            <IconButton
+                              icon="close"
+                              label="삭제 취소"
+                              size="iconXs"
                               onClick={(e) => { e.stopPropagation(); setChatIdPendingDelete(null); }}
-                              className="w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '14px' }}>close</span>
-                            </button>
+                              className="rounded"
+                              iconClassName="text-on-surface-variant text-sm"
+                            />
                           </div>
                         </div>
                       ) : (
@@ -101,29 +106,41 @@ export default function ChatSidebar({ isOpen, onToggle, onStartNewChat, chats, o
 
                           {/* X 버튼: 호버 시에만 표시, 클릭 시 삭제 확인 상태로 전환
                               stopPropagation: 클릭 이벤트가 부모(채팅 선택 버튼)로 전파되는 것을 막음 */}
-                          <button
+                          <IconButton
+                            icon="close"
+                            label="대화 삭제"
+                            size="iconXs"
                             onClick={(e) => { e.stopPropagation(); setChatIdPendingDelete(chat.chatId); }}
-                            className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-5 h-5 flex items-center justify-center rounded hover:bg-error/10"
-                          >
-                            <span className="material-symbols-outlined text-on-surface-variant hover:text-error" style={{ fontSize: '14px' }}>close</span>
-                          </button>
+                            className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-error/10"
+                            iconClassName="text-on-surface-variant hover:text-error text-sm"
+                          />
                         </>
                       )}
                     </div>
                   );
                 })
               ) : (
-                <p className="text-xs text-on-surface-variant px-3 py-2">채팅 내역이 없습니다</p>
+                <SidebarEmptyState />
               )
             ) : (
               // 임시: 로그인 유도 문구 숨김
               // <p className="text-xs text-on-surface-variant px-3 py-2">로그인해서 대화를 저장하세요</p>
-              <p className="text-xs text-on-surface-variant px-3 py-2">채팅 내역이 없습니다</p>
+              <SidebarEmptyState />
             )}
           </div>
         </>
       )}
     </aside>
     </>
+  );
+}
+
+function SidebarEmptyState() {
+  return (
+    <EmptyState
+      icon="forum"
+      title="채팅 내역이 없습니다"
+      className="mx-1 mt-2 px-3 py-6 bg-transparent border-0"
+    />
   );
 }
