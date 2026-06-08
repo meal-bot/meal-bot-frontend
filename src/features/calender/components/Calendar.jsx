@@ -42,7 +42,7 @@ function MonthHeader({ y, m, onPrev, onNext }) {
       <div className="month-title">
         <span>{MONTH_NAMES[m - 1]}</span>
         <span className="yr">{y}</span>
-        <span className="swipe-hint" style={{ marginLeft: 18 }}>
+        <span className="swipe-hint">
           <span className="glyph">↔</span>
           <span>스와이프 또는 ← → 키</span>
         </span>
@@ -137,7 +137,7 @@ export default function Calendar() {
       <MonthHeader y={y} m={m} onPrev={() => go(-1)} onNext={() => go(1)} />
 
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '60px', color: '#aaa', fontSize: '14px' }}>
+        <div className="calendar-loading">
           불러오는 중...
         </div>
       ) : (
@@ -167,14 +167,6 @@ export default function Calendar() {
           </div>
         </div>
       )}
-
-      <div className="foot">
-        <div className="legend">
-          <span className="key"><span className="swatch today"></span> 오늘</span>
-          <span className="key"><span className="swatch has">●</span> 대화 있음</span>
-          <span className="key"><span className="swatch none"></span> 비활성</span>
-        </div>
-      </div>
 
       {sel && (
         <>
