@@ -18,6 +18,7 @@ export default function MainPage() {
 
   const { query, setQuery,
           messages, isLoading, hasMessages, messagesEndRef,
+          isNearBottom, scrollToBottom,
           handleSubmit, startNewChat, openExistingChat, chatId,
           chats, refreshChats, deleteChat,
         } = useChat();
@@ -171,7 +172,7 @@ export default function MainPage() {
       )}
 
       {hasMessages && (
-        <section className="max-w-3xl mx-auto flex flex-col gap-4">
+        <section className="max-w-3xl mx-auto flex flex-col gap-5 pb-8">
           {messages.map(msg => {
             const recommendations = msg.recommendations || [];
             return (
@@ -183,9 +184,9 @@ export default function MainPage() {
                     </div>
                   )}
                   <div
-                    className={`max-w-[75%] rounded-2xl px-4 py-3 ${msg.role === 'user'
+                    className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 shadow-sm ${msg.role === 'user'
                       ? 'bg-primary text-on-primary rounded-br-sm'
-                      : 'bg-surface-container text-on-surface rounded-bl-sm'
+                      : 'bg-surface-container-low text-on-surface rounded-bl-sm border border-outline-variant/30'
                     }`}
                   >
                     {msg.role === 'assistant' && isLoading && msg.content === '' ? (
@@ -205,7 +206,7 @@ export default function MainPage() {
                   </div>
                 </div>
                 {recommendations.length > 0 && (
-                  <div className="ml-10">
+                  <div className="ml-0 sm:ml-10">
                     <RecommendationCards recommendations={recommendations} />
                   </div>
                 )}
@@ -217,7 +218,14 @@ export default function MainPage() {
       )}
 
       {/* sidebarOpen 전달 → ChatInput이 사이드바 너비에 맞게 위치 조정 */}
-      <ChatInput value={query} onChange={setQuery} onSubmit={handleSubmit} sidebarOpen={sidebarOpen} />
+      <ChatInput
+        value={query}
+        onChange={setQuery}
+        onSubmit={handleSubmit}
+        sidebarOpen={sidebarOpen}
+        showScrollButton={hasMessages && !isNearBottom}
+        onScrollToBottom={() => scrollToBottom()}
+      />
 
     </Layout>
   );

@@ -13,6 +13,7 @@ export function useChat() {
   // [codex] null이면 채팅 미생성 상태이며, 백엔드 Chat 식별자인 chatId를 그대로 보관한다.
   const [chatId, setChatId] = useState(null);
   const [chats, setChats] = useState([]);
+  const [isNearBottom, setIsNearBottom] = useState(true);
   // [codex] 게스트 채팅은 현재 화면에서만 재사용하며 새로고침 후에는 새 채팅을 만든다.
   const [guestChatReady, setGuestChatReady] = useState(false);
   const messagesEndRef = useRef(null);
@@ -29,10 +30,34 @@ export function useChat() {
     };
   }, []);
 
-  // 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
+  const isWindowNearBottom = useCallback(() => {
+    if (typeof window === 'undefined') return true;
+
+    const doc = document.documentElement;
+    const scrollBottom = doc.scrollHeight - (window.scrollY + window.innerHeight);
+    return scrollBottom < 120;
+  }, []);
+
+  const updateScrollFollow = useCallback(() => {
+    const nearBottom = isWindowNearBottom();
+    setIsNearBottom(nearBottom);
+    return nearBottom;
+  }, [isWindowNearBottom]);
+
+  const scrollToBottom = useCallback((behavior = 'smooth') => {
+    setIsNearBottom(true);
+
+    if (typeof window === 'undefined') return;
+    window.requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior });
+    });
+  }, []);
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    window.addEventListener('scroll', updateScrollFollow, { passive: true });
+    updateScrollFollow();
+    return () => window.removeEventListener('scroll', updateScrollFollow);
+  }, [updateScrollFollow]);
 
   // 타이핑 애니메이션: AI 응답을 40ms 간격으로 한 글자씩 출력
   const typeMessage = useCallback((fullText, messageId) => {
@@ -114,11 +139,13 @@ export function useChat() {
 
     // 서버 응답을 기다리지 않고 화면에 즉시 표시
     // 사용자 메시지 + 빈 AI 말풍선(로딩 점 3개)을 동시에 추가
+    setIsNearBottom(true);
     setMessages(prev => [
       ...prev,
       { id: userMsgId, role: 'user', content: currentQuery },
       { id: assistantMsgId, role: 'assistant', content: '', isTyping: false, recommendations: [], flags: null },
     ]);
+    scrollToBottom();
     setQuery('');
     setIsLoading(true);
 
@@ -183,19 +210,22 @@ export function useChat() {
       // [codex] 백엔드가 반환한 chatId를 현재 표시 중인 채팅 ID로 그대로 사용한다.
       setChatId(data.chatId);
       // 백엔드 메시지 { role, content }에 React key·타이핑 애니메이션용 id 추가
+      setIsNearBottom(true);
       setMessages(data.messages.map((msg, i) => ({ ...msg, id: i })));
+      scrollToBottom();
       setQuery('');
       setIsLoading(false);
     } catch {
       console.error('채팅 불러오기 실패');
     }
-  }, []);
+  }, [scrollToBottom]);
 
   return {
     // 메시지 입력
     query, setQuery,
     // 현재 채팅
     messages, isLoading, hasMessages, messagesEndRef, chatId,
+    isNearBottom, scrollToBottom,
     handleSubmit, startNewChat, openExistingChat,
     // 채팅 목록
     chats, refreshChats, deleteChat,
