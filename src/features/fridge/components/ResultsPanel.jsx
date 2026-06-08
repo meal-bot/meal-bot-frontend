@@ -8,7 +8,7 @@ export default function ResultsPanel({ isLoading, results, messageText, errorMes
           AI <em>추천 메뉴</em>
         </div>
         <div className="results-meta">
-          {isLoading ? '분석 중' : results.length > 0 ? `${results.length} matches` : 'awaiting input'}
+          {isLoading ? '분석 중' : results.length > 0 ? `${results.length}개 추천` : '입력 대기'}
         </div>
       </div>
 

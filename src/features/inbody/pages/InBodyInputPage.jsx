@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../../../shared/components/layout/Layout';
-import { Button, Card, TextField } from '../../../shared/components/ui';
+import { Badge, Button, Card, PageHeader, SectionHeader, TextField } from '../../../shared/components/ui';
 import { BASIC_FIELDS, ADVANCED_FIELDS, ACTIVITY_LEVELS } from '../data/inbodyData';
 import { saveInbody } from '../api/inbodyApi';
 
@@ -54,24 +54,20 @@ export default function InBodyInputPage() {
   return (
     <Layout>
       <div className="max-w-3xl mx-auto">
-        {/* 페이지 헤더 */}
-        <header className="mb-10">
+        <PageHeader
+          title="새 측정 기록"
+          description="인바디 결과지를 보며 입력해주세요. 비워두면 표시되지 않습니다."
+          meta={(
+            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+              {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </span>
+          )}
+        >
           <Link to="/inbody" className="inline-flex items-center gap-1 text-sm text-on-surface-variant hover:text-on-surface mb-4 transition-colors">
             <span className="material-symbols-outlined text-base">arrow_back</span>
             대시보드로
           </Link>
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-extrabold text-on-surface tracking-tight">새 측정 기록</h1>
-              <p className="text-on-surface-variant text-sm mt-1.5">
-                인바디 결과지를 보며 입력해주세요. 비워두면 표시되지 않습니다.
-              </p>
-            </div>
-            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest pb-1 hidden sm:block">
-              {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </span>
-          </div>
-        </header>
+        </PageHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {/* ───── STEP 1. 기본 정보 ───── */}
@@ -204,21 +200,6 @@ export default function InBodyInputPage() {
 
 /* ───────────────────────── 서브컴포넌트 ───────────────────────── */
 
-function SectionHeader({ step, title, caption, tone }) {
-  const toneClass = tone === 'secondary' ? 'bg-secondary-container text-secondary' : 'bg-primary-container text-primary';
-  return (
-    <div className="flex items-center gap-3">
-      <span className={`text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${toneClass}`}>
-        STEP {step}
-      </span>
-      <div>
-        <h2 className="text-lg font-extrabold text-on-surface tracking-tight">{title}</h2>
-        <p className="text-xs text-on-surface-variant">{caption}</p>
-      </div>
-    </div>
-  );
-}
-
 function NumberField({ field, value, onChange, error }) {
   return (
     <TextField
@@ -269,7 +250,9 @@ function AdvancedField({ field, value, onChange }) {
         <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
           {field.label}
         </label>
-        <span className="text-[10px] text-on-surface-variant/60">{field.hint}</span>
+        <Badge variant="muted" size="xs" className="font-semibold">
+          {field.hint}
+        </Badge>
       </div>
       <TextField
         icon={field.icon}

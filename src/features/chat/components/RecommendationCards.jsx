@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card } from '../../../shared/components/ui';
+import { Badge, Card } from '../../../shared/components/ui';
 import RecipeDetailModal from '../../meal/components/RecipeDetailModal';
 import { fetchRecipeDetail } from '../../meal/api/recipeApi';
 
@@ -38,7 +38,7 @@ export default function RecommendationCards({ recommendations }) {
 
   return (
     <>
-    <div className={`grid gap-3 mt-3 w-full ${recommendations.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+    <div className={`grid gap-3 mt-3 w-full ${recommendations.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
       {recommendations.slice(0, 2).map((rec, index) => (
         <Card
           as="article"
@@ -63,16 +63,14 @@ export default function RecommendationCards({ recommendations }) {
               {rec.mainIngredients?.map((ingredient, i) => {
                 const isMissing = rec.missingIngredients?.includes(ingredient);
                 return (
-                  <span
+                  <Badge
                     key={i}
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      isMissing
-                        ? 'bg-surface-variant text-on-surface-variant opacity-70'
-                        : 'bg-primary-container text-primary'
-                    }`}
+                    variant={isMissing ? 'muted' : 'primary'}
+                    size="xs"
+                    className={isMissing ? 'opacity-70' : ''}
                   >
                     {ingredient}
-                  </span>
+                  </Badge>
                 );
               })}
               {rec.cookingTime && (
