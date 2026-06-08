@@ -27,7 +27,7 @@ export default function PageHeader({
           )}
         </div>
         {(meta || actions) && (
-          <div className="hidden sm:flex items-center gap-3 pb-1">
+          <div className="flex items-center gap-3 pb-1">
             {meta}
             {actions}
           </div>

@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IconButton } from '../../../shared/components/ui';
 import { cn } from '../../../shared/utils/cn.js';
 import {
   MONTH_NAMES, DOW_SUN, buildMonthGrid, isoDate, isToday, isFuture, TODAY
@@ -43,12 +44,24 @@ function MonthHeader({ y, m, onPrev, onNext }) {
         <span className="yr">{y}</span>
         <span className="swipe-hint" style={{ marginLeft: 18 }}>
           <span className="glyph">↔</span>
-          <span>swipe or use ← →</span>
+          <span>스와이프 또는 ← → 키</span>
         </span>
       </div>
       <div className="month-nav">
-        <button className="month-btn" onClick={onPrev} aria-label="prev">‹</button>
-        <button className="month-btn" onClick={onNext} aria-label="next">›</button>
+        <IconButton
+          icon="chevron_left"
+          label="이전 달"
+          size="iconSm"
+          className="month-btn"
+          onClick={onPrev}
+        />
+        <IconButton
+          icon="chevron_right"
+          label="다음 달"
+          size="iconSm"
+          className="month-btn"
+          onClick={onNext}
+        />
       </div>
     </div>
   );
@@ -157,9 +170,9 @@ export default function Calendar() {
 
       <div className="foot">
         <div className="legend">
-          <span className="key"><span className="swatch today"></span> today</span>
-          <span className="key"><span className="swatch has">●</span> has conversation</span>
-          <span className="key"><span className="swatch none"></span> inactive</span>
+          <span className="key"><span className="swatch today"></span> 오늘</span>
+          <span className="key"><span className="swatch has">●</span> 대화 있음</span>
+          <span className="key"><span className="swatch none"></span> 비활성</span>
         </div>
       </div>
 
@@ -174,7 +187,13 @@ export default function Calendar() {
                   {new Date(sel.y, sel.m - 1, sel.d).toLocaleDateString('ko-KR', { weekday: 'long' })} · {sel.y}
                 </span>
               </div>
-              <button className="close" onClick={closeDay} aria-label="close">×</button>
+              <IconButton
+                icon="close"
+                label="닫기"
+                size="iconSm"
+                className="close"
+                onClick={closeDay}
+              />
             </div>
             <div className="meta">
               <span><b>{selCount}</b> 대화</span>

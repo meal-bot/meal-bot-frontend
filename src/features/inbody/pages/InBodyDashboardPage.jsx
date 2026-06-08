@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../../../shared/components/layout/Layout';
-import { Button, Card } from '../../../shared/components/ui';
+import { Badge, Button, Card, EmptyState, PageHeader } from '../../../shared/components/ui';
 import MealCard from '../../meal/components/MealCard';
 import MEAL_DATA from '../../meal/data/mealData';
 import { ADVANCED_FIELDS, SEGMENTS, AVG_STATS } from '../data/inbodyData';
@@ -46,39 +46,41 @@ export default function InBodyDashboardPage() {
     <Layout>
       <div className="max-w-5xl mx-auto flex flex-col gap-6">
 
-        <header className="flex items-end justify-between gap-4 mb-2">
-          <div>
-            <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1.5">
-              인바디 대시보드
-            </p>
-            <h1 className="text-3xl font-extrabold text-on-surface tracking-tight">내 체성분 분석</h1>
-            <p className="text-on-surface-variant text-sm mt-1.5">
-              최근 입력 · {curr?.measuredAt?.slice(0, 10)?.replace(/-/g, '. ') ?? '-'}
-            </p>
-          </div>
-          <Button
-            onClick={() => navigate('/inbody/new')}
-            size="lg"
-            className="shadow-sm whitespace-nowrap"
-          >
-            <span className="material-symbols-outlined text-base">add</span>
-            새 측정
-          </Button>
-        </header>
+        <PageHeader
+          eyebrow="인바디 대시보드"
+          title="내 체성분 분석"
+          description={`최근 입력 · ${curr?.measuredAt?.slice(0, 10)?.replace(/-/g, '. ') ?? '-'}`}
+          className="mb-2"
+          actions={(
+            <Button
+              onClick={() => navigate('/inbody/new')}
+              size="lg"
+              className="shadow-sm whitespace-nowrap"
+            >
+              <span className="material-symbols-outlined text-base">add</span>
+              새 측정
+            </Button>
+          )}
+        />
 
         {isLoading && (
           <p className="text-sm text-on-surface-variant text-center py-12">불러오는 중...</p>
         )}
         {!isLoading && records.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-on-surface-variant mb-4">아직 측정 기록이 없습니다</p>
-            <Button
-              onClick={() => navigate('/inbody/new')}
-              size="lg"
-            >
-              첫 측정 기록하기
-            </Button>
-          </div>
+          <EmptyState
+            icon="monitoring"
+            title="아직 측정 기록이 없습니다"
+            description="첫 기록을 입력하면 체성분 변화와 맞춤 식단 추천을 볼 수 있습니다."
+            className="py-16"
+            action={(
+              <Button
+                onClick={() => navigate('/inbody/new')}
+                size="lg"
+              >
+                첫 측정 기록하기
+              </Button>
+            )}
+          />
         )}
 
         {/* ───── 1. 점수/등급 요약 카드 ───── */}
@@ -89,10 +91,10 @@ export default function InBodyDashboardPage() {
             </div>
             <div className="flex flex-col gap-5 justify-center">
               <div>
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-primary-container text-primary mb-2">
+                <Badge variant="primary" size="sm" className="uppercase tracking-widest mb-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                   {curr?.grade ?? '-'}
-                </span>
+                </Badge>
                 <h2 className="text-2xl font-extrabold text-on-surface tracking-tight">
                   {curr?.bodyType ?? '-'} 체형
                 </h2>
@@ -122,9 +124,9 @@ export default function InBodyDashboardPage() {
           {bmiGrade && (
             <div className="flex items-center gap-3 mt-5 pt-5 border-t border-outline-variant/30">
               <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">판정</span>
-              <span className={`text-xs font-bold px-3 py-1 rounded-full ${bmiGrade.color}`}>
+              <Badge variant="muted" size="md" className={bmiGrade.color}>
                 {bmiGrade.label}
-              </span>
+              </Badge>
               <span className="text-xs text-on-surface-variant">BMI {curr.bmi}</span>
             </div>
           )}
@@ -152,13 +154,13 @@ export default function InBodyDashboardPage() {
 
             {curr?.bmr && (
               <div className="sm:ml-auto">
-                <span className={`text-sm font-bold px-4 py-2 rounded-full ${
-                  curr.bmr >= AVG_STATS.bmr
-                    ? 'bg-primary-container text-primary'
-                    : 'bg-surface-container text-on-surface-variant'
-                }`}>
+                <Badge
+                  variant={curr.bmr >= AVG_STATS.bmr ? 'primary' : 'muted'}
+                  size="md"
+                  className="text-sm px-4 py-2"
+                >
                   {curr.bmr >= AVG_STATS.bmr ? '+' : ''}{(curr.bmr - AVG_STATS.bmr).toLocaleString()} kcal vs 평균
-                </span>
+                </Badge>
               </div>
             )}
           </div>
@@ -213,7 +215,14 @@ export default function InBodyDashboardPage() {
               const date = h.measuredAt?.slice(0, 10) ?? h.date ?? '';
               return (
                 <div key={h.inbodyId ?? i} className={`grid grid-cols-4 gap-2 text-sm py-2.5 ${i === 0 ? 'font-bold text-on-surface' : 'text-on-surface-variant'} ${i < 3 ? 'border-b border-outline-variant/30' : ''}`}>
-                  <span>{date.replace(/-/g, '. ')}{i === 0 && <span className="ml-2 text-[10px] font-bold uppercase tracking-widest text-primary">최신</span>}</span>
+                  <span>
+                    {date.replace(/-/g, '. ')}
+                    {i === 0 && (
+                      <Badge variant="primary" size="xs" className="ml-2 uppercase tracking-widest">
+                        최신
+                      </Badge>
+                    )}
+                  </span>
                   <span className="text-right tabular-nums">{h.weight} kg</span>
                   <span className="text-right tabular-nums">{h.bodyFatPercent}%</span>
                   <span className="text-right tabular-nums">{h.score ?? '-'}</span>
