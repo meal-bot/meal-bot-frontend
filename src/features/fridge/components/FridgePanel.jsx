@@ -116,32 +116,22 @@ export default function FridgePanel({
         <div className="shelf-label">직접 추가</div>
         <div className="ingredients">
           {isAdding ? (
-            <div className="ing" style={{ cursor: 'text' }}>
+            <div className="ing custom-ing editing">
               <div className="ing-glyph">➕</div>
               <input
+                className="custom-ing-input"
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleCustomKeyDown}
                 placeholder="재료 이름"
                 autoFocus
-                style={{
-                  width: '100%',
-                  border: 'none',
-                  background: 'transparent',
-                  textAlign: 'center',
-                  fontSize: '11.5px',
-                  fontFamily: 'inherit',
-                  outline: 'none',
-                  color: 'var(--ink)',
-                }}
               />
             </div>
           ) : (
             <div
-              className="ing"
+              className="ing custom-ing"
               onClick={() => setIsAdding(true)}
-              style={{ cursor: 'pointer' }}
               title="없는 재료를 직접 입력해서 추가"
             >
               <div className="ing-glyph">➕</div>

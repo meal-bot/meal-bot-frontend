@@ -520,6 +520,25 @@ body {
   text-align: center;
   color: var(--ink);
 }
+.fridge-page .custom-ing {
+  cursor: pointer;
+}
+.fridge-page .custom-ing.editing {
+  cursor: text;
+}
+.fridge-page .custom-ing-input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font: inherit;
+  font-size: 11.5px;
+  outline: none;
+  color: var(--ink);
+}
+.fridge-page .custom-ing-input::placeholder {
+  color: var(--ink-3);
+}
 
 .fridge-page .empty-state {
   padding: 40px 20px;
@@ -611,6 +630,11 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 12px;
 }
+.fridge-page .basket-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 .fridge-page .basket-label {
   font-family: inherit;
   font-size: 10.5px;
@@ -623,6 +647,9 @@ body {
   font-size: 11px;
   font-weight: 600;
   font-feature-settings: 'tnum';
+}
+.fridge-page .basket-count.is-empty {
+  color: var(--ink-3);
 }
 .fridge-page .basket-clear {
   font-size: 11px;
@@ -732,6 +759,12 @@ body {
   border: 1px dashed var(--line-2);
   border-radius: 12px;
   line-height: 1.6;
+}
+.fridge-page .results-message {
+  margin: 8px 0 4px;
+  font-size: 13px;
+  color: var(--ink-muted, #555);
+  line-height: 1.5;
 }
 .fridge-page .rcard {
   display: grid;

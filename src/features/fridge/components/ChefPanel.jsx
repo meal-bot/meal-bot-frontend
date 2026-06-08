@@ -73,12 +73,12 @@ export default function ChefPanel({
         <div className="basket-head">
           <span className="basket-label">선택한 재료</span>
           {totalCount > 0 ? (
-            <span style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <span className="basket-actions">
               <span className="basket-count">{totalCount}</span>
               <button className="basket-clear" onClick={onClearAll}>모두 비우기</button>
             </span>
           ) : (
-            <span className="basket-count" style={{ color: 'var(--ink-3)' }}>0</span>
+            <span className="basket-count is-empty">0</span>
           )}
         </div>
         <div className="tags">
