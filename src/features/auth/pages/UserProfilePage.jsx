@@ -97,10 +97,8 @@ export default function UserProfilePage() {
   };
 
   return (
-    <Layout className="min-h-screen flex flex-col" style={{ backgroundColor: '#ffffff' }}>
-
-      <main className="flex-1 flex justify-center px-6 pt-28 pb-16">
-        <div className="w-full max-w-lg">
+    <Layout>
+      <div className="w-full max-w-lg mx-auto">
           {/* 페이지 헤더 */}
           <div className="mb-8">
             <h1 className="text-2xl font-extrabold text-on-surface tracking-tight">내 프로필</h1>
@@ -247,8 +245,7 @@ export default function UserProfilePage() {
               </div>
             )}
           </form>
-        </div>
-      </main>
+      </div>
     </Layout>
   );
 }

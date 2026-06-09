@@ -28,10 +28,16 @@ export default function AuthPageShell({
         className="fixed top-0 w-full z-50 border-b border-outline-variant/30"
         style={{ background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)' }}
       >
-        <div className="flex justify-between items-center px-8 h-20 max-w-7xl mx-auto w-full">
-          <Link to="/" className="text-2xl font-bold tracking-tighter text-on-surface ml-12">
+        <div className="flex justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full">
+          <Link
+            to="/"
+            className="text-xl md:text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 md:ml-10.5"
+          >
             OBOB
           </Link>
+          <Button as={Link} to="/main" variant="outline" size="sm" className="font-semibold">
+            로그인 없이 시작
+          </Button>
         </div>
       </nav>
 

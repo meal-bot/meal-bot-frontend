@@ -5,6 +5,7 @@ import ResultsPanel from '../components/ResultsPanel';
 import { INGREDIENTS } from '../data/fridgeData';
 import { fetchFridgeRecommendation } from '../api/fridgeApi';
 import Layout from '../../../shared/components/layout/Layout';
+import '../style/fridge.css';
 
 export default function FridgePage() {
   const [picked, setPicked] = useState([]);
