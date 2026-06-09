@@ -7,6 +7,10 @@ import { fetchFridgeRecommendation } from '../api/fridgeApi';
 import Layout from '../../../shared/components/layout/Layout';
 import '../style/fridge.css';
 
+// ?debugError=1 이 붙어 있으면 추천 요청을 강제 실패시켜 에러 UI를 점검한다.
+const DEBUG_ERROR = typeof window !== 'undefined'
+  && new URLSearchParams(window.location.search).has('debugError');
+
 export default function FridgePage() {
   const [picked, setPicked] = useState([]);
   const [customIngredients, setCustomIngredients] = useState([]); // 사용자 직접 입력 재료 (예: ['에멘탈 치즈'])
@@ -66,6 +70,12 @@ export default function FridgePage() {
     );
 
     try {
+      // ?debugError=1 → API를 타지 않고 강제로 실패시켜 에러 UI를 점검한다
+      // (로컬·배포 모두 주소로만 재현, 일반 사용자에겐 보이지 않음)
+      if (DEBUG_ERROR) {
+        await new Promise(r => setTimeout(r, 900)); // 로딩 스켈레톤 잠깐 노출
+        throw new Error('debugError: forced failure');
+      }
       const data = await fetchFridgeRecommendation(presetNames, customIngredients, 2);
       const recs = (data.recommendations || []).map(rec => ({
         ...rec,

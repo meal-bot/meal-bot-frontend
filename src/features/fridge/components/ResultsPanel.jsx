@@ -1,5 +1,6 @@
 import { EmptyState } from '../../../shared/components/ui';
 import RecommendationCards from '../../chat/components/RecommendationCards';
+import dumbAI from '../../../assets/dumb_AI.png';
 
 export default function ResultsPanel({ isLoading, results, messageText, errorMessage }) {
   return (
@@ -37,7 +38,8 @@ export default function ResultsPanel({ isLoading, results, messageText, errorMes
       {/* 네트워크/서버 오류: 가장 우선해서 노출 */}
       {!isLoading && errorMessage && (
         <EmptyState
-          icon="error"
+          image={dumbAI}
+          imageAlt="응답을 가져오지 못한 셰프"
           title="추천 요청에 실패했습니다"
           description={errorMessage}
           className="card-empty text-error bg-transparent"

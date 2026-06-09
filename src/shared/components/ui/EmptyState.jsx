@@ -2,6 +2,8 @@ import { cn } from '../../utils/cn';
 
 export default function EmptyState({
   icon,
+  image,
+  imageAlt = '',
   title,
   description,
   action,
@@ -14,11 +16,13 @@ export default function EmptyState({
         className,
       )}
     >
-      {icon && (
+      {image ? (
+        <img src={image} alt={imageAlt} className="w-28 h-28 object-contain mb-3" />
+      ) : icon ? (
         <span className="material-symbols-outlined text-3xl text-on-surface-variant mb-3">
           {icon}
         </span>
-      )}
+      ) : null}
       {title && <p className="text-sm font-bold text-on-surface">{title}</p>}
       {description && <p className="text-xs text-on-surface-variant leading-relaxed mt-1.5">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
