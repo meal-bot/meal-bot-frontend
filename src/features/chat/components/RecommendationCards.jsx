@@ -45,7 +45,8 @@ export default function RecommendationCards({ recommendations }) {
           padding="none"
           key={rec.recipeId}
           onClick={() => loadRecipeDetail(rec)}
-          className="overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+          className="chat-recommendation-card overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+          style={{ '--chat-card-index': index }}
         >
           {/* 순서 뱃지 + 제목 영역 */}
           <div className="p-3 flex flex-col gap-2 flex-1">

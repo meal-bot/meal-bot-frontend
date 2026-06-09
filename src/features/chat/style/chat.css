@@ -1,0 +1,94 @@
+/* Chat page motion - scoped to chat feature classes */
+.chat-message-row {
+  animation: chat-message-enter 260ms cubic-bezier(.2, .7, .25, 1) both;
+}
+
+.chat-message-row.user {
+  --chat-enter-x: 10px;
+}
+
+.chat-message-row.assistant {
+  --chat-enter-x: -10px;
+}
+
+@keyframes chat-message-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--chat-enter-x, 0), 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.chat-bubble {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.chat-bubble:hover {
+  transform: translateY(-1px);
+}
+
+.chat-recommendation-card {
+  animation: chat-recommendation-enter 320ms cubic-bezier(.2, .7, .25, 1) both;
+  animation-delay: calc(var(--chat-card-index, 0) * 70ms);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.chat-recommendation-card:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes chat-recommendation-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.chat-input-shell {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.chat-input-shell:focus-within {
+  border-color: rgba(156, 175, 136, .75);
+  box-shadow:
+    0 16px 40px rgba(74, 68, 63, .10),
+    0 0 0 4px rgba(156, 175, 136, .14);
+}
+
+.chat-input-shell:active {
+  transform: translateY(1px);
+}
+
+.chat-send-button {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+
+.chat-send-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(156, 175, 136, .28);
+}
+
+.chat-send-button:active {
+  transform: translateY(0) scale(.96);
+}

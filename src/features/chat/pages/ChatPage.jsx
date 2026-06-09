@@ -10,6 +10,7 @@ import { useChat } from '../hooks/useChat';
 import { isLoggedIn } from '../../auth/utils/auth';
 import RecipeDetailModal from '../../meal/components/RecipeDetailModal';
 import { fetchRandomRecipes, fetchRecipeDetail } from '../../meal/api/recipeApi';
+import '../style/chat.css';
 
 export default function ChatPage() {
   const { sliderRef, canScrollLeft, canScrollRight, updateButtons } = useSlider();

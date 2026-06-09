@@ -9,7 +9,7 @@ export default function ChatThread({ messages, isLoading, messagesEndRef }) {
         const recommendations = msg.recommendations || [];
 
         return (
-          <div key={msg.id} className="flex flex-col gap-2">
+          <div key={msg.id} className={`chat-message-row ${msg.role} flex flex-col gap-2`}>
             <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}>
               {msg.role === 'assistant' && (
                 <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
@@ -17,7 +17,7 @@ export default function ChatThread({ messages, isLoading, messagesEndRef }) {
                 </div>
               )}
               <div
-                className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 shadow-sm ${msg.role === 'user'
+                className={`chat-bubble max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 shadow-sm ${msg.role === 'user'
                   ? 'bg-primary text-on-primary rounded-br-sm'
                   : 'bg-surface-container-low text-on-surface rounded-bl-sm border border-outline-variant/30'
                 }`}
