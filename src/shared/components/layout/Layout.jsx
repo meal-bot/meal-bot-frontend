@@ -5,12 +5,12 @@ import ChatSidebar from '../../../features/chat/components/ChatSidebar';
  * Layout - 전체 페이지의 공통 뼈대 컴포넌트
  *
  * props:
- *   sidebarOpen        : 사이드바 열림 여부 (MainPage에서 관리)
- *   onSidebarToggle    : 토글 버튼 클릭 시 MainPage의 상태를 반전하는 콜백
- *   onStartNewChat     : 새 채팅 버튼 → MainPage.startNewChat
- *   chats              : 채팅 목록 (MainPage의 useChat에서 관리)
- *   onOpenExistingChat : 채팅 클릭   → MainPage.openExistingChat
- *   onDeleteChat       : X 버튼 클릭  → MainPage.deleteChat
+ *   sidebarOpen        : 사이드바 열림 여부 (ChatPage에서 관리)
+ *   onSidebarToggle    : 토글 버튼 클릭 시 ChatPage의 상태를 반전하는 콜백
+ *   onStartNewChat     : 새 채팅 버튼 → ChatPage.startNewChat
+ *   chats              : 채팅 목록 (ChatPage의 useChat에서 관리)
+ *   onOpenExistingChat : 채팅 클릭   → ChatPage.openExistingChat
+ *   onDeleteChat       : X 버튼 클릭  → ChatPage.deleteChat
  */
 export default function Layout({ children, sidebarOpen, onSidebarToggle, onStartNewChat,
                                  chats, onOpenExistingChat, onDeleteChat }) {

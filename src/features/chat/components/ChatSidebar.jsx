@@ -5,10 +5,10 @@ import { isLoggedIn } from '../../auth/utils/auth';
 
 // isOpen              : 사이드바 열림 여부 (Layout에서 관리)
 // onToggle            : 토글 버튼 클릭 시 사이드바 상태 반전 콜백
-// onStartNewChat      : 새 채팅 버튼 클릭 시 현재 채팅 초기화 (MainPage → Layout → Sidebar)
-// chats               : 채팅 목록 (useChat을 MainPage로 올려 props로 전달받음)
-// onOpenExistingChat  : 채팅 클릭 시 해당 채팅 불러오기 (MainPage → Layout → Sidebar)
-// onDeleteChat        : X 버튼 클릭 시 해당 채팅 삭제 (MainPage → Layout → Sidebar)
+// onStartNewChat      : 새 채팅 버튼 클릭 시 현재 채팅 초기화 (ChatPage → Layout → Sidebar)
+// chats               : 채팅 목록 (useChat을 ChatPage로 올려 props로 전달받음)
+// onOpenExistingChat  : 채팅 클릭 시 해당 채팅 불러오기 (ChatPage → Layout → Sidebar)
+// onDeleteChat        : X 버튼 클릭 시 해당 채팅 삭제 (ChatPage → Layout → Sidebar)
 export default function ChatSidebar({ isOpen, onToggle, onStartNewChat, chats, onOpenExistingChat, onDeleteChat }) {
   const loggedIn = isLoggedIn();
   // [codex] 삭제 확인 중인 항목도 백엔드 Chat 식별자인 chatId를 그대로 사용한다.

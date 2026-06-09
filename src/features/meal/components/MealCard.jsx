@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import { Card } from '../../../shared/components/ui';
 
 const formatCalories = (value) => {
@@ -8,8 +7,6 @@ const formatCalories = (value) => {
 };
 
 export default function MealCard({ meal, onClick }) {
-  const navigate = useNavigate();
-  const recipeId = meal.recipeId || meal.id;
   const image = meal.imgThumb || meal.imgMain || meal.image;
   const title = meal.name || meal.title;
   const tagText = meal.category || meal.tagText || meal.tasteTags?.[0] || meal.dishTypeTags?.[0];
@@ -17,13 +14,13 @@ export default function MealCard({ meal, onClick }) {
   const time = meal.cookingTime != null ? `${meal.cookingTime}분` : meal.time;
   const calories = formatCalories(meal.nutrition?.energyKcal) || meal.calories;
   const alt = meal.alt || title;
-  const handleClick = onClick || (() => navigate(`/meal/${recipeId}`));
+  const handleClick = onClick ? () => onClick(meal) : undefined;
 
   return (
     <Card
       as="article"
       padding="none"
-      className="min-w-[300px] md:min-w-[350px] flex-1 overflow-hidden snap-start group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      className={`min-w-[300px] md:min-w-[350px] flex-1 overflow-hidden snap-start group transition-all duration-300 ${onClick ? 'cursor-pointer hover:-translate-y-1 hover:shadow-lg' : ''}`}
       onClick={handleClick}
     >
       <div className="h-56 overflow-hidden">

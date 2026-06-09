@@ -2,17 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../../../shared/components/layout/Layout';
 import { Badge, Button, Card, EmptyState, PageHeader } from '../../../shared/components/ui';
-import MealCard from '../../meal/components/MealCard';
-import MEAL_DATA from '../../meal/data/mealData';
-import { ADVANCED_FIELDS, SEGMENTS, AVG_STATS } from '../data/inbodyData';
+import { ADVANCED_FIELDS, AVG_STATS } from '../data/inbodyData';
 import { fetchInbodyList } from '../api/inbodyApi';
 import SectionTitle from '../components/SectionTitle';
 import ScoreRing from '../components/ScoreRing';
 import DeltaStat from '../components/DeltaStat';
 import GaugeRow from '../components/GaugeRow';
 import TrendChart from '../components/TrendChart';
-import BodyDiagram from '../components/BodyDiagram';
-import SegmentRow from '../components/SegmentRow';
 import ComparisonBarChart from '../components/ComparisonBarChart';
 
 export default function InBodyDashboardPage() {
@@ -37,9 +33,6 @@ export default function InBodyDashboardPage() {
   const weightDelta = curr && prev ? (curr.weight - prev.weight).toFixed(1) : null;
   const bmiDelta = curr && prev ? (curr.bmi - prev.bmi).toFixed(1) : null;
   const scoreDelta = curr?.score && prev?.score ? curr.score - prev.score : 0;
-
-  const recommendedMeals = MEAL_DATA.slice(0, 3);
-
   const bmiGrade = curr?.bmi != null ? getBmiGrade(curr.bmi) : null;
 
   return (
@@ -232,23 +225,7 @@ export default function InBodyDashboardPage() {
           </div>
         </Card>
 
-        {/* ───── 6. 부위별 근육 균형 **삭제 예정** ───── */}
-        {/* <section className="bg-white rounded-[2rem] shadow-sm border border-outline-variant/20 p-8">
-          <SectionTitle eyebrow="SEGMENTAL" title="부위별 근육 균형" sub="좌·우 균형 및 정상 범위" />
-          <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-10 mt-6 items-center">
-            <BodyDiagram />
-            <div className="flex flex-col gap-3">
-              {SEGMENTS.map(seg => (
-                <SegmentRow key={seg.key} segment={seg} />
-              ))}
-              <p className="text-xs text-on-surface-variant mt-2 leading-relaxed">
-                좌·우 차이가 0.3kg 이내면 균형 상태입니다. 현재 모든 부위가 정상 범위 내에 있습니다.
-              </p>
-            </div>
-          </div>
-        </section> */}
-
-        {/* ───── 7. 식단 추천 CTA ───── */}
+        {/* ───── 6. 식단 추천 CTA ───── */}
         <Card variant="accent">
           <div className="flex items-end justify-between gap-4 mb-6 flex-wrap">
             <div>
@@ -272,11 +249,6 @@ export default function InBodyDashboardPage() {
               <span className="material-symbols-outlined text-base">forum</span>
               맞춤 채팅 시작
             </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {recommendedMeals.map(meal => (
-              <MealCard key={meal.id} meal={meal} />
-            ))}
           </div>
         </Card>
 
