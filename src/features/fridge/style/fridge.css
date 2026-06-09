@@ -317,7 +317,7 @@
 }
 .fridge-page .chef-avatar {
   position: relative;
-  width: 96px; height: 96px;
+  width: 120px; height: 120px;
   margin: 0 auto 16px;
   border-radius: 50%;
   background: linear-gradient(155deg, #fff, #f4f1ea);
@@ -326,6 +326,11 @@
   font-size: 44px;
   box-shadow: 0 6px 20px rgba(26,26,26,.08);
   transition: transform .35s cubic-bezier(.3,1.4,.5,1), box-shadow .25s;
+}
+.fridge-page .chef-avatar-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 .fridge-page .chef-avatar::after {
   content: '';

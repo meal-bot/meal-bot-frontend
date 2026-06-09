@@ -1,104 +1,5 @@
 // vite-port/src/landing/Hero.jsx
-import { useState, useEffect } from 'react';
-
-function ChatSimulator({ accent1, accent2, accent3 }) {
-  const SCRIPT = [
-    { who: 'user', text: '오늘 점심 뭐 먹지? 가볍고 단백질 많은 걸로' },
-    { who: 'bot', text: '체성분 데이터 보니 단백질 부족하시네요. 이런 메뉴 어때요?' },
-    { who: 'cards' },
-  ];
-
-  const [step, setStep] = useState(0);
-  const [typed, setTyped] = useState('');
-  const [showCursor, setShowCursor] = useState(true);
-
-  useEffect(() => {
-    const id = setInterval(() => setShowCursor((s) => !s), 500);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    if (step >= SCRIPT.length) {
-      const id = setTimeout(() => { setStep(0); setTyped(''); }, 4200);
-      return () => clearTimeout(id);
-    }
-    const cur = SCRIPT[step];
-    if (cur.who === 'cards') {
-      const id = setTimeout(() => setStep(step + 1), 2400);
-      return () => clearTimeout(id);
-    }
-    if (typed.length < cur.text.length) {
-      const id = setTimeout(() => setTyped(cur.text.slice(0, typed.length + 1)), 32 + Math.random() * 30);
-      return () => clearTimeout(id);
-    }
-    const id = setTimeout(() => { setStep(step + 1); setTyped(''); }, 700);
-    return () => clearTimeout(id);
-  // SCRIPT is static for this simulator; keep the interval keyed to visible typing state.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, typed]);
-
-  const visible = [];
-  for (let i = 0; i < step; i++) {
-    if (SCRIPT[i].who !== 'cards') visible.push({ ...SCRIPT[i], full: true });
-  }
-  if (step < SCRIPT.length && SCRIPT[step].who !== 'cards') {
-    visible.push({ ...SCRIPT[step], text: typed, typing: true });
-  }
-  const showCards = step >= 2;
-
-  return (
-    <div className="chat-sim">
-      <div className="chat-window">
-        <div className="chat-header">
-          <span className="chat-dot" style={{ background: accent1 }}></span>
-          <span style={{ fontSize: 11, color: 'rgba(255,255,255,.55)', letterSpacing: '.04em' }}>
-            OBOB · AI 영양 어시스턴트
-          </span>
-        </div>
-        <div className="chat-body">
-          {visible.map((m, i) => (
-            <div key={i} className={`bubble bubble-${m.who}`}>
-              {m.who === 'bot' && (
-                <div className="bot-avatar" style={{ background: `linear-gradient(135deg, ${accent1}, ${accent2})` }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="3" />
-                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-                  </svg>
-                </div>
-              )}
-              <div className="bubble-text">
-                {m.text}
-                {m.typing && showCursor && <span className="cursor">▍</span>}
-              </div>
-            </div>
-          ))}
-
-          {showCards && (
-            <div className="meal-cards-row">
-              {[
-                { name: '연어 포케볼', kcal: '450', tag: '단백', hue: accent2 },
-                { name: '베지터블 타코', kcal: '280', tag: '비건', hue: accent1 },
-                { name: '펌킨 스프', kcal: '190', tag: '저칼', hue: accent3 },
-              ].map((c, i) => (
-                <div key={i} className="meal-card" style={{ animationDelay: `${i * 140}ms` }}>
-                  <div className="meal-img" style={{ background: `linear-gradient(135deg, ${c.hue}, ${c.hue}aa)` }}>
-                    <div className="meal-img-grain"></div>
-                  </div>
-                  <div className="meal-tag" style={{ color: c.hue }}>{c.tag}</div>
-                  <div className="meal-name">{c.name}</div>
-                  <div className="meal-kcal">
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-                    {c.kcal} kcal
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+import ChatPreview from './ChatPreview';
 
 export default function Hero({ accent1, accent2, accent3, onGoogleLogin, onGuestLogin, onKakaoLogin }) {
   return (
@@ -167,7 +68,7 @@ export default function Hero({ accent1, accent2, accent3, onGoogleLogin, onGuest
         </div>
 
         <div className="hero-visual">
-          <ChatSimulator accent1={accent1} accent2={accent2} accent3={accent3} />
+          <ChatPreview accent1={accent1} />
         </div>
       </div>
 

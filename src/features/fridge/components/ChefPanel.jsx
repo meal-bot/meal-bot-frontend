@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { INGREDIENTS } from '../data/fridgeData';
+import aiChef from '../../../assets/aiChef.png';
 
 export default function ChefPanel({
   picked, setPicked,
@@ -64,7 +65,9 @@ export default function ChefPanel({
         onDragLeave={onDragLeave}
         onDrop={onDrop}
       >
-        <div className="chef-avatar">👩‍🍳</div>
+        <div className="chef-avatar">
+          <img src={aiChef} alt="Chef OBOB" className="chef-avatar-img" />
+        </div>
         <div className="chef-name">Chef OBOB</div>
         <div className="chef-line">{chefLine}</div>
       </div>
