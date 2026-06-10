@@ -1,6 +1,6 @@
-# CLAUDE.md
+# CODEX.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex when working with code in this repository.
 
 ## Commands
 
@@ -12,6 +12,8 @@ npm run preview   # 빌드 결과물 미리보기
 ```
 
 테스트 프레임워크는 미설치. 기능 검증은 `npm run dev`로 직접 확인.
+
+디자인 브랜치 작업을 이어갈 때는 최신 맥락과 임시 결정사항을 `DESIGN_NOTES.md`에서 함께 확인한다.
 
 ## 환경 변수
 

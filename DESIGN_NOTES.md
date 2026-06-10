@@ -79,6 +79,32 @@ Landing/marketing:
   - `src/shared/components/ui/EmptyState.jsx`
 - Added fridge error UI debug route:
   - `/fridge?debugError=1`
+- Redesigned the landing entry as a focused full-bleed hero:
+  - full-screen food photo background with slow crossfade
+  - left hero copy + right chat preview mockup
+  - removed previous Features / How It Works / Final CTA sections
+  - kept one primary CTA: `시작하기` -> `/login`
+  - removed duplicate landing nav login button
+- Updated landing hero copy:
+  - eyebrow: `AI MEAL ASSISTANT`
+  - title: `AI와 대화하며 찾는 / 오늘의 맞춤 식단`
+  - `오늘의 맞춤` accent color now uses the landing green tone
+  - subtitle font size increased
+- Unified app font direction:
+  - removed Google `Manrope` import
+  - loaded `Pretendard Variable`
+  - changed global font tokens to Pretendard
+  - landing, fridge, and calendar CSS now use global font tokens
+- Refined auth entry wording for OAuth-as-signup/login:
+  - login page title: `어떤 방식으로 시작할까요?`
+  - social buttons: `Google 계정으로 계속하기`, `Kakao 계정으로 계속하기`
+  - guest action: `로그인 없이 시작하기`
+  - do not rename guest-mode Navigationbar text unless explicitly requested
+- Improved global secondary-text visibility:
+  - `--color-on-surface-variant` changed from `#7c726a` to `#645b54`
+- Removed misleading InBody dashboard bottom CTA:
+  - the app does not automatically pass InBody data into AI chat
+  - InBody dashboard now ends at the trend/history section
 
 ## Current CSS Structure
 
@@ -132,6 +158,12 @@ src/features/landing/components/ChatPreview.jsx
   - Fixed with `html { scrollbar-gutter: stable; }` in `src/index.css`.
 - Sidebar open/close behavior must keep working.
 - Chat input and thread alignment should remain consistent with sidebar offsets.
+- Landing should avoid duplicated entry actions:
+  - use one main hero CTA when it goes to the same destination as nav login
+- For login = first-time signup via OAuth, prefer `계속하기` wording over separate `회원가입`.
+- Do not imply AI automatically reads body composition data unless that feature is actually implemented.
+- User requested that routine design/CSS changes should not run `npm run lint` or `npm run build`.
+  - If a change is structurally risky, explain the need for verification first.
 
 ## Temporary / Do Not Forget
 
@@ -167,17 +199,21 @@ rg "USE_MOCKS|MOCK|VITE_USE_MOCKS|VITE_MOCK_SCENARIO" src
 
 ## Last Known Verification
 
-- `npm run lint` passed.
-- `npm run build` passed.
-- Vite chunk-size warning remains but is not blocking.
+- Last explicit verification before the user's "do not verify" instruction:
+  - `npm run lint` passed.
+  - `npm run build` passed.
+  - Vite chunk-size warning remains but is not blocking.
+- After that instruction, later simple design/CSS/text changes were not verified by command.
 
 ## Likely Next Work
 
-1. Start with landing page design/motion review.
-2. Review the new main chat motion in the browser.
-3. Decide whether to remove the temporary chat outlines.
-4. Continue landing + main chat design improvements.
-5. Then move to fridge, calendar, InBody, and login in that order.
+1. Review the current landing page in the browser after:
+   - Pretendard font switch
+   - darker secondary text token
+   - landing hero/CTA cleanup
+2. Decide whether to remove the temporary chat outlines.
+3. Continue main chat visual polish.
+4. Then move to fridge, calendar, InBody, and login in that order.
 
 ## How To Continue In A New Codex Session
 
