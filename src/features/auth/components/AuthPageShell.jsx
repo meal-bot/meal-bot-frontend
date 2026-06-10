@@ -14,9 +14,10 @@ export default function AuthPageShell({
   icon,
   title,
   subtitle,
-  mainClassName = 'flex-1 flex items-center justify-center px-6 pt-20',
+  mainClassName = 'flex-1 flex items-center justify-center px-6 pt-24 pb-12',
   onGoogleAuth,
   onKakaoAuth,
+  onGuestStart,
   bottomText,
   bottomLink,
   bottomLinkText,
@@ -36,63 +37,113 @@ export default function AuthPageShell({
             OBOB
           </Link>
           <Button as={Link} to="/main" variant="outline" size="sm" className="font-semibold">
-            로그인 없이 시작
+            로그인 없이 시작하기
           </Button>
         </div>
       </nav>
 
       <main className={mainClassName}>
-        <div className="w-full max-w-md">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-container mb-5">
-              <span className="material-symbols-outlined text-3xl" style={{ color: '#8DA399' }}>
-                {icon}
-              </span>
+        <div className="grid w-full max-w-5xl grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_420px]">
+          <section className="hidden lg:flex flex-col gap-8">
+            <div className="flex flex-col gap-5">
+              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-outline-variant/40 bg-white/80 px-4 py-2 text-xs font-bold text-on-surface-variant shadow-sm">
+                <span className="material-symbols-outlined text-base text-primary">auto_awesome</span>
+                AI Meal Assistant
+              </div>
+              <div>
+                <h2 className="text-5xl font-extrabold leading-tight tracking-tight text-on-surface">
+                  대화로 고르고,<br />
+                  기록으로 이어보세요.
+                </h2>
+                <p className="mt-5 max-w-md text-base leading-7 text-on-surface-variant">
+                  별도 가입 양식 없이 소셜 계정으로 시작하고, 게스트로도 바로 식단 추천을 체험할 수 있습니다.
+                </p>
+              </div>
             </div>
-            <h1 className="text-3xl font-extrabold text-on-surface tracking-tight">{title}</h1>
-            <p className="text-on-surface-variant mt-2 text-sm">{subtitle}</p>
-          </div>
 
-          <Card>
-            {children}
+            <div className="grid max-w-lg grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-outline-variant/30 bg-white p-5 shadow-sm">
+                <span className="material-symbols-outlined text-primary">chat</span>
+                <p className="mt-3 text-sm font-bold text-on-surface">AI 채팅 추천</p>
+                <p className="mt-1 text-xs leading-5 text-on-surface-variant">먹고 싶은 상황을 말하면 메뉴를 추천합니다.</p>
+              </div>
+              <div className="rounded-2xl border border-outline-variant/30 bg-white p-5 shadow-sm">
+                <span className="material-symbols-outlined text-secondary">event_note</span>
+                <p className="mt-3 text-sm font-bold text-on-surface">추천 기록 관리</p>
+                <p className="mt-1 text-xs leading-5 text-on-surface-variant">이전 대화와 날짜별 기록을 다시 볼 수 있습니다.</p>
+              </div>
+            </div>
+          </section>
 
-            {children && (
-              <div className="flex items-center gap-4 my-6">
+          <div className="w-full">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-container mb-5">
+                <span className="material-symbols-outlined text-3xl" style={{ color: '#8DA399' }}>
+                  {icon}
+                </span>
+              </div>
+              <h1 className="text-3xl font-extrabold text-on-surface tracking-tight">{title}</h1>
+              <p className="text-on-surface-variant mt-2 text-sm leading-6">{subtitle}</p>
+            </div>
+
+            <Card className="flex flex-col gap-3">
+              {children}
+
+              {children && (
+                <div className="flex items-center gap-4 my-3">
+                  <div className="flex-1 h-px bg-outline-variant" />
+                  <span className="text-xs text-on-surface-variant font-medium">또는</span>
+                  <div className="flex-1 h-px bg-outline-variant" />
+                </div>
+              )}
+
+              <Button
+                onClick={onGoogleAuth}
+                variant="outline"
+                size="lg"
+                className="w-full font-semibold"
+              >
+                {GOOGLE_SVG}
+                Google 계정으로 계속하기
+              </Button>
+
+              <Button
+                onClick={onKakaoAuth}
+                variant="outline"
+                size="lg"
+                className="w-full font-semibold"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#191919" aria-hidden="true">
+                  <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.599 1.576 4.878 3.938 6.3-.173.616-.627 2.233-.717 2.58-.112.43.158.425.332.31.137-.092 2.167-1.47 3.046-2.065.457.063.926.095 1.401.095 5.523 0 10-3.477 10-7.72C22 6.477 17.523 3 12 3z"/>
+                </svg>
+                Kakao 계정으로 계속하기
+              </Button>
+
+              <div className="flex items-center gap-4 py-2">
                 <div className="flex-1 h-px bg-outline-variant" />
                 <span className="text-xs text-on-surface-variant font-medium">또는</span>
                 <div className="flex-1 h-px bg-outline-variant" />
               </div>
+
+              <Button
+                onClick={onGuestStart}
+                variant="ghost"
+                size="lg"
+                className="w-full font-semibold"
+              >
+                로그인 없이 시작하기
+              </Button>
+            </Card>
+
+            {bottomText && bottomLink && bottomLinkText && (
+              <p className="text-center text-sm text-on-surface-variant mt-6">
+                {bottomText}{' '}
+                <Link to={bottomLink} className="font-bold text-primary hover:opacity-70 transition-opacity">
+                  {bottomLinkText}
+                </Link>
+              </p>
             )}
-
-            <Button
-              onClick={onGoogleAuth}
-              variant="outline"
-              size="lg"
-              className="w-full font-semibold"
-            >
-              {GOOGLE_SVG}
-              Google로 계속하기
-            </Button>
-
-            <Button
-              onClick={onKakaoAuth}
-              variant="outline"
-              size="lg"
-              className="w-full font-semibold"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#191919" aria-hidden="true">
-                <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.599 1.576 4.878 3.938 6.3-.173.616-.627 2.233-.717 2.58-.112.43.158.425.332.31.137-.092 2.167-1.47 3.046-2.065.457.063.926.095 1.401.095 5.523 0 10-3.477 10-7.72C22 6.477 17.523 3 12 3z"/>
-              </svg>
-              카카오로 계속하기
-            </Button>
-          </Card>
-
-          <p className="text-center text-sm text-on-surface-variant mt-6">
-            {bottomText}{' '}
-            <Link to={bottomLink} className="font-bold text-primary hover:opacity-70 transition-opacity">
-              {bottomLinkText}
-            </Link>
-          </p>
+          </div>
         </div>
       </main>
     </div>

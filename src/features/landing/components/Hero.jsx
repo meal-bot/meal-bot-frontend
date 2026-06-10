@@ -1,80 +1,37 @@
 // vite-port/src/landing/Hero.jsx
 import ChatPreview from './ChatPreview';
 
-export default function Hero({ accent1, accent2, accent3, onGoogleLogin, onGuestLogin, onKakaoLogin }) {
+export default function Hero({ onStart }) {
   return (
     <section className="hero">
-      <div className="blob blob-1" style={{ background: accent1 }}></div>
-      <div className="blob blob-2" style={{ background: accent2 }}></div>
-      <div className="blob blob-3" style={{ background: accent3 }}></div>
-      <div className="grain"></div>
-
       <div className="hero-grid">
         <div className="hero-copy">
-          {/* <div className="eyebrow">
-            <span className="eyebrow-dot" style={{ background: accent1 }}></span>
-            AI Nutrition Coach · OBOB
-          </div> */}
+          <span className="hero-eyebrow">
+            <span className="hero-eyebrow-dot" />
+            AI MEAL ASSISTANT
+          </span>
+
           <h1 className="hero-title">
-            당신을 위한<br />
-            <span className="title-accent">
-              AI 식단 추천
-              {/* <svg className="underline-svg" viewBox="0 0 320 14" preserveAspectRatio="none">
-                <path d="M2 9 Q 80 2, 160 7 T 318 5" stroke={accent2} strokeWidth="3" fill="none" strokeLinecap="round"/>
-              </svg> */}
-            </span>
+            <span className="title-line">AI와 대화하며 찾는</span>
+            <span className="title-line"><span className="title-accent">오늘의 맞춤</span> 식단</span>
           </h1>
+
           <p className="hero-sub">
-            체성분 데이터를 읽고, 대화로 풀어내는 AI 영양사.<br />
-            매일 바뀌는 컨디션에 맞춘 식단을 30초 안에 받아보세요.
+            복잡한 검색은 그만. 그냥 말 걸듯 이야기하면,
+            지금 먹기 좋은 한 끼를 OBOB이 골라드려요.
           </p>
 
           <div className="cta-row">
-            <button className="btn-guest" onClick={onGuestLogin}>
-              <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"></svg>
-              게스트로 둘러보기
+            <button className="btn-guest" onClick={onStart}>
+              시작하기
+              <span className="btn-arrow">→</span>
             </button>
-            <button className="btn-google" onClick={onGoogleLogin}>
-              <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-                <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6 8-11.3 8a12 12 0 1 1 0-24c3 0 5.8 1.1 7.9 3l5.7-5.7C33.6 6.1 29 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
-                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C33.6 6.1 29 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-                <path fill="#4CAF50" d="M24 44c5 0 9.5-1.9 12.9-5l-6-5c-1.9 1.3-4.3 2-6.9 2-5.3 0-9.7-3.4-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
-                <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.1 4.1-3.9 5.5l6 5C40.9 35.5 44 30.2 44 24c0-1.3-.1-2.3-.4-3.5z"/>
-              </svg>
-              Google 계정으로 시작하기
-            </button>
-            <button className="btn-kakao" onClick={onKakaoLogin}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#191919" aria-hidden="true">
-                <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.599 1.576 4.878 3.938 6.3-.173.616-.627 2.233-.717 2.58-.112.43.158.425.332.31.137-.092 2.167-1.47 3.046-2.065.457.063.926.095 1.401.095 5.523 0 10-3.477 10-7.72C22 6.477 17.523 3 12 3z"/>
-              </svg>
-              카카오로 시작하기
-            </button>
-            <a href="#how" className="btn-ghost">
-              어떻게 동작하나요?
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </a>
           </div>
-
-          {/* <div className="trust-row">
-            <div className="trust-stars">
-              {[0,1,2,3,4].map(i => (
-                <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill={accent2}>
-                  <path d="M12 2l3 7 7 .5-5.5 4.7L18 21l-6-3.6L6 21l1.5-6.8L2 9.5 9 9z"/>
-                </svg>
-              ))}
-            </div>
-            <span>2,800+명이 매일 식단을 추천받고 있어요</span>
-          </div> */}
         </div>
 
         <div className="hero-visual">
-          <ChatPreview accent1={accent1} />
+          <ChatPreview accent1="#6f8c56" />
         </div>
-      </div>
-
-      <div className="scroll-hint">
-        <span>scroll</span>
-        <div className="scroll-line"></div>
       </div>
     </section>
   );

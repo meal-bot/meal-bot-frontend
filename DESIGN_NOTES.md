@@ -70,6 +70,15 @@ Landing/marketing:
   - `src/features/fridge/style/fridge.css`
 - Added chat motion CSS:
   - `src/features/chat/style/chat.css`
+- Added/refined landing chat preview:
+  - `src/features/landing/components/ChatPreview.jsx`
+  - `src/features/landing/components/Hero.jsx`
+- Added fridge error-state visual support:
+  - `src/assets/dumb_AI.png`
+  - `src/features/fridge/components/ResultsPanel.jsx`
+  - `src/shared/components/ui/EmptyState.jsx`
+- Added fridge error UI debug route:
+  - `/fridge?debugError=1`
 
 ## Current CSS Structure
 
@@ -91,6 +100,11 @@ src/features/chat/style/chat.css
 
 src/features/landing/styles/landing.css
 - landing-only visual and animation styles
+
+src/features/landing/components/ChatPreview.jsx
+- landing hero chat simulator
+- loops a scripted AI meal recommendation conversation
+- renders recommendation cards under bot messages
 ```
 
 ## Recent Chat Motion Additions
@@ -142,6 +156,12 @@ rg "USE_MOCKS|MOCK|VITE_USE_MOCKS|VITE_MOCK_SCENARIO" src
 - Temporary debug outlines may still exist:
   - `src/features/chat/components/ChatThread.jsx`
   - `src/features/chat/components/ChatInput.jsx`
+- Fridge error UI can be tested with:
+
+```txt
+/fridge?debugError=1
+```
+
 - `UserProfilePage` is planned for removal. Do not spend design/refactor effort on it unless explicitly asked.
 - Figma MCP is not connected yet. It may be connected later.
 
@@ -153,10 +173,11 @@ rg "USE_MOCKS|MOCK|VITE_USE_MOCKS|VITE_MOCK_SCENARIO" src
 
 ## Likely Next Work
 
-1. Review the new main chat motion in the browser.
-2. Decide whether to remove the temporary outlines.
-3. Continue landing + main chat design improvements.
-4. Then move to fridge, calendar, InBody, and login in that order.
+1. Start with landing page design/motion review.
+2. Review the new main chat motion in the browser.
+3. Decide whether to remove the temporary chat outlines.
+4. Continue landing + main chat design improvements.
+5. Then move to fridge, calendar, InBody, and login in that order.
 
 ## How To Continue In A New Codex Session
 

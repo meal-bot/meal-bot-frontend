@@ -13,7 +13,7 @@
   --orange: #E8A87C;
   --orange-soft: #faedcd;
   --orange-deep: #b07040;
-  --sans: "Manrope", "Noto Sans KR", system-ui, sans-serif;
+  --sans: var(--font-body);
 
   width: 100%;
   min-height: 100vh;

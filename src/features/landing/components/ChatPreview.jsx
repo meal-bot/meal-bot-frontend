@@ -2,16 +2,16 @@ import { useState, useEffect } from 'react';
 
 const SCRIPT = [
   { who: 'user', text: '가볍게 먹을 점심 메뉴 추천해줘' },
-  { who: 'bot', text: '점심에 가볍게 드시기 좋은 선택으로 연어 포케볼과 베지터블 타코를 골라봤어요. 편한 걸로 골라서 산뜻하게 즐겨보세요!' },
+  { who: 'bot', text: '점심에 부담 없이 먹기 좋은 메뉴를 골라봤어요. 재료와 조리 시간을 보고 원하는 메뉴를 선택해보세요.' },
   {
     who: 'cards',
     cards: [
-      { name: '연어 포케볼', ingredients: ['연어', '아보카도', '현미밥'], cookingTime: 15, summary: '고단백 저칼로리, 점심으로 완벽한 조합이에요.' },
-      { name: '베지터블 타코', ingredients: ['또띠아', '블랙빈', '옥수수'], cookingTime: 10, summary: '가볍고 든든하게 채워주는 비건 메뉴예요.' },
+      { name: '연어 포케볼', ingredients: ['연어', '아보카도', '현미밥'], cookingTime: 15, summary: '산뜻하게 먹기 좋은 점심 메뉴예요.' },
+      { name: '닭가슴살 샐러드볼', ingredients: ['닭가슴살', '채소', '오리엔탈 소스'], cookingTime: 12, summary: '가볍지만 든든하게 채워주는 메뉴예요.' },
     ],
   },
   { who: 'user', text: '닭가슴살이 들어갔으면 좋겠어' },
-  { who: 'bot', text: '닭가슴살을 넣어 단백질 챙기기 좋은 쪽으로 바꿔봤어요. 점심으로 가볍게 즐겨보세요!' },
+  { who: 'bot', text: '좋아요. 닭가슴살을 활용한 메뉴로 다시 추천해드릴게요.' },
   {
     who: 'cards',
     cards: [
@@ -81,7 +81,7 @@ export default function ChatPreview({ accent1 }) {
         <div className="chat-header">
           <span className="chat-dot" style={{ background: accent1 }}></span>
           <span style={{ fontSize: 11, color: 'var(--fg-2)', letterSpacing: '.04em' }}>
-            OBOB · AI 영양 어시스턴트
+            OBOB · AI 식단 추천
           </span>
         </div>
         <div className="chat-body">
