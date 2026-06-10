@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../../shared/components/layout/Layout';
 import { Badge, Button, Card, EmptyState, PageHeader } from '../../../shared/components/ui';
 import { ADVANCED_FIELDS, AVG_STATS } from '../data/inbodyData';
@@ -222,33 +222,6 @@ export default function InBodyDashboardPage() {
                 </div>
               );
             })}
-          </div>
-        </Card>
-
-        {/* ───── 6. 식단 추천 CTA ───── */}
-        <Card variant="accent">
-          <div className="flex items-end justify-between gap-4 mb-6 flex-wrap">
-            <div>
-              <span className="text-[11px] font-bold uppercase tracking-widest text-primary mb-2 block">
-                MEAL · TAILORED
-              </span>
-              <h2 className="text-2xl font-extrabold text-on-surface tracking-tight">
-                이 결과에 맞는 식단
-              </h2>
-              <p className="text-sm text-on-surface-variant mt-1.5">
-                근육량 유지·체지방 감량을 위한 고단백 위주 메뉴
-              </p>
-            </div>
-            <Button
-              as={Link}
-              to="/main"
-              variant="neutral"
-              size="lg"
-              className="whitespace-nowrap"
-            >
-              <span className="material-symbols-outlined text-base">forum</span>
-              맞춤 채팅 시작
-            </Button>
           </div>
         </Card>
 
