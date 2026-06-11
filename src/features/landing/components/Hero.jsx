@@ -6,19 +6,13 @@ export default function Hero({ onStart }) {
     <section className="hero">
       <div className="hero-grid">
         <div className="hero-copy">
-          <span className="hero-eyebrow">
-            <span className="hero-eyebrow-dot" />
-            AI MEAL ASSISTANT
-          </span>
-
           <h1 className="hero-title">
-            <span className="title-line">AI와 대화하며 찾는</span>
-            <span className="title-line"><span className="title-accent">오늘의 맞춤</span> 식단</span>
+            <span className="title-line"><span className="title-accent">오늘의 밥,</span> 제가 정해드릴게요</span>
+            {/* <span className="title-line">OBOB</span> */}
           </h1>
 
           <p className="hero-sub">
-            복잡한 검색은 그만. 그냥 말 걸듯 이야기하면,
-            지금 먹기 좋은 한 끼를 OBOB이 골라드려요.
+            <span className="subtitle-line">식단 추천 에이전트가 지금 먹기 좋은 한 끼를 OBOB이 추천해드려요.</span>
           </p>
 
           <div className="cta-row">

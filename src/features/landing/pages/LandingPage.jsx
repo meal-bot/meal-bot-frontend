@@ -53,14 +53,11 @@ export default function LandingPage() {
 
       <footer className="landing-footer">
         <div className="footer-brand">
-          <span className="footer-dot" />
-          OBOB
+          <span />
+          김민재 & 박철민
         </div>
         <div className="footer-right">
-          <a href="#">About</a>
-          <a href="#">Privacy</a>
-          <a href="#">Contact</a>
-          <span>© 2026 OBOB · 당신의 하루에 어울리는 한 끼</span>
+          <span>© 2026 서경대학교 SW 아카데미</span>
         </div>
       </footer>
     </div>

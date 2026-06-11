@@ -149,12 +149,14 @@
 
 .hero-grid {
   width: 100%;
-  max-width: 1320px;
+  max-width: 1570px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1.05fr;
   align-items: center;
-  gap: clamp(28px, 4vw, 56px);
+  gap: clamp(40px, 6vw, 88px);
+  /* gap: clamp(36px, 5vw, 76px); */
+  /* gap: clamp(36px, 5vw, 96px); */
 }
 
 .hero-copy {
@@ -186,7 +188,7 @@
   color: var(--landing-ink);
   font-size: clamp(46px, 5.55vw, 74px);
   font-weight: 850;
-  line-height: 1.06;
+  line-height: 1.16;
   letter-spacing: -.035em;
 }
 
@@ -222,6 +224,11 @@
   font-weight: 450;
   line-height: 1.58;
   word-break: keep-all;
+  white-space: nowrap;
+}
+
+.subtitle-line {
+  display: block;
 }
 
 .cta-row {
@@ -502,22 +509,46 @@
 }
 
 @keyframes landing-rise {
-  from { opacity: 0; transform: translateY(22px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes message-pop {
-  to { opacity: 1; transform: none; }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @keyframes float-card {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
 }
 
 @keyframes card-rise {
-  from { opacity: 0; transform: translateY(20px) scale(.94); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
