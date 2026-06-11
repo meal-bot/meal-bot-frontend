@@ -43,7 +43,7 @@ export default function ChatInput({
   };
 
   return (
-    <div className="chat-input-shell w-full max-w-3xl bg-white/95 backdrop-blur-xl shadow-lg shadow-on-surface/5 rounded-2xl p-2 flex items-center gap-2 border border-outline-variant/40 outline outline-1 outline-blue-400 pointer-events-auto">
+    <div className="chat-input-shell w-full max-w-3xl bg-white/95 backdrop-blur-xl rounded-2xl p-2 flex items-center gap-2 border border-outline-variant/40 pointer-events-auto">
       <div className="flex-grow relative flex items-center">
         <textarea
           ref={textareaRef}
@@ -58,9 +58,9 @@ export default function ChatInput({
       </div>
       <Button
         onClick={onSubmit}
-        variant="secondary"
+        variant="primary"
         size="icon"
-        className="chat-send-button shrink-0 bg-primary text-white hover:opacity-90"
+        className="chat-send-button shrink-0"
       >
         <span className="material-symbols-outlined">auto_awesome</span>
       </Button>

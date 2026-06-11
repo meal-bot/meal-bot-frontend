@@ -1,6 +1,6 @@
 import api from '../../../api/axiosInstance';
 import { MOCK } from '../../../mock/MOCK';
-import { USE_MOCKS } from '../../../mock/useMock';
+import { getMockScenario, USE_MOCKS } from '../../../mock/useMock';
 
 // 1. 인바디 데이터 저장 (로그인 사용자 전용)
 //
@@ -39,7 +39,7 @@ export const saveInbody = async (form) => {
 // 2. 내 인바디 기록 목록 조회 (최신순)
 // bmi, bmr, dailyCalories 등 백엔드 계산값 포함
 export const fetchInbodyList = async () => {
-  if (USE_MOCKS) return MOCK.inbody.records;
+  if (USE_MOCKS) return getMockScenario(MOCK.inbody)?.records ?? MOCK.inbody.records;
 
   const response = await api.get('/api/inbody');
   console.log("받는 데이터:", response.data);

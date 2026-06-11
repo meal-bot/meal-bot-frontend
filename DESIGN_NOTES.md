@@ -105,6 +105,12 @@ Landing/marketing:
 - Removed misleading InBody dashboard bottom CTA:
   - the app does not automatically pass InBody data into AI chat
   - InBody dashboard now ends at the trend/history section
+- Started Health Analytics handoff-based InBody dashboard redesign:
+  - `InBodyDashboardPage.jsx` now composes dedicated section components
+  - BMI hero is the main above-the-fold card
+  - required-only data state is supported: BMI, BMR, daily calories, weight trend, and history still render
+  - optional InBody fields render composition/metric cards when present and empty states when absent
+  - extracted display helpers to `src/features/inbody/utils/inbodyDisplay.js`
 
 ## Current CSS Structure
 
@@ -179,6 +185,9 @@ VITE_MOCK_SCENARIO=success
 - Temporary mock files:
   - `src/mock/MOCK.js`
   - `src/mock/useMock.js`
+- Temporary InBody mock scenario:
+  - `VITE_MOCK_SCENARIO=requiredOnly`
+  - shows the dashboard with required fields only and no optional InBody metrics
 - APIs currently include mock branches. Before main merge, search and remove:
 
 ```bash
@@ -213,13 +222,13 @@ rg "USE_MOCKS|MOCK|VITE_USE_MOCKS|VITE_MOCK_SCENARIO" src
    - landing hero/CTA cleanup
 2. Decide whether to remove the temporary chat outlines.
 3. Continue main chat visual polish.
-4. Then move to fridge, calendar, InBody, and login in that order.
+4. Continue reviewing the new InBody dashboard against the handoff file.
 
 ## How To Continue In A New Codex Session
 
 Tell Codex:
 
 ```txt
-Read AGENTS.md and DESIGN_NOTES.md, then continue the design work.
+Read CODEX.md and DESIGN_NOTES.md, then continue the design work.
 Before changing files, explain what will change and wait for approval.
 ```

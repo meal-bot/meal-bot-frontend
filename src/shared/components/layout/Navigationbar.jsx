@@ -1,10 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { isLoggedIn, getName, clearAuth } from '../../../features/auth/utils/auth';
 import ConfirmDialog from '../ConfirmDialog';
 
 export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
@@ -27,11 +28,16 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
   }, []);
 
   const navLinks = [
-    { to: '/fridge', label: '냉장고를 부탁해' },
-    { to: '/inbody', label: '바디 분석' },
-    { to: '/inbody/new', label: '측정 입력' },
-    { to: '/calendar', label: '식단 캘린더' },
+    { to: '/main', label: '채팅', icon: 'forum' },
+    { to: '/fridge', label: '냉장고', icon: 'kitchen' },
+    { to: '/calendar', label: '캘린더', icon: 'calendar_month' },
+    { to: '/inbody', label: '바디 분석', icon: 'monitoring' },
   ];
+
+  const isActiveLink = (to) => {
+    if (to === '/main') return location.pathname === '/main';
+    return location.pathname === to || location.pathname.startsWith(`${to}/`);
+  };
 
   return (
     <>
@@ -42,7 +48,7 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
       <div className="flex justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full">
 
         {/* 왼쪽: 로고 + 데스크톱 nav 링크 */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
           <Link
             to="/main"
             onClick={onStartNewChat}
@@ -51,17 +57,29 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
             OBOB
           </Link>
           {/* 데스크톱 전용 링크 목록 */}
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map(({ to, label }) => (
-              <Link key={to} to={to} className="text-base font-semibold text-on-surface-variant hover:text-on-surface transition-colors">
+          <div className="hidden md:flex h-16 md:h-20 items-end gap-1">
+          {navLinks.map(({ to, label, icon }) => {
+            const active = isActiveLink(to);
+            return (
+              <Link
+                key={to}
+                to={to}
+                className={`inline-flex h-11 items-center gap-1.5 px-4 text-sm font-semibold transition-all duration-200 ${
+                  active
+                    ? 'nav-tab-active -mb-px rounded-t-2xl border border-b-white border-outline-variant/50 bg-white text-on-surface shadow-sm'
+                    : 'mb-3 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">{icon}</span>
                 {label}
               </Link>
-            ))}
+            );
+          })}
           </div>
         </div>
 
         {/* 오른쪽: 사용자 메뉴 + 모바일 햄버거 */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-end gap-3">
           {/* 환영 문구: md 이상에서만 표시 */}
           <span className="hidden md:inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">
             {loggedIn ? `환영합니다 ${name}님!` : '로그인하여 맞춤 식단을 받아보세요'}
@@ -128,16 +146,24 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
                     {name}님
                   </p>
                 )}
-                {navLinks.map(({ to, label }) => (
-                  <Link
-                    key={to}
-                    to={to}
-                    className="flex items-center px-4 py-2.5 text-sm text-on-surface hover:bg-surface-variant/40 transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {label}
-                  </Link>
-                ))}
+                {navLinks.map(({ to, label, icon }) => {
+                  const active = isActiveLink(to);
+                  return (
+                    <Link
+                      key={to}
+                      to={to}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-2 px-4 py-2.5 text-sm transition-colors ${
+                        active
+                          ? 'bg-surface-container text-on-surface font-semibold'
+                          : 'text-on-surface hover:bg-surface-variant/40'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-base text-on-surface-variant">{icon}</span>
+                      {label}
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>

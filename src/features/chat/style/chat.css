@@ -1,4 +1,33 @@
 /* Chat page motion - scoped to chat feature classes */
+.chat-intro-section {
+  max-height: 1000px;
+  margin-bottom: 4rem;
+  overflow: hidden;
+  opacity: 1;
+  transition:
+    max-height 520ms ease,
+    margin-bottom 520ms ease,
+    opacity 320ms ease;
+}
+
+.chat-intro-section.is-hidden {
+  max-height: 0;
+  margin-bottom: 0;
+  opacity: 0;
+}
+
+.chat-intro-content {
+  transform-origin: center top;
+  transition:
+    opacity 260ms ease,
+    transform 360ms cubic-bezier(.2, .7, .25, 1);
+}
+
+.chat-intro-section.is-hidden .chat-intro-content {
+  opacity: 0;
+  transform: translateY(18px) scale(.985);
+}
+
 .chat-message-row {
   animation: chat-message-enter 260ms cubic-bezier(.2, .7, .25, 1) both;
 }
@@ -59,6 +88,9 @@
 }
 
 .chat-input-shell {
+  box-shadow:
+    0 14px 34px rgba(74, 68, 63, .11),
+    0 6px 14px rgba(74, 68, 63, .06);
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease,
@@ -66,10 +98,18 @@
     background-color 180ms ease;
 }
 
+.chat-input-shell:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 18px 42px rgba(74, 68, 63, .14),
+    0 8px 18px rgba(74, 68, 63, .08);
+}
+
 .chat-input-shell:focus-within {
   border-color: rgba(156, 175, 136, .75);
   box-shadow:
-    0 16px 40px rgba(74, 68, 63, .10),
+    0 20px 46px rgba(74, 68, 63, .15),
+    0 9px 22px rgba(74, 68, 63, .08),
     0 0 0 4px rgba(156, 175, 136, .14);
 }
 

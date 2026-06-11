@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <style>
+    body {
+      margin: 0;
+      background: var(--bg);
+      --bg: #F4F3EE;
+      --card: #FFFFFF;
+      --card-2: #FBFAF7;
+      --ink: #21261C;
+      --ink-2: #5C6253;
+      --ink-3: #9AA08E;
+      --line: #E8E6DC;
+      --green: #7D915F;
+      --green-deep: #56683C;
+      --green-soft: #EEF1E4;
+      --green-softer: #F5F7EC;
+      --accent: #C2814F;
+      --accent-soft: #F7EBDE;
+      --shadow: 0 1px 2px rgba(40,45,30,0.04), 0 8px 24px rgba(40,45,30,0.05);
+      transition: background 0.3s ease;
+    }
+    body[data-theme="dark"] {
+      --bg: #111410;
+      --card: #1A1E18;
+      --card-2: #20251D;
+      --ink: #EDEFE6;
+      --ink-2: #ABB19E;
+      --ink-3: #6F7565;
+      --line: #2B3027;
+      --green: #A3BA7C;
+      --green-deep: #C4D6A4;
+      --green-soft: #242B1D;
+      --green-softer: #1F2519;
+      --accent: #D89E6C;
+      --accent-soft: #32281D;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+    }
+  </style>
+</helmet>
+<div style="min-height: 100vh; background: var(--bg); color: var(--ink); font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;">
+
+  <!-- ───────── Global Nav ───────── -->
+  <header data-screen-label="글로벌 내비게이션" style="position: sticky; top: 0; z-index: 50; background: var(--card); border-bottom: 1px solid var(--line);">
+    <div style="max-width: 1140px; margin: 0 auto; padding: 0 32px; height: 60px; display: flex; align-items: center; gap: 28px;">
+      <div style="font-size: 19px; font-weight: 800; letter-spacing: -0.02em;">OBOB</div>
+      <nav style="display: flex; align-items: center; gap: 4px;">
+        <a href="#" style="text-decoration: none; color: var(--ink-2); font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 99px;" style-hover="background: var(--green-softer); color: var(--ink);">채팅</a>
+        <a href="#" style="text-decoration: none; color: var(--ink-2); font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 99px;" style-hover="background: var(--green-softer); color: var(--ink);">냉장고</a>
+        <a href="#" style="text-decoration: none; color: var(--ink-2); font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 99px;" style-hover="background: var(--green-softer); color: var(--ink);">캘린더</a>
+        <a href="#" style="text-decoration: none; color: var(--green-deep); font-size: 14px; font-weight: 700; padding: 7px 14px; border-radius: 99px; background: var(--green-soft);">바디 분석</a>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 13px; color: var(--ink-2); font-weight: 500;">환영합니다 박철민님!</span>
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--green-soft); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--green-deep);">박</div>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1140px; margin: 0 auto; padding: 36px 32px 80px;">
+
+    <!-- ───────── Page Title ───────── -->
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--ink-3); text-transform: uppercase;">인바디 대시보드</span>
+        <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.03em;">내 체성분 분석</h1>
+        <span style="font-size: 13px; color: var(--ink-3); font-weight: 500;">최근 입력 · 2026. 06. 11</span>
+      </div>
+      <button onClick="{{ onNewMeasure }}" style="display: flex; align-items: center; gap: 8px; background: var(--ink); color: var(--bg); border: none; border-radius: 99px; padding: 12px 22px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; letter-spacing: -0.01em;" style-hover="opacity: 0.85;">
+        <span style="font-size: 16px; font-weight: 500; line-height: 1;">+</span> 새 측정
+      </button>
+    </div>
+
+    <!-- ───────── Hero: BMI (always available — required inputs) ───────── -->
+    <section data-screen-label="BMI 종합" style="background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px;">
+      <div style="display: grid; grid-template-columns: 320px 1fr; gap: 0;">
+
+        <!-- BMI gauge ring -->
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 40px 32px; background: linear-gradient(180deg, var(--green-softer), var(--card)); border-right: 1px solid var(--line);">
+          <div style="position: relative; width: 196px; height: 196px;">
+            <svg width="196" height="196" viewBox="0 0 196 196">
+              <circle cx="98" cy="98" r="84" fill="none" style="stroke: var(--green-soft);" stroke-width="16"></circle>
+              <circle cx="98" cy="98" r="84" fill="none" style="stroke: var(--accent);" stroke-width="16" stroke-linecap="round" stroke-dasharray="267 261" transform="rotate(-90 98 98)"></circle>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+              <span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink-3);">BMI</span>
+              <span style="font-size: 52px; font-weight: 800; letter-spacing: -0.04em; line-height: 1;">23.6</span>
+              <span style="font-size: 12px; font-weight: 700; color: var(--green-deep);">▼ 0.3 vs 지난 측정</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; background: var(--accent-soft); border-radius: 99px; padding: 6px 14px;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--accent);"></span>
+            <span style="font-size: 13px; font-weight: 800; color: var(--accent);">판정 · 과체중</span>
+          </div>
+        </div>
+
+        <!-- BMI detail -->
+        <div style="padding: 34px 36px 28px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink-3);">체질량지수 · 필수 입력 기반 계산</span>
+            <h2 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.03em;">과체중 구간</h2>
+            <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); max-width: 480px; text-wrap: pretty;">키 175cm · 체중 72.3kg 기준 BMI 23.6. 정상 상한(23.0)을 0.6 넘어선 과체중 초입이며, 동일 성별·연령대 평균 23.0과 같은 수준입니다.</p>
+          </div>
+
+          <!-- BMI range band (15–32 scale) -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="position: relative; height: 48px;">
+              <div style="position: absolute; left: 0; right: 0; top: 20px; height: 10px; border-radius: 99px; display: flex; overflow: hidden;">
+                <div style="width: 20.6%; background: var(--line);"></div>
+                <div style="width: 26.5%; background: var(--green-soft);"></div>
+                <div style="width: 11.8%; background: var(--accent-soft);"></div>
+                <div style="flex: 1; background: var(--line);"></div>
+              </div>
+              <div style="position: absolute; left: 47.1%; top: 16px; width: 2px; height: 18px; background: var(--ink-3); border-radius: 2px; opacity: 0.55;"></div>
+              <div style="position: absolute; left: 47.1%; top: 38px; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--ink-3); white-space: nowrap;">평균 23.0</div>
+              <div style="position: absolute; left: 50.6%; top: 8px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 3px;">
+                <span style="background: var(--ink); color: var(--bg); font-size: 11px; font-weight: 800; border-radius: 6px; padding: 2px 7px; white-space: nowrap;">나 23.6</span>
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2.5px solid var(--card); box-shadow: 0 1px 4px rgba(0,0,0,0.2);"></span>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--ink-3);">
+              <span>저체중 &lt;18.5</span>
+              <span style="color: var(--green-deep);">정상 18.5–23</span>
+              <span style="color: var(--accent);">과체중 23–25</span>
+              <span>비만 25+</span>
+            </div>
+          </div>
+
+          <!-- Vitals strip (all required inputs) -->
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); padding-top: 18px; margin-top: auto;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--ink-3);">체중</span>
+              <span style="font-size: 19px; font-weight: 800; letter-spacing: -0.02em;">72.3 <span style="font-size: 13px; font-weight: 600; color: var(--ink-3);">kg</span></span>
+              <span style="font-size: 12px; font-weight: 700; color: var(--green-deep);">▼ 0.8</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; border-left: 1px solid var(--line); padding-left: 20px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--ink-3);">키</span>
+              <span style="font-size: 19px; font-weight: 800; letter-spacing: -0.02em;">175 <span style="font-size: 13px; font-weight: 600; color: var(--ink-3);">cm</span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; border-left: 1px solid var(--line); padding-left: 20px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--ink-3);">나이</span>
+              <span style="font-size: 19px; font-weight: 800; letter-spacing: -0.02em;">29 <span style="font-size: 13px; font-weight: 600; color: var(--ink-3);">세</span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; border-left: 1px solid var(--line); padding-left: 20px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--ink-3);">성별</span>
+              <span style="font-size: 19px; font-weight: 800; letter-spacing: -0.02em;">남성</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; border-left: 1px solid var(--line); padding-left: 20px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--ink-3);">활동량</span>
+              <span style="font-size: 19px; font-weight: 800; letter-spacing: -0.02em;">보통 <span style="font-size: 13px; font-weight: 600; color: var(--ink-3);">3/5</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Change vs last measurement ───────── -->
+    <section data-screen-label="지난 측정 대비 변화" style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+      <!-- 체중 (required, always) -->
+      <div style="flex: 1 1 220px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow);">
+        <span style="width: 26px; height: 26px; border-radius: 8px; background: var(--green-soft); color: var(--green-deep); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;">▼</span>
+        <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; margin-top: 4px;">체중 −0.8<span style="font-size: 13px; color: var(--ink-3);">kg</span></span>
+        <span style="font-size: 12.5px; color: var(--ink-3); font-weight: 500;">73.1kg → 72.3kg</span>
+      </div>
+      <!-- BMI (calculated, always) -->
+      <div style="flex: 1 1 220px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow);">
+        <span style="width: 26px; height: 26px; border-radius: 8px; background: var(--green-soft); color: var(--green-deep); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;">▼</span>
+        <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; margin-top: 4px;">BMI −0.3</span>
+        <span style="font-size: 12.5px; color: var(--ink-3); font-weight: 500;">23.9 → 23.6</span>
+      </div>
+      <!-- 체지방률 (optional) -->
+      <sc-if value="{{ hasComposition }}" hint-placeholder-val="{{ true }}">
+        <div style="flex: 1 1 220px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow);">
+          <span style="width: 26px; height: 26px; border-radius: 8px; background: var(--green-soft); color: var(--green-deep); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;">▼</span>
+          <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; margin-top: 4px;">체지방률 −0.8<span style="font-size: 13px; color: var(--ink-3);">%p</span></span>
+          <span style="font-size: 12.5px; color: var(--ink-3); font-weight: 500;">19.3% → 18.5%</span>
+        </div>
+      </sc-if>
+    </section>
+
+    <!-- ───────── Bento: Composition (optional) + BMR (always) ───────── -->
+    <section data-screen-label="체성분 구성·대사" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+
+      <!-- Composition donut — optional data -->
+      <div style="background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 28px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink-3);">COMPOSITION</span>
+            <h3 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.02em;">체성분 구성</h3>
+            <span style="font-size: 13px; color: var(--ink-3); font-weight: 500;">체지방 vs 제지방 비율</span>
+          </div>
+          <sc-if value="{{ hasComposition }}" hint-placeholder-val="{{ true }}">
+            <span style="background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 800; border-radius: 99px; padding: 4px 10px; white-space: nowrap;">선택 입력</span>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ hasComposition }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; align-items: center; gap: 26px;">
+            <div style="position: relative; width: 168px; height: 168px; flex-shrink: 0;">
+              <svg width="168" height="168" viewBox="0 0 196 196">
+                <circle cx="98" cy="98" r="84" fill="none" style="stroke: var(--green-soft);" stroke-width="18"></circle>
+                <circle cx="98" cy="98" r="84" fill="none" style="stroke: var(--green);" stroke-width="18" stroke-linecap="round" stroke-dasharray="425 103" stroke-dashoffset="0" transform="rotate(-90 98 98)"></circle>
+                <circle cx="98" cy="98" r="84" fill="none" style="stroke: var(--accent);" stroke-width="18" stroke-linecap="round" stroke-dasharray="92 436" stroke-dashoffset="-430" transform="rotate(-90 98 98)"></circle>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--ink-3);">체지방률</span>
+                <span style="font-size: 38px; font-weight: 800; letter-spacing: -0.04em; line-height: 1;">18.5<span style="font-size: 15px; font-weight: 700;">%</span></span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 14px; flex: 1;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <span style="display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink-2);"><span style="width: 9px; height: 9px; border-radius: 3px; background: var(--green);"></span>제지방 (근육·뼈·수분)</span>
+                <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em; padding-left: 16px;">58.9 <span style="font-size: 13px; font-weight: 600; color: var(--ink-3);">kg · 81.5%</span></span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <span style="display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink-2);"><span style="width: 9px; height: 9px; border-radius: 3px; background: var(--accent);"></span>체지방</span>
+                <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em; padding-left: 16px;">13.4 <span style="font-size: 13px; font-weight: 600; color: var(--ink-3);">kg · 18.5%</span></span>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showCompositionEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="border: 1.5px dashed var(--line); border-radius: 18px; padding: 28px 24px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; background: var(--card-2);">
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="16" fill="none" style="stroke: var(--ink-3);" stroke-width="3" stroke-dasharray="4 5" opacity="0.6"></circle></svg>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.01em;">체성분 구성 데이터 없음</span>
+              <span style="font-size: 13px; color: var(--ink-2); line-height: 1.55; font-weight: 500; max-width: 300px; text-wrap: pretty;">체지방률 또는 체지방량을 입력하면 체지방·제지방 구성을 도넛으로 보여드려요.</span>
+            </div>
+            <button onClick="{{ onNewMeasure }}" style="background: var(--green-soft); color: var(--green-deep); border: none; border-radius: 99px; padding: 9px 18px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;" style-hover="opacity: 0.85;">+ 인바디 측정값 입력</button>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Metabolism card — always available -->
+      <div style="background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 28px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 22px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink-3);">METABOLISM</span>
+          <h3 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.02em;">기초대사량 (BMR)</h3>
+          <span style="font-size: 13px; color: var(--ink-3); font-weight: 500;">아무것도 하지 않아도 하루에 소모되는 칼로리</span>
+        </div>
+
+        <div style="display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 12px; font-weight: 600; color: var(--ink-3);">내 BMR</span>
+            <span style="font-size: 44px; font-weight: 800; letter-spacing: -0.04em; line-height: 1;">1,650<span style="font-size: 14px; font-weight: 600; color: var(--ink-3); letter-spacing: 0;"> kcal/day</span></span>
+          </div>
+          <span style="background: var(--green-soft); color: var(--green-deep); font-size: 12px; font-weight: 700; border-radius: 99px; padding: 6px 12px; margin-bottom: 6px; white-space: nowrap;">동일 연령대 평균과 동일 · +0 kcal</span>
+        </div>
+
+        <div style="background: var(--green-softer); border: 1px solid var(--green-soft); border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; margin-top: auto;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+            <span style="font-size: 13px; font-weight: 700; color: var(--green-deep);">오늘 하루 권장 섭취 칼로리</span>
+            <span style="font-size: 28px; font-weight: 800; letter-spacing: -0.03em;">2,558<span style="font-size: 13px; font-weight: 600; color: var(--ink-3);"> kcal</span></span>
+          </div>
+          <div style="display: flex; height: 12px; border-radius: 99px; overflow: hidden;">
+            <div style="width: 64.5%; background: var(--green);"></div>
+            <div style="flex: 1; background: var(--accent);"></div>
+          </div>
+          <div style="display: flex; gap: 18px; font-size: 12px; font-weight: 600; color: var(--ink-2); flex-wrap: wrap;">
+            <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 3px; background: var(--green);"></span>기초대사 1,650</span>
+            <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 3px; background: var(--accent);"></span>활동대사 908</span>
+            <span style="margin-left: auto; color: var(--ink-3);">기초대사량 × 활동계수(보통)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Trend ───────── -->
+    <section data-screen-label="시간 추이" style="background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 28px; box-shadow: var(--shadow); margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink-3);">TREND</span>
+          <h3 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.02em;">시간 추이</h3>
+          <span style="font-size: 13px; color: var(--ink-3); font-weight: 500;">측정마다 기록되는 체중 변화</span>
+        </div>
+        <div style="display: flex; gap: 16px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); padding-top: 6px;">
+          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 3px; border-radius: 2px; background: var(--accent);"></span>체중 (kg)</span>
+          <sc-if value="{{ hasFatTrend }}" hint-placeholder-val="{{ true }}">
+            <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 3px; border-radius: 2px; background: var(--green);"></span>체지방률 (%)</span>
+          </sc-if>
+        </div>
+      </div>
+
+      <svg viewBox="0 0 1000 290" style="width: 100%; height: auto; display: block;">
+        <defs>
+          <linearGradient id="wArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" style="stop-color: var(--accent); stop-opacity: 0.18;"></stop>
+            <stop offset="100%" style="stop-color: var(--accent); stop-opacity: 0;"></stop>
+          </linearGradient>
+        </defs>
+        <line x1="70" y1="60" x2="930" y2="60" style="stroke: var(--line);" stroke-width="1"></line>
+        <line x1="70" y1="120" x2="930" y2="120" style="stroke: var(--line);" stroke-width="1"></line>
+        <line x1="70" y1="180" x2="930" y2="180" style="stroke: var(--line);" stroke-width="1"></line>
+        <line x1="70" y1="240" x2="930" y2="240" style="stroke: var(--line);" stroke-width="1"></line>
+
+        <path d="M 70 92 C 350 106, 650 138, 930 152 L 930 240 L 70 240 Z" fill="url(#wArea)"></path>
+        <path d="M 70 92 C 350 106, 650 138, 930 152" fill="none" style="stroke: var(--accent);" stroke-width="3.5" stroke-linecap="round"></path>
+        <circle cx="70" cy="92" r="5" style="fill: var(--card); stroke: var(--accent);" stroke-width="2.5"></circle>
+        <circle cx="930" cy="152" r="6.5" style="fill: var(--accent);"></circle>
+        <text x="70" y="74" text-anchor="start" style="fill: var(--ink-3); font-size: 13px; font-weight: 600; font-family: inherit;">73.1 kg</text>
+        <text x="938" y="146" text-anchor="end" style="fill: var(--accent); font-size: 15px; font-weight: 800; font-family: inherit;">72.3 kg</text>
+
+        <sc-if value="{{ hasFatTrend }}" hint-placeholder-val="{{ true }}">
+          <path d="M 70 126 C 350 142, 650 176, 930 192" fill="none" style="stroke: var(--green);" stroke-width="3" stroke-linecap="round"></path>
+          <circle cx="70" cy="126" r="5" style="fill: var(--card); stroke: var(--green);" stroke-width="2.5"></circle>
+          <circle cx="930" cy="192" r="6.5" style="fill: var(--green);"></circle>
+          <text x="70" y="112" text-anchor="start" style="fill: var(--ink-3); font-size: 13px; font-weight: 600; font-family: inherit;">19.3%</text>
+          <text x="938" y="216" text-anchor="end" style="fill: var(--green-deep); font-size: 15px; font-weight: 800; font-family: inherit;">18.5%</text>
+        </sc-if>
+
+        <text x="70" y="272" text-anchor="start" style="fill: var(--ink-3); font-size: 13px; font-weight: 600; font-family: inherit;">06/01</text>
+        <text x="930" y="272" text-anchor="end" style="fill: var(--ink-3); font-size: 13px; font-weight: 600; font-family: inherit;">06/11</text>
+      </svg>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--card-2); border-radius: 12px; padding: 12px 16px; flex-wrap: wrap;">
+        <sc-if value="{{ hasFatTrend }}" hint-placeholder-val="{{ true }}">
+          <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-2); font-weight: 500;">06/01 → 06/11 동안 체중 <strong style="color: var(--ink);">−0.8kg</strong>, 체지방률 <strong style="color: var(--ink);">−0.8%p</strong> 변화했습니다.</p>
+        </sc-if>
+        <sc-if value="{{ noFatTrend }}" hint-placeholder-val="{{ false }}">
+          <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-2); font-weight: 500;">06/01 → 06/11 동안 체중 <strong style="color: var(--ink);">−0.8kg</strong> 변화했습니다. 체지방률을 입력하면 함께 추이를 볼 수 있어요.</p>
+        </sc-if>
+        <span style="font-size: 12px; color: var(--ink-3); font-weight: 500; white-space: nowrap;">측정 2회 기준 · 측정이 쌓일수록 추이가 정교해져요</span>
+      </div>
+    </section>
+
+    <!-- ───────── Standard 8 — optional ───────── -->
+    <section data-screen-label="항목별 분석" style="background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 28px; box-shadow: var(--shadow); margin-bottom: 16px; display: flex; flex-direction: column; gap: 24px;">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink-3);">INBODY · 선택 입력</span>
+          <h3 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.02em;">항목별 분석</h3>
+          <span style="font-size: 13px; color: var(--ink-3); font-weight: 500;">정상 범위 대비 현재값</span>
+        </div>
+        <sc-if value="{{ hasMetrics }}" hint-placeholder-val="{{ true }}">
+          <span style="background: var(--green-soft); color: var(--green-deep); font-size: 12px; font-weight: 800; border-radius: 99px; padding: 6px 12px; white-space: nowrap;">{{ metricCountText }}</span>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ hasMetrics }}" hint-placeholder-val="{{ true }}">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px 40px;">
+          <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 14.5px; font-weight: 700; letter-spacing: -0.01em;">{{ m.name }}</span>
+                  <span style="background: var(--green-soft); color: var(--green-deep); font-size: 11px; font-weight: 800; border-radius: 99px; padding: 2px 8px;">정상</span>
+                </div>
+                <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em;">{{ m.value }}<span style="font-size: 12px; font-weight: 600; color: var(--ink-3);"> {{ m.unit }}</span></span>
+              </div>
+              <div style="position: relative; height: 22px;">
+                <div style="position: absolute; left: 0; right: 0; top: 8px; height: 6px; border-radius: 99px; background: var(--line);"></div>
+                <div style="position: absolute; top: 8px; height: 6px; border-radius: 99px; background: var(--green-soft); left: {{ m.bandLeft }}%; width: {{ m.bandWidth }}%;"></div>
+                <div style="position: absolute; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--green); border: 3px solid var(--card); box-shadow: 0 1px 4px rgba(0,0,0,0.18); transform: translateX(-50%); left: {{ m.pct }}%;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--ink-3);">
+                <span>낮음</span>
+                <span style="color: var(--green-deep);">정상 {{ m.range }}</span>
+                <span>높음</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasMissing }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ onNewMeasure }}" style="align-self: flex-start; background: var(--card-2); color: var(--ink-2); border: 1px solid var(--line); border-radius: 99px; padding: 9px 16px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;" style-hover="background: var(--green-softer); color: var(--green-deep);">+ {{ missingText }}</button>
+      </sc-if>
+
+      <sc-if value="{{ noMetrics }}" hint-placeholder-val="{{ false }}">
+        <div style="border: 1.5px dashed var(--line); border-radius: 18px; padding: 40px 24px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; background: var(--card-2);">
+          <svg width="120" height="36" viewBox="0 0 120 36"><rect x="2" y="14" width="116" height="8" rx="4" style="fill: var(--line);"></rect><rect x="2" y="14" width="44" height="8" rx="4" style="fill: var(--green-soft);"></rect></svg>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 16px; font-weight: 800; letter-spacing: -0.01em;">입력된 인바디 항목이 없어요</span>
+            <span style="font-size: 13.5px; color: var(--ink-2); line-height: 1.6; font-weight: 500; max-width: 420px; text-wrap: pretty;">골격근량·체지방량·단백질·무기질·체수분·내장지방을 입력하면 항목마다 정상 범위 대비 내 위치를 막대로 보여드려요. 입력은 선택 사항이에요.</span>
+          </div>
+          <button onClick="{{ onNewMeasure }}" style="background: var(--ink); color: var(--bg); border: none; border-radius: 99px; padding: 11px 20px; font-size: 13.5px; font-weight: 700; font-family: inherit; cursor: pointer;" style-hover="opacity: 0.85;">+ 인바디 측정값 입력</button>
+        </div>
+      </sc-if>
+    </section>
+
+    <!-- ───────── Measurement history ───────── -->
+    <section data-screen-label="측정 기록" style="background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 28px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink-3);">HISTORY</span>
+        <h3 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.02em;">측정 기록</h3>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; align-items: center; gap: 16px; background: var(--green-softer); border: 1px solid var(--green-soft); border-radius: 16px; padding: 16px 20px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.01em;">2026. 06. 11</span>
+            <span style="background: var(--green); color: #FFFFFF; font-size: 11px; font-weight: 800; border-radius: 99px; padding: 3px 9px;">최신</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 11.5px; font-weight: 600; color: var(--ink-3);">체중</span>
+            <span style="font-size: 16px; font-weight: 800;">72.3 kg <span style="font-size: 12px; font-weight: 700; color: var(--green-deep);">▼ 0.8</span></span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 11.5px; font-weight: 600; color: var(--ink-3);">체지방률</span>
+            <sc-if value="{{ hasComposition }}" hint-placeholder-val="{{ true }}">
+              <span style="font-size: 16px; font-weight: 800;">18.5% <span style="font-size: 12px; font-weight: 700; color: var(--green-deep);">▼ 0.8</span></span>
+            </sc-if>
+            <sc-if value="{{ showCompositionEmpty }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size: 16px; font-weight: 700; color: var(--ink-3);">미입력</span>
+            </sc-if>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 11.5px; font-weight: 600; color: var(--ink-3);">BMI</span>
+            <span style="font-size: 16px; font-weight: 800;">23.6 <span style="font-size: 12px; font-weight: 700; color: var(--green-deep);">▼ 0.3</span></span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; align-items: center; gap: 16px; border: 1px solid var(--line); border-radius: 16px; padding: 16px 20px;">
+          <span style="font-size: 15px; font-weight: 700; color: var(--ink-2); letter-spacing: -0.01em;">2026. 06. 01</span>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 11.5px; font-weight: 600; color: var(--ink-3);">체중</span>
+            <span style="font-size: 16px; font-weight: 700; color: var(--ink-2);">73.1 kg</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 11.5px; font-weight: 600; color: var(--ink-3);">체지방률</span>
+            <sc-if value="{{ hasComposition }}" hint-placeholder-val="{{ true }}">
+              <span style="font-size: 16px; font-weight: 700; color: var(--ink-2);">19.3%</span>
+            </sc-if>
+            <sc-if value="{{ showCompositionEmpty }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size: 16px; font-weight: 700; color: var(--ink-3);">미입력</span>
+            </sc-if>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 11.5px; font-weight: 600; color: var(--ink-3);">BMI</span>
+            <span style="font-size: 16px; font-weight: 700; color: var(--ink-2);">23.9</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;\&quot;light\&quot; | \&quot;dark\&quot;&quot;}, &quot;inputState&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;전체 입력&quot;, &quot;부분 입력&quot;, &quot;필수만 입력&quot;], &quot;default&quot;: &quot;전체 입력&quot;, &quot;tsType&quot;: &quot;string&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    document.body.dataset.theme = this.props.theme ?? "light";
+  }
+  componentDidUpdate() {
+    document.body.dataset.theme = this.props.theme ?? "light";
+  }
+  renderVals() {
+    // ── Input model ──────────────────────────────────────────────
+    // Required (always present): 체중·나이·성별·신장·활동량 → BMI·BMR·권장칼로리 계산.
+    // Optional InBody items may be missing; sections that chart them get empty states.
+    // `inputState` lets you preview each scenario. Calculations themselves are unchanged.
+    const mode = this.props.inputState ?? "전체 입력";
+    const minimal = mode === "필수만 입력";
+    const partial = mode === "부분 입력";
+
+    const defs = [
+      { key: "skeletalMuscle", name: "골격근량", value: "32.1", unit: "kg", lo: 28, hi: 36, range: "28–36 kg" },
+      { key: "fatMass",        name: "체지방량", value: "13.4", unit: "kg", lo: 10, hi: 16, range: "10–16 kg" },
+      { key: "bodyFatPct",     name: "체지방률", value: "18.5", unit: "%",  lo: 10, hi: 20, range: "10–20 %" },
+      { key: "protein",        name: "단백질",   value: "12.2", unit: "kg", lo: 9,  hi: 13, range: "9–13 kg" },
+      { key: "mineral",        name: "무기질",   value: "3.7",  unit: "kg", lo: 3,  hi: 4,  range: "3–4 kg" },
+      { key: "bodyWater",      name: "체수분",   value: "42.8", unit: "L",  lo: 33, hi: 44, range: "33–44 L" },
+      { key: "visceralFat",    name: "내장지방", value: "7",    unit: "lvl",lo: 1,  hi: 9,  range: "1–9 lvl" },
+    ];
+
+    const presentKeys = minimal
+      ? []
+      : partial
+      ? ["skeletalMuscle", "fatMass", "bodyFatPct"]
+      : defs.map((d) => d.key);
+    const has = (k) => presentKeys.includes(k);
+
+    const metrics = defs
+      .filter((d) => has(d.key))
+      .map((d) => {
+        const span = d.hi - d.lo;
+        const min = d.lo - span * 0.5;
+        const max = d.hi + span * 0.5;
+        const clamp = (x) => Math.max(2, Math.min(98, x));
+        return {
+          ...d,
+          pct: clamp(((parseFloat(d.value) - min) / (max - min)) * 100).toFixed(1),
+          bandLeft: (((d.lo - min) / (max - min)) * 100).toFixed(1),
+          bandWidth: ((span / (max - min)) * 100).toFixed(1),
+        };
+      });
+
+    const hasComposition = has("bodyFatPct");
+    const missingCount = defs.length - presentKeys.length;
+
+    return {
+      metrics,
+      hasComposition,
+      showCompositionEmpty: !hasComposition,
+      hasMetrics: metrics.length > 0,
+      noMetrics: metrics.length === 0,
+      metricCountText: `${metrics.length}개 항목 정상`,
+      hasMissing: missingCount > 0 && presentKeys.length > 0,
+      missingText: `미입력 ${missingCount}개 항목 추가`,
+      hasFatTrend: hasComposition,
+      noFatTrend: !hasComposition,
+      onNewMeasure: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

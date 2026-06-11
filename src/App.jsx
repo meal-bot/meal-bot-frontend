@@ -10,6 +10,7 @@ import FridgePage from './features/fridge/pages/FridgePage';
 import CalendarPage from './features/calender/pages/CalendarPage';
 import { isLoggedIn } from './features/auth/utils/auth';
 import { SidebarProvider } from './shared/context/SidebarContext';
+import ScrollToTop from './shared/components/layout/ScrollToTop';
 
 function ProtectedRoute({ children }) {
   return isLoggedIn() ? children : <Navigate to="/login" replace />;
@@ -19,6 +20,7 @@ export default function App() {
   return (
     <SidebarProvider>
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/main" element={<ChatPage />} />
