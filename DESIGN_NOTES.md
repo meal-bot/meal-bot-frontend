@@ -111,6 +111,22 @@ Landing/marketing:
   - required-only data state is supported: BMI, BMR, daily calories, weight trend, and history still render
   - optional InBody fields render composition/metric cards when present and empty states when absent
   - extracted display helpers to `src/features/inbody/utils/inbodyDisplay.js`
+- Continued InBody dashboard polish from the handoff:
+  - changed the BMR card's recommended daily calories block to the handoff-style soft green panel
+  - added BMR/activity calorie split labels and ratio bar inside the metabolism card
+  - changed the composition card layout to a centered donut chart with lean/fat bars below it
+  - kept composition and metabolism cards aligned to the same grid-row height
+  - briefly tested a natural-height composition card, then reverted because the user wanted it aligned with the metabolism card
+  - adjusted the composition card to reduce perceived empty space without breaking row-height alignment
+- Temporary required-only InBody mock scenario was created for visual checking and then removed after confirmation.
+- `.env.local` was restored back to `VITE_MOCK_SCENARIO=success` after the required-only mock check.
+- The Health Analytics handoff ZIP was extracted under `.tmp-health-redesign/` for reference only.
+  - this folder is not imported by source code
+  - clean it before committing if it remains untracked
+- Mock cleanup conclusion:
+  - do not delete `src/mock/MOCK.js` or `src/mock/useMock.js` alone
+  - before deployment/main merge, remove mock imports and `if (USE_MOCKS)` branches from API files first
+  - after mock branches are removed, existing real API routes should keep working because the redesign changed the dashboard UI shell, not the endpoint contracts
 
 ## Current CSS Structure
 
