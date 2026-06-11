@@ -90,30 +90,6 @@ const fullInbodyRecords = [
   },
 ];
 
-const requiredOnlyInbodyRecords = fullInbodyRecords.map(({
-  inbodyId,
-  measuredAt,
-  height,
-  weight,
-  age,
-  gender,
-  activityLevel,
-  bmi,
-  bmr,
-  dailyCalories,
-}) => ({
-  inbodyId,
-  measuredAt,
-  height,
-  weight,
-  age,
-  gender,
-  activityLevel,
-  bmi,
-  bmr,
-  dailyCalories,
-}));
-
 export const MOCK = {
   chat: {
     chats,
@@ -200,11 +176,5 @@ export const MOCK = {
   },
   inbody: {
     records: fullInbodyRecords,
-    success: {
-      records: fullInbodyRecords,
-    },
-    requiredOnly: {
-      records: requiredOnlyInbodyRecords,
-    },
   },
 };

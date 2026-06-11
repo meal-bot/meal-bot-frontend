@@ -185,9 +185,6 @@ VITE_MOCK_SCENARIO=success
 - Temporary mock files:
   - `src/mock/MOCK.js`
   - `src/mock/useMock.js`
-- Temporary InBody mock scenario:
-  - `VITE_MOCK_SCENARIO=requiredOnly`
-  - shows the dashboard with required fields only and no optional InBody metrics
 - APIs currently include mock branches. Before main merge, search and remove:
 
 ```bash
