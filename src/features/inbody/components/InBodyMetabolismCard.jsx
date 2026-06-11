@@ -8,6 +8,7 @@ export default function InBodyMetabolismCard({ current }) {
   const activity = getActivityInfo(current?.activityLevel);
   const diff = bmr == null ? null : Math.round(bmr - AVG_STATS.bmr);
   const baseRatio = bmr && dailyCalories ? clamp((bmr / dailyCalories) * 100, 25, 95) : 0;
+  const activityCalories = bmr && dailyCalories ? Math.max(0, Math.round(dailyCalories - bmr)) : null;
 
   return (
     <Card padding="lg" className="rounded-[24px]">
@@ -38,27 +39,37 @@ export default function InBodyMetabolismCard({ current }) {
         </p>
       </div>
 
-      <div className="mt-7 rounded-2xl bg-primary px-5 py-4 text-white">
-        <p className="text-xs font-bold text-white/70">오늘 하루 권장 섭취 칼로리</p>
-        <div className="mt-1 flex items-baseline gap-2">
-          <strong className="text-4xl font-black tracking-tight tabular-nums">
-            {dailyCalories != null ? dailyCalories.toLocaleString() : '-'}
-          </strong>
-          <span className="text-sm font-bold text-white/75">kcal</span>
+      <div className="mt-7 rounded-2xl border border-primary-container bg-primary-container/45 px-5 py-4">
+        <div className="flex items-baseline justify-between gap-4">
+          <p className="text-sm font-extrabold text-primary">오늘 하루 권장 섭취 칼로리</p>
+          <div className="flex items-baseline gap-1.5 text-right">
+            <strong className="text-3xl font-black tracking-tight text-on-surface tabular-nums">
+              {dailyCalories != null ? dailyCalories.toLocaleString() : '-'}
+            </strong>
+            <span className="text-sm font-bold text-on-surface-variant">kcal</span>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-6">
-        <div className="mb-2 flex items-center justify-between text-xs font-bold text-on-surface-variant">
-          <span>기초대사</span>
-          <span>{activity.label}{activity.fallback ? ' 기준' : ''}</span>
-        </div>
-        <div className="flex h-3 overflow-hidden rounded-full bg-surface-container">
+        <div className="mt-4 flex h-3 overflow-hidden rounded-full bg-white/80">
           <div className="bg-primary" style={{ width: `${baseRatio}%` }} />
           <div className="bg-secondary-container" style={{ width: `${100 - baseRatio}%` }} />
         </div>
-        <p className="mt-2 text-xs leading-6 text-on-surface-variant">
-          권장 칼로리는 BMR에 활동계수를 반영한 값입니다.
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold text-on-surface">
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-[3px] bg-primary" />
+            기초대사 {bmr != null ? bmr.toLocaleString() : '-'}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-[3px] bg-secondary-container" />
+            활동량 {activityCalories != null ? activityCalories.toLocaleString() : '-'}
+          </span>
+          <span className="ml-auto text-on-surface-variant">
+            BMR x 활동계수({activity.label})
+          </span>
+        </div>
+        <p className="mt-3 text-xs leading-6 text-on-surface-variant">
+          기초대사량에 현재 활동량을 반영해 산정한 하루 기준값입니다.
         </p>
       </div>
     </Card>

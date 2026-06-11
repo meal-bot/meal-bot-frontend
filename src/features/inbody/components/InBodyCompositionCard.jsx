@@ -9,7 +9,7 @@ export default function InBodyCompositionCard({ current, onNewMeasure }) {
     : circumference;
 
   return (
-    <Card padding="lg" className="rounded-[24px]">
+    <Card padding="lg" className="flex h-full flex-col rounded-[24px]">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
@@ -21,8 +21,8 @@ export default function InBodyCompositionCard({ current, onNewMeasure }) {
       </div>
 
       {composition ? (
-        <div className="mt-7 grid grid-cols-1 items-center gap-7 sm:grid-cols-[150px_1fr]">
-          <div className="relative mx-auto h-[150px] w-[150px]">
+        <div className="mt-7 flex flex-1 flex-col items-center justify-center gap-6">
+          <div className="relative h-[158px] w-[158px]">
             <svg viewBox="0 0 150 150" className="h-full w-full -rotate-90">
               <circle
                 cx="75"
@@ -51,10 +51,11 @@ export default function InBodyCompositionCard({ current, onNewMeasure }) {
               <span className="text-xs font-bold text-on-surface-variant">체지방률</span>
             </div>
           </div>
-          <div className="space-y-3">
+
+          <div className="w-full space-y-4">
             <CompositionRow label="제지방량" value={composition.leanMass} unit="kg" color="bg-primary" />
             <CompositionRow label="체지방량" value={composition.fatMass} unit="kg" color="bg-secondary" />
-            <p className="pt-2 text-xs leading-6 text-on-surface-variant">
+            <p className="text-xs leading-6 text-on-surface-variant">
               선택 인바디 항목을 입력하면 체중을 구성하는 제지방과 체지방 비율을 더 명확하게 볼 수 있습니다.
             </p>
           </div>
