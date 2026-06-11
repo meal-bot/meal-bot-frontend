@@ -191,11 +191,17 @@ src/features/landing/components/ChatPreview.jsx
 
 - Mock data is temporary for the design branch only and must be removed before final main merge.
 - `.env` files were not modified by Codex.
+- Home agent added a temporary frontend-only guest route bypass for design review:
+  - `src/App.jsx` now allows protected pages when `import.meta.env.DEV && VITE_ALLOW_GUEST_PAGES === 'true'`.
+  - local `.env.local` has `VITE_ALLOW_GUEST_PAGES=true` together with `VITE_USE_MOCKS=true`.
+  - this is only for checking page design and motion without login/API dependency.
+  - revert by removing `allowGuestPages` from `ProtectedRoute` and deleting `VITE_ALLOW_GUEST_PAGES` from local env before final merge/deployment.
 - Local mock usage, if needed:
 
 ```env
 VITE_USE_MOCKS=true
 VITE_MOCK_SCENARIO=success
+VITE_ALLOW_GUEST_PAGES=true
 ```
 
 - Temporary mock files:

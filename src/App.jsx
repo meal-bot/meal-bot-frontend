@@ -13,7 +13,8 @@ import { SidebarProvider } from './shared/context/SidebarContext';
 import ScrollToTop from './shared/components/layout/ScrollToTop';
 
 function ProtectedRoute({ children }) {
-  return isLoggedIn() ? children : <Navigate to="/login" replace />;
+  const allowGuestPages = import.meta.env.DEV && import.meta.env.VITE_ALLOW_GUEST_PAGES === 'true';
+  return allowGuestPages || isLoggedIn() ? children : <Navigate to="/login" replace />;
 }
 
 export default function App() {
