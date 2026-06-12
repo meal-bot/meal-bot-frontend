@@ -84,11 +84,11 @@ body {
 }
 
 .page-shared-axis-forward {
-  --page-axis-x: 40px;
+  --page-axis-x: 20px;
 }
 
 .page-shared-axis-backward {
-  --page-axis-x: -40px;
+  --page-axis-x: -20px;
 }
 
 .page-shared-axis-neutral {
@@ -97,8 +97,8 @@ body {
 
 @keyframes page-shared-axis-enter {
   from {
-    opacity: 0;
-    transform: translate3d(var(--page-axis-x), 8px, 0) scale(.995);
+    opacity: .72;
+    transform: translate3d(var(--page-axis-x), 4px, 0) scale(.998);
   }
   to {
     opacity: 1;
