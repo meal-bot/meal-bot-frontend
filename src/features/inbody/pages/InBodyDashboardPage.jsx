@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../../shared/components/layout/Layout';
 import { Button, EmptyState, PageHeader } from '../../../shared/components/ui';
-import { AVG_STATS } from '../data/inbodyData';
 import { fetchInbodyList } from '../api/inbodyApi';
 import BmiHeroCard from '../components/BmiHeroCard';
 import InBodyCompositionCard from '../components/InBodyCompositionCard';
@@ -73,7 +72,7 @@ export default function InBodyDashboardPage() {
 
         {!isLoading && current && (
           <>
-            <BmiHeroCard current={current} previous={previous} averageBmi={AVG_STATS.bmi} />
+            <BmiHeroCard current={current} previous={previous} />
             <InBodySummaryCards current={current} previous={previous} />
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

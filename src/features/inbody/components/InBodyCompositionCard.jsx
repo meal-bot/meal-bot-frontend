@@ -3,10 +3,6 @@ import { formatNumber, getBodyComposition } from '../utils/inbodyDisplay';
 
 export default function InBodyCompositionCard({ current, onNewMeasure }) {
   const composition = getBodyComposition(current);
-  const circumference = 2 * Math.PI * 58;
-  const fatOffset = composition
-    ? circumference - (circumference * composition.fatPercent) / 100
-    : circumference;
 
   return (
     <Card padding="lg" className="flex h-full flex-col rounded-[24px]">
@@ -17,54 +13,16 @@ export default function InBodyCompositionCard({ current, onNewMeasure }) {
           </p>
           <h3 className="mt-2 text-xl font-black tracking-tight text-on-surface">체성분 구성</h3>
         </div>
-        <span className="material-symbols-outlined text-on-surface-variant">donut_large</span>
+        <span className="material-symbols-outlined text-on-surface-variant">stacked_bar_chart</span>
       </div>
 
       {composition ? (
-        <div className="mt-7 flex flex-1 flex-col items-center justify-center gap-6">
-          <div className="relative h-[158px] w-[158px]">
-            <svg viewBox="0 0 150 150" className="h-full w-full -rotate-90">
-              <circle
-                cx="75"
-                cy="75"
-                r="58"
-                fill="none"
-                stroke="var(--color-primary-container)"
-                strokeWidth="18"
-              />
-              <circle
-                cx="75"
-                cy="75"
-                r="58"
-                fill="none"
-                stroke="var(--color-secondary)"
-                strokeWidth="18"
-                strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={fatOffset}
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <strong className="text-3xl font-black text-on-surface tabular-nums">
-                {formatNumber(composition.fatPercent)}
-              </strong>
-              <span className="text-xs font-bold text-on-surface-variant">체지방률</span>
-            </div>
-          </div>
-
-          <div className="w-full space-y-4">
-            <CompositionRow label="제지방량" value={composition.leanMass} unit="kg" color="bg-primary" />
-            <CompositionRow label="체지방량" value={composition.fatMass} unit="kg" color="bg-secondary" />
-            <p className="text-xs leading-6 text-on-surface-variant">
-              선택 인바디 항목을 입력하면 체중을 구성하는 제지방과 체지방 비율을 더 명확하게 볼 수 있습니다.
-            </p>
-          </div>
-        </div>
+        <CompositionBreakdown composition={composition} />
       ) : (
         <EmptyState
           icon="add_chart"
           title="체성분 구성 데이터 없음"
-          description="체지방량 또는 체지방률을 입력하면 구성 비율을 볼 수 있습니다."
+          description="선택 입력 항목을 입력하면 체중 구성을 확인할 수 있습니다."
           className="mt-7 border-outline-variant/45 bg-white"
           action={(
             <Button variant="outline" onClick={onNewMeasure}>
@@ -78,22 +36,85 @@ export default function InBodyCompositionCard({ current, onNewMeasure }) {
   );
 }
 
-function CompositionRow({ label, value, unit, color }) {
+function CompositionBreakdown({ composition }) {
+  const leanMass = Number(composition.leanMass);
+  const fatMass = Number(composition.fatMass);
+  const totalMass = leanMass + fatMass;
+  const leanPercent = totalMass > 0 ? (leanMass / totalMass) * 100 : 0;
+  const fatPercent = totalMass > 0 ? (fatMass / totalMass) * 100 : Number(composition.fatPercent);
+
   return (
-    <div>
-      <div className="mb-1 flex items-center justify-between text-sm font-bold">
-        <span className="flex items-center gap-2 text-on-surface">
-          <span className={`h-2.5 w-2.5 rounded-full ${color}`} />
-          {label}
-        </span>
-        <span className="tabular-nums text-on-surface">
-          {formatNumber(value)}
-          <span className="ml-1 text-xs text-on-surface-variant">{unit}</span>
-        </span>
+    <div className="mt-7 flex flex-1 flex-col justify-center">
+      <div className="rounded-3xl border border-outline-variant/35 bg-surface-container/45 px-5 py-5">
+        <p className="text-xs font-extrabold text-on-surface-variant">총 체중 구성</p>
+        <div className="mt-2 flex items-end gap-2">
+          <strong className="text-4xl font-black tracking-tight text-on-surface tabular-nums">
+            {formatNumber(totalMass)}
+          </strong>
+          <span className="pb-1 text-sm font-extrabold text-on-surface-variant">kg</span>
+        </div>
+
+        <div className="mt-5 flex h-4 overflow-hidden rounded-full bg-white shadow-inner">
+          <div
+            className="h-full bg-primary transition-all duration-700"
+            style={{ width: `${Math.max(0, Math.min(100, leanPercent))}%` }}
+          />
+          <div
+            className="h-full bg-secondary transition-all duration-700"
+            style={{ width: `${Math.max(0, Math.min(100, fatPercent))}%` }}
+          />
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-3 text-xs font-extrabold">
+          <span className="flex items-center gap-1.5 text-primary">
+            <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+            제지방 {formatNumber(leanPercent)}%
+          </span>
+          <span className="flex items-center gap-1.5 text-secondary">
+            <span className="h-2.5 w-2.5 rounded-full bg-secondary" />
+            체지방 {formatNumber(fatPercent)}%
+          </span>
+        </div>
       </div>
-      <div className="h-2 rounded-full bg-surface-container">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.min(100, Math.max(8, value * 1.4))}%` }} />
+
+      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <CompositionMetric
+          label="제지방량"
+          value={leanMass}
+          unit="kg"
+          colorClassName="text-primary"
+          icon="fitness_center"
+          description="근육, 뼈, 수분 등 지방을 제외한 체중입니다."
+        />
+        <CompositionMetric
+          label="체지방량"
+          value={fatMass}
+          unit="kg"
+          colorClassName="text-secondary"
+          icon="opacity"
+          description="몸에 저장된 지방의 총량입니다."
+        />
       </div>
+    </div>
+  );
+}
+
+function CompositionMetric({ label, value, unit, colorClassName, icon, description }) {
+  return (
+    <div className="rounded-2xl border border-outline-variant/30 bg-white px-4 py-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-extrabold text-on-surface-variant">{label}</p>
+          <p className={`mt-2 text-2xl font-black tabular-nums ${colorClassName}`}>
+            {formatNumber(value)}
+            <span className="ml-1 text-xs font-extrabold text-on-surface-variant">{unit}</span>
+          </p>
+        </div>
+        <span className={`material-symbols-outlined text-xl ${colorClassName}`}>{icon}</span>
+      </div>
+      <p className="mt-3 text-[11px] font-semibold leading-5 text-on-surface-variant">
+        {description}
+      </p>
     </div>
   );
 }

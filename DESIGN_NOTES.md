@@ -128,6 +128,70 @@ Landing/marketing:
   - before deployment/main merge, remove mock imports and `if (USE_MOCKS)` branches from API files first
   - after mock branches are removed, existing real API routes should keep working because the redesign changed the dashboard UI shell, not the endpoint contracts
 
+## Recent InBody Dashboard Work
+
+- Added Nivo Line support:
+  - installed `@nivo/line`
+  - `package.json` and `package-lock.json` changed
+- Replaced the custom SVG trend chart with Nivo-based trend panels:
+  - `src/features/inbody/components/InBodyTrendCard.jsx`
+  - current structure is a 2-grid chart card
+  - left chart: weight trend, actual `kg` values
+  - right chart: body fat percentage trend, actual `%` values
+  - previous "first measurement change rate %" approach was removed because it confused the user
+  - Y-axis labels were hidden because they made the card visually noisy
+  - tooltips still show the real measured values
+- Expanded local InBody mock records for trend-chart visual checking:
+  - `src/mock/MOCK.js`
+  - full mock records increased from 2 to 5
+  - added `daysAgo()` helper for safer mock dates
+  - values now include visible weight/body-fat movement
+  - this is temporary design-branch mock data and must be cleaned before final main merge
+- Reworked the body composition card:
+  - `src/features/inbody/components/InBodyCompositionCard.jsx`
+  - removed the donut chart
+  - replaced it with a total body-weight breakdown card
+  - uses stacked bar for lean mass vs fat mass
+  - shows separate mini cards for lean mass and body fat mass
+  - keeps descriptions close to the related metric
+- Reworked optional InBody metrics:
+  - `src/features/inbody/components/InBodyMetricsCard.jsx`
+  - changed from diagnostic wording to reference wording
+  - `normal / low / high` display became:
+    - `참고 범위 내`
+    - `참고 범위보다 낮은 편`
+    - `참고 범위보다 높은 편`
+  - card copy now states that personal standards can vary by sex, age, and body type
+- Removed unused prototype comparison code:
+  - deleted `src/features/inbody/components/ComparisonBarChart.jsx`
+  - deleted `src/features/inbody/components/SectionTitle.jsx`
+  - removed `AVG_STATS` from `src/features/inbody/data/inbodyData.js`
+- Summary cards:
+  - recent-delta trend icon added earlier
+  - color rule is now purely directional:
+    - increase: red
+    - decrease: blue
+    - no change: green
+  - no longer uses "good/bad" interpretation
+
+## Remaining InBody Issues / Decisions
+
+- Several InBody files still have mojibake/broken Korean strings and should be fixed before visual work continues:
+  - `src/features/inbody/pages/InBodyDashboardPage.jsx`
+  - `src/features/inbody/components/BmiHeroCard.jsx`
+  - `src/features/inbody/components/InBodySummaryCards.jsx`
+  - `src/features/inbody/components/InBodyMetabolismCard.jsx`
+  - `src/features/inbody/data/inbodyData.js`
+- The fixed reference ranges in `ADVANCED_FIELDS` are still hardcoded.
+  - They existed before the latest edits.
+  - They are now labeled as "reference ranges", not diagnosis.
+  - Final decision needed: keep as weak reference UI, hide ranges, or replace with backend-provided/personalized standards.
+- Unused InBody prototype files may still remain and should be reviewed:
+  - `src/features/inbody/components/ScoreRing.jsx`
+  - `src/features/inbody/components/TrendChart.jsx`
+  - unused exports such as `SEGMENTS` and `LATEST` in `inbodyData.js`
+- The InBody dashboard has not been command-verified after these latest changes because the user requested no routine verification.
+
 ## Current CSS Structure
 
 ```txt
@@ -195,6 +259,10 @@ src/features/landing/components/ChatPreview.jsx
 
 - Mock data is temporary for the design branch only and must be removed before final main merge.
 - `.env` files were not modified by Codex.
+- Temporary InBody mock scenarios exist for A/B dashboard checks:
+  - `VITE_MOCK_SCENARIO=success`: required + optional InBody data
+  - `VITE_MOCK_SCENARIO=requiredOnly`: required fields only, optional fields set to `null`
+  - remove this scenario structure together with mock cleanup before final main merge.
 - Home agent added a temporary frontend-only guest route bypass for design review:
   - `src/App.jsx` now allows protected pages when `import.meta.env.DEV && VITE_ALLOW_GUEST_PAGES === 'true'`.
   - local `.env.local` has `VITE_ALLOW_GUEST_PAGES=true` together with `VITE_USE_MOCKS=true`.

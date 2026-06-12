@@ -65,14 +65,6 @@ export const LATEST = {
   bodyType: '균형형',     // '근육형' | '균형형' | '마른비만형' 등
 };
 
-// 평균값 더미 데이터 — 실제 서비스에서는 백엔드 /api/inbody/stats로 대체
-export const AVG_STATS = {
-  bmi: 23.0,
-  bmr: 1650,
-  height: 172.0,
-  weight: 70.5,
-};
-
 // 등급 평가 — 값과 정상범위로 상태 산출
 export function evaluate(value, range) {
   if (value == null || isNaN(value)) return 'unknown';

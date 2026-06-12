@@ -3,10 +3,26 @@ import { ADVANCED_FIELDS, evaluate, gaugePosition } from '../data/inbodyData';
 import { formatNumber } from '../utils/inbodyDisplay';
 
 const statusMap = {
-  normal: { label: '정상', className: 'text-primary', dot: 'bg-primary' },
-  low: { label: '부족', className: 'text-secondary', dot: 'bg-secondary' },
-  high: { label: '높음', className: 'text-secondary', dot: 'bg-secondary' },
-  unknown: { label: '미입력', className: 'text-on-surface-variant', dot: 'bg-outline-variant' },
+  normal: {
+    label: '참고 범위 내',
+    className: 'text-primary',
+    dot: 'bg-primary',
+  },
+  low: {
+    label: '참고 범위보다 낮은 편',
+    className: 'text-blue-500',
+    dot: 'bg-blue-500',
+  },
+  high: {
+    label: '참고 범위보다 높은 편',
+    className: 'text-secondary',
+    dot: 'bg-secondary',
+  },
+  unknown: {
+    label: '미입력',
+    className: 'text-on-surface-variant',
+    dot: 'bg-outline-variant',
+  },
 };
 
 export default function InBodyMetricsCard({ current, onNewMeasure }) {
@@ -17,16 +33,16 @@ export default function InBodyMetricsCard({ current, onNewMeasure }) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
-            Standard Metrics
+            Reference Metrics
           </p>
-          <h3 className="mt-2 text-xl font-black tracking-tight text-on-surface">항목별 분석</h3>
+          <h3 className="mt-2 text-xl font-black tracking-tight text-on-surface">선택 항목 참고 지표</h3>
           <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-            선택 인바디 항목을 정상 범위와 비교합니다.
+            입력된 선택 항목을 참고 범위와 함께 보여줍니다. 개인별 기준은 성별, 나이, 체형에 따라 달라질 수 있습니다.
           </p>
         </div>
         <Button variant="outline" onClick={onNewMeasure}>
           <span className="material-symbols-outlined text-base">edit</span>
-          측정값 보완
+          측정값 입력
         </Button>
       </div>
 
@@ -40,12 +56,12 @@ export default function InBodyMetricsCard({ current, onNewMeasure }) {
         <EmptyState
           icon="analytics"
           title="선택 인바디 항목이 없습니다"
-          description="필수 입력만으로도 BMI와 권장 칼로리는 볼 수 있습니다. 세부 분석은 인바디 항목을 추가하면 표시됩니다."
+          description="필수 입력만으로도 BMI와 권장 칼로리는 볼 수 있습니다. 더 자세한 참고 지표는 선택 항목을 추가하면 표시됩니다."
           className="mt-7 bg-white"
           action={(
             <Button variant="outline" onClick={onNewMeasure}>
               <span className="material-symbols-outlined text-base">add</span>
-              인바디 항목 추가
+              선택 항목 추가
             </Button>
           )}
         />
@@ -90,7 +106,7 @@ function MetricGauge({ field, value }) {
         </div>
         <div className="mt-2 flex justify-between text-[10px] font-bold text-on-surface-variant">
           <span>낮음</span>
-          <span>{field.range[0]}-{field.range[1]} {field.unit}</span>
+          <span>참고 {field.range[0]}-{field.range[1]} {field.unit}</span>
           <span>높음</span>
         </div>
       </div>

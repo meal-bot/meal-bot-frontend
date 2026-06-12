@@ -1,9 +1,47 @@
+import { ResponsiveLine } from '@nivo/line';
 import { Card, EmptyState } from '../../../shared/components/ui';
 import { formatDate, formatNumber } from '../utils/inbodyDisplay';
 
+const chartTheme = {
+  fontFamily: 'Pretendard, system-ui, sans-serif',
+  text: {
+    fill: 'var(--color-on-surface-variant)',
+    fontSize: 12,
+    fontWeight: 700,
+  },
+  axis: {
+    ticks: {
+      line: { stroke: 'transparent' },
+      text: { fill: 'var(--color-on-surface-variant)', fontSize: 12, fontWeight: 700 },
+    },
+  },
+  grid: {
+    line: {
+      stroke: 'var(--color-outline-variant)',
+      strokeDasharray: '4 8',
+      strokeOpacity: 0.6,
+    },
+  },
+  tooltip: {
+    container: {
+      borderRadius: 14,
+      boxShadow: '0 18px 48px rgba(30, 36, 28, 0.18)',
+      fontWeight: 800,
+    },
+  },
+  crosshair: {
+    line: {
+      stroke: 'var(--color-on-surface-variant)',
+      strokeOpacity: 0.35,
+      strokeWidth: 1,
+    },
+  },
+};
+
 export default function InBodyTrendCard({ history }) {
   const safeHistory = history.filter(item => item?.weight != null);
-  const hasFatTrend = safeHistory.filter(item => item.bodyFatPercent != null).length >= 2;
+  const weightHistory = safeHistory.filter(item => item.weight != null);
+  const fatHistory = safeHistory.filter(item => item.bodyFatPercent != null);
 
   return (
     <Card padding="lg" className="rounded-[24px]">
@@ -14,147 +52,130 @@ export default function InBodyTrendCard({ history }) {
           </p>
           <h3 className="mt-2 text-xl font-black tracking-tight text-on-surface">시간 추이</h3>
           <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-            {hasFatTrend
-              ? '체중과 체지방률 변화를 함께 확인합니다.'
-              : '필수 입력만 있는 경우 체중 변화 중심으로 추이를 보여줍니다.'}
+            체중과 체지방률을 각각의 단위로 나누어 변화 흐름을 보여줍니다.
           </p>
-        </div>
-        <div className="flex items-center gap-4 text-xs font-bold text-on-surface-variant">
-          <span className="flex items-center gap-1.5"><span className="h-2 w-5 rounded-full bg-primary" />체중</span>
-          {hasFatTrend && (
-            <span className="flex items-center gap-1.5"><span className="h-2 w-5 rounded-full bg-secondary" />체지방률</span>
-          )}
         </div>
       </div>
 
-      <div className="mt-7">
-        {safeHistory.length >= 2 ? (
-          <TrendSvg history={safeHistory} hasFatTrend={hasFatTrend} />
-        ) : (
-          <EmptyState
-            icon="show_chart"
-            title="추이를 보려면 기록이 더 필요합니다"
-            description="측정 기록이 2개 이상 쌓이면 변화 그래프가 표시됩니다."
-            className="bg-white"
-          />
-        )}
+      <div className="mt-7 grid grid-cols-1 gap-5 xl:grid-cols-2">
+        <TrendPanel
+          title="체중"
+          unit="kg"
+          color="var(--color-primary)"
+          chipClassName="bg-primary-container text-primary"
+          history={weightHistory}
+          valueKey="weight"
+          emptyDescription="측정 기록이 2개 이상 쌓이면 체중 추이가 표시됩니다."
+        />
+        <TrendPanel
+          title="체지방률"
+          unit="%"
+          color="var(--color-secondary)"
+          chipClassName="bg-secondary-container text-secondary"
+          history={fatHistory}
+          valueKey="bodyFatPercent"
+          emptyDescription="선택 입력 항목을 입력하면 체지방률 추이를 볼 수 있습니다."
+        />
       </div>
     </Card>
   );
 }
 
-function TrendSvg({ history, hasFatTrend }) {
-  const W = 1000;
-  const H = 290;
-  const P = 52;
-  const weights = history.map(item => Number(item.weight));
-  const fats = history.map(item => item.bodyFatPercent == null ? null : Number(item.bodyFatPercent));
-  const weightMin = Math.min(...weights) - 1;
-  const weightMax = Math.max(...weights) + 1;
-  const fatValues = fats.filter(value => value != null);
-  const fatMin = hasFatTrend ? Math.min(...fatValues) - 1 : 0;
-  const fatMax = hasFatTrend ? Math.max(...fatValues) + 1 : 1;
-  const innerW = W - P * 2;
-  const innerH = H - P * 2;
-
-  const xAt = index => P + (index / (history.length - 1)) * innerW;
-  const yAt = (value, min, max) => P + innerH - ((value - min) / (max - min || 1)) * innerH;
-  const pathFrom = (values, min, max) => {
-    let started = false;
-    return values
-      .map((value, index) => {
-        if (value == null) return null;
-        const command = started ? 'L' : 'M';
-        started = true;
-        return `${command} ${xAt(index)} ${yAt(value, min, max)}`;
-      })
-      .filter(Boolean)
-      .join(' ');
-  };
-
-  const weightPath = pathFrom(weights, weightMin, weightMax);
-  const fatPath = hasFatTrend ? pathFrom(fats, fatMin, fatMax) : '';
+function TrendPanel({ title, unit, color, chipClassName, history, valueKey, emptyDescription }) {
+  const hasTrend = history.length >= 2;
+  const latest = history.at(-1);
 
   return (
-    <div className="overflow-x-auto">
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-[290px] min-w-[720px] w-full">
-        {[0, 0.25, 0.5, 0.75, 1].map(tick => (
-          <line
-            key={tick}
-            x1={P}
-            x2={W - P}
-            y1={P + tick * innerH}
-            y2={P + tick * innerH}
-            stroke="var(--color-outline-variant)"
-            strokeOpacity="0.45"
-            strokeDasharray={tick === 0 || tick === 1 ? '' : '4 8'}
-          />
-        ))}
-
-        <path d={weightPath} fill="none" stroke="var(--color-primary)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-        {hasFatTrend && (
-          <path d={fatPath} fill="none" stroke="var(--color-secondary)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="10 8" />
+    <section className="rounded-2xl border border-outline-variant/35 bg-white px-4 py-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h4 className="text-sm font-black text-on-surface">{title}</h4>
+          <p className="mt-1 text-xs font-bold text-on-surface-variant">단위: {unit}</p>
+        </div>
+        {latest && (
+          <span className={`rounded-full px-3 py-1.5 text-xs font-extrabold ${chipClassName}`}>
+            최근 {formatNumber(latest[valueKey])}
+            {unit}
+          </span>
         )}
+      </div>
 
-        {weights.map((value, index) => (
-          <circle
-            key={`weight-${history[index].date}-${index}`}
-            cx={xAt(index)}
-            cy={yAt(value, weightMin, weightMax)}
-            r={index === weights.length - 1 ? 7 : 5}
-            fill="var(--color-primary)"
-            stroke="white"
-            strokeWidth="3"
+      <div className="mt-4 h-[260px]">
+        {hasTrend ? (
+          <ResponsiveLine
+            data={buildSingleSeries(history, title, valueKey, unit)}
+            margin={{ top: 18, right: 16, bottom: 48, left: 16 }}
+            xScale={{ type: 'point' }}
+            yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
+            yFormat={value => `${formatNumber(value)}${unit}`}
+            curve="monotoneX"
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 0,
+              tickPadding: 14,
+              format: value => String(value).slice(5),
+            }}
+            axisLeft={null}
+            enableGridX={false}
+            enableGridY
+            colors={[color]}
+            lineWidth={4}
+            pointSize={9}
+            pointColor={{ from: 'color' }}
+            pointBorderWidth={3}
+            pointBorderColor="#ffffff"
+            enableArea
+            areaOpacity={0.08}
+            useMesh
+            animate
+            motionConfig="gentle"
+            theme={chartTheme}
+            tooltip={({ point }) => (
+              <TrendTooltip point={point} unit={unit} />
+            )}
           />
-        ))}
-        {hasFatTrend && fats.map((value, index) => value == null ? null : (
-          <circle
-            key={`fat-${history[index].date}-${index}`}
-            cx={xAt(index)}
-            cy={yAt(value, fatMin, fatMax)}
-            r={index === fats.length - 1 ? 7 : 5}
-            fill="var(--color-secondary)"
-            stroke="white"
-            strokeWidth="3"
+        ) : (
+          <EmptyState
+            icon="show_chart"
+            title={`${title} 기록이 부족합니다.`}
+            description={emptyDescription}
+            className="h-full border-outline-variant/35 bg-surface-container/45"
           />
-        ))}
-
-        {history.map((item, index) => (
-          <text
-            key={`date-${item.date}-${index}`}
-            x={xAt(index)}
-            y={H - 14}
-            textAnchor="middle"
-            fontSize="13"
-            fontWeight="700"
-            fill="var(--color-on-surface-variant)"
-          >
-            {formatDate(item.date).slice(5)}
-          </text>
-        ))}
-
-        <text
-          x={xAt(weights.length - 1) - 10}
-          y={yAt(weights[weights.length - 1], weightMin, weightMax) - 16}
-          textAnchor="end"
-          fontSize="15"
-          fontWeight="900"
-          fill="var(--color-primary)"
-        >
-          {formatNumber(weights[weights.length - 1])}kg
-        </text>
-        {hasFatTrend && (
-          <text
-            x={xAt(fats.length - 1) + 12}
-            y={yAt(fats[fats.length - 1], fatMin, fatMax) + 6}
-            fontSize="15"
-            fontWeight="900"
-            fill="var(--color-secondary)"
-          >
-            {formatNumber(fats[fats.length - 1])}%
-          </text>
         )}
-      </svg>
+      </div>
+    </section>
+  );
+}
+
+function buildSingleSeries(history, title, valueKey, unit) {
+  return [
+    {
+      id: title,
+      data: history.map(item => ({
+        x: formatDate(item.date),
+        y: Number(item[valueKey]),
+        rawValue: item[valueKey],
+        unit,
+      })),
+    },
+  ];
+}
+
+function TrendTooltip({ point, unit }) {
+  const { serieId, data, color } = point;
+
+  return (
+    <div className="rounded-2xl bg-white px-3 py-2 text-xs shadow-xl">
+      <div className="mb-1 flex items-center gap-2 text-on-surface">
+        <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
+        {serieId}
+      </div>
+      <div className="text-on-surface-variant">{data.xFormatted}</div>
+      <div className="mt-1 text-sm font-black text-on-surface">
+        {formatNumber(data.rawValue)}
+        {unit}
+      </div>
     </div>
   );
 }
