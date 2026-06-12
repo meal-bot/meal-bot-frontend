@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconButton } from '../../../shared/components/ui';
+import { IconButton, OverlayPortal } from '../../../shared/components/ui';
 import { cn } from '../../../shared/utils/cn.js';
 import {
   MONTH_NAMES, DOW_SUN, buildMonthGrid, isoDate, isToday, isFuture, TODAY
@@ -169,7 +169,7 @@ export default function Calendar() {
       )}
 
       {sel && (
-        <>
+        <OverlayPortal>
           <div className={`detail-backdrop ${closing ? 'closing' : ''}`} onClick={closeDay} />
           <div className={`detail-overlay ${closing ? 'closing' : ''}`}>
             <div className="head">
@@ -225,7 +225,7 @@ export default function Calendar() {
               {selCount === 1 ? '탭하여 대화로 이동' : `${selCount}개 대화 · 선택하여 열기`}
             </div>
           </div>
-        </>
+        </OverlayPortal>
       )}
     </div>
   );

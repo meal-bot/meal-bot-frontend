@@ -186,6 +186,10 @@ src/features/landing/components/ChatPreview.jsx
 - Do not imply AI automatically reads body composition data unless that feature is actually implemented.
 - User requested that routine design/CSS changes should not run `npm run lint` or `npm run build`.
   - If a change is structurally risky, explain the need for verification first.
+- Sidebar state architecture is currently undecided:
+  - `SidebarContext` is only consumed directly by `ChatPage` today, so it may be more complex than needed.
+  - However, sidebar state now affects layout alignment, navigation positioning, composer positioning, and page-transition-related behavior.
+  - Keep `SidebarContext` for now; revisit after the page transition/sidebar animation direction stabilizes.
 
 ## Temporary / Do Not Forget
 

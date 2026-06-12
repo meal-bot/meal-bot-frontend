@@ -95,25 +95,33 @@ export default function ChatPage() {
 
 
   return (
-    <Layout
-      sidebarOpen={sidebarOpen}
-      onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
-      onStartNewChat={startNewChat}
-      chats={chats}
-      onOpenExistingChat={openExistingChat}
-      onDeleteChat={(chatIdToDelete) => {
-        deleteChat(chatIdToDelete);
-        if (chatIdToDelete === chatId) startNewChat();  // 현재 채팅 삭제 시 새 채팅으로 초기화
-      }}
-    >
-      <ChatIntroSection
-        hasMessages={hasMessages}
-        meals={randomMeals}
-        sliderRef={sliderRef}
-        canScrollLeft={canScrollLeft}
-        canScrollRight={canScrollRight}
-        onMealClick={loadRecipeDetail}
-      />
+    <>
+      <Layout
+        sidebarOpen={sidebarOpen}
+        onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
+        onStartNewChat={startNewChat}
+        chats={chats}
+        onOpenExistingChat={openExistingChat}
+        onDeleteChat={(chatIdToDelete) => {
+          deleteChat(chatIdToDelete);
+          if (chatIdToDelete === chatId) startNewChat();  // 현재 채팅 삭제 시 새 채팅으로 초기화
+        }}
+      >
+        <ChatIntroSection
+          hasMessages={hasMessages}
+          meals={randomMeals}
+          sliderRef={sliderRef}
+          canScrollLeft={canScrollLeft}
+          canScrollRight={canScrollRight}
+          onMealClick={loadRecipeDetail}
+        />
+
+        <ChatThread
+          messages={messages}
+          isLoading={isLoading}
+          messagesEndRef={messagesEndRef}
+        />
+      </Layout>
 
       {selectedMeal && (
         <RecipeDetailModal
@@ -125,12 +133,6 @@ export default function ChatPage() {
         />
       )}
 
-      <ChatThread
-        messages={messages}
-        isLoading={isLoading}
-        messagesEndRef={messagesEndRef}
-      />
-
       <ChatComposerLayer
         sidebarOpen={sidebarOpen}
         showScrollButton={hasMessages && !isNearBottom}
@@ -141,7 +143,6 @@ export default function ChatPage() {
           onSubmit: handleSubmit,
         }}
       />
-
-    </Layout>
+    </>
   );
 }

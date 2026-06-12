@@ -25,6 +25,82 @@ const recommendations = [
   },
 ];
 
+const randomRecipes = [
+  ...recommendations,
+  {
+    recipeId: 'mock-recipe-3',
+    name: 'Grilled Salmon Bowl',
+    mainIngredients: ['salmon', 'rice', 'paprika'],
+    missingIngredients: [],
+    cookingTime: 18,
+    summary: 'A balanced bowl for checking horizontal recipe card overflow.',
+    reason: 'Useful mock data for the landing slider layout.',
+  },
+  {
+    recipeId: 'mock-recipe-4',
+    name: 'Egg Avocado Toast',
+    mainIngredients: ['egg', 'avocado', 'whole grain bread'],
+    missingIngredients: ['whole grain bread'],
+    cookingTime: 10,
+    summary: 'A quick breakfast-style card for visual density testing.',
+    reason: 'Short cooking time keeps the card metadata varied.',
+  },
+  {
+    recipeId: 'mock-recipe-5',
+    name: 'Beef Chive Stir Fry',
+    mainIngredients: ['beef', 'chive', 'soy sauce'],
+    missingIngredients: [],
+    cookingTime: 25,
+    summary: 'A higher-calorie card to vary the calorie label width.',
+    reason: 'This item helps test long slider rows.',
+  },
+  {
+    recipeId: 'mock-recipe-6',
+    name: 'Chicken Omelet',
+    mainIngredients: ['chicken', 'egg', 'lettuce'],
+    missingIngredients: ['lettuce'],
+    cookingTime: 22,
+    summary: 'A protein-focused card for mock recommendation variety.',
+    reason: 'Good for checking card title wrapping.',
+  },
+  {
+    recipeId: 'mock-recipe-7',
+    name: 'Cucumber Tomato Salad',
+    mainIngredients: ['cucumber', 'tomato', 'rucola'],
+    missingIngredients: [],
+    cookingTime: 12,
+    summary: 'A light card that keeps the slider feeling varied.',
+    reason: 'Useful for testing compact text combinations.',
+  },
+  {
+    recipeId: 'mock-recipe-8',
+    name: 'Sweet Potato Yogurt Bowl',
+    mainIngredients: ['sweet potato', 'yogurt', 'nuts'],
+    missingIngredients: ['nuts'],
+    cookingTime: 8,
+    summary: 'A snack-like card with shorter metadata.',
+    reason: 'Helps test mixed card content lengths.',
+  },
+  {
+    recipeId: 'mock-recipe-9',
+    name: 'Shrimp Tofu Soup',
+    mainIngredients: ['shrimp', 'tofu', 'broth'],
+    missingIngredients: [],
+    cookingTime: 16,
+    summary: 'A warm meal card for recommendation mock coverage.',
+    reason: 'Adds another medium-width title to the row.',
+  },
+  {
+    recipeId: 'mock-recipe-10',
+    name: 'Lettuce Tuna Wrap',
+    mainIngredients: ['lettuce', 'tuna', 'tomato'],
+    missingIngredients: [],
+    cookingTime: 14,
+    summary: 'A simple wrap card for final slider spacing checks.',
+    reason: 'Keeps the mock row long enough for sidebar testing.',
+  },
+];
+
 const chats = [
   {
     chatId: 9001,
@@ -152,13 +228,13 @@ export const MOCK = {
     },
   },
   recipes: {
-    random: recommendations.map((recipe, index) => ({
+    random: randomRecipes.map((recipe, index) => ({
       ...recipe,
       id: recipe.recipeId,
-      tag: index === 0 ? 'HIGH PROTEIN' : 'BALANCED',
-      tagColor: index === 0 ? 'text-primary' : 'text-secondary',
-      calories: index === 0 ? 420 : 510,
-      protein: index === 0 ? 38 : 24,
+      tag: index % 3 === 0 ? 'HIGH PROTEIN' : index % 3 === 1 ? 'BALANCED' : 'LIGHT',
+      tagColor: index % 3 === 0 ? 'text-primary' : index % 3 === 1 ? 'text-secondary' : 'text-tertiary',
+      calories: [420, 510, 460, 360, 620, 540, 330, 290, 480, 410][index] ?? 430,
+      protein: [38, 24, 31, 18, 42, 35, 16, 12, 28, 25][index] ?? 24,
     })),
     detail: {
       recipeId: 'mock-recipe-1',

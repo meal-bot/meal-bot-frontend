@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { isLoggedIn, getName, clearAuth } from '../../../features/auth/utils/auth';
-import ConfirmDialog from '../ConfirmDialog';
+import { ConfirmDialog } from '../ui';
 
 export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
   const navigate = useNavigate();

@@ -76,3 +76,38 @@ body {
     opacity: 1;
   }
 }
+
+.page-shared-axis {
+  --page-axis-x: 0px;
+  animation: page-shared-axis-enter 360ms cubic-bezier(.2, .7, .25, 1) both;
+  will-change: transform, opacity;
+}
+
+.page-shared-axis-forward {
+  --page-axis-x: 40px;
+}
+
+.page-shared-axis-backward {
+  --page-axis-x: -40px;
+}
+
+.page-shared-axis-neutral {
+  --page-axis-x: 0px;
+}
+
+@keyframes page-shared-axis-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--page-axis-x), 8px, 0) scale(.995);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-shared-axis {
+    animation: none;
+  }
+}

@@ -1,5 +1,6 @@
 import Navigationbar from './Navigationbar';
 import ChatSidebar from '../../../features/chat/components/ChatSidebar';
+import PageTransition from './PageTransition';
 
 /**
  * Layout - 전체 페이지의 공통 뼈대 컴포넌트
@@ -36,7 +37,7 @@ export default function Layout({ children, sidebarOpen, onSidebarToggle, onStart
           onSidebarToggle && sidebarOpen ? 'md:pl-64' : 'md:pl-16'
         }`}
       >
-        {children}
+        <PageTransition>{children}</PageTransition>
       </main>
 
     </div>
