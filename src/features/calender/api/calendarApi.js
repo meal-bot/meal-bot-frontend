@@ -1,8 +1,12 @@
 import api from '../../../api/axiosInstance';
 import { fetchChats } from '../../chat/api/chatApi';
+import { MOCK } from '../../../mock/MOCK';
+import { USE_MOCKS } from '../../../mock/useMock';
 
 // GET /api/chat 재활용 (사이드바 API) — 전체 채팅을 날짜별로 그룹핑
 export const fetchCalendarMonthData = async () => {
+  if (USE_MOCKS) return MOCK.calendar.month;
+
   console.log('[calendarApi] fetchCalendarMonthData 요청');
   const chats = await fetchChats();
   const byDate = {};
@@ -18,6 +22,8 @@ export const fetchCalendarMonthData = async () => {
 
 // GET /api/calendar/{date} — 날짜 클릭 시 상세 (추천 레시피 이름 목록 포함)
 export const fetchCalendarDateData = async (date) => {
+  if (USE_MOCKS) return MOCK.calendar.date[date] ?? [];
+
   console.log('[calendarApi] fetchCalendarDateData 요청 - date:', date);
   const response = await api.get(`/api/calendar/${date}`);
   console.log('[calendarApi] fetchCalendarDateData 응답:', response.data);

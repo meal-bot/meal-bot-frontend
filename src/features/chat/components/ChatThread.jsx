@@ -4,7 +4,7 @@ export default function ChatThread({ messages, isLoading, messagesEndRef }) {
   if (messages.length === 0) return null;
 
   return (
-    <section className="max-w-3xl mx-auto flex flex-col gap-10 pb-8">
+    <section className="max-w-3xl mx-auto flex flex-col gap-10 pb-8 outline outline-1 outline-red-400">
       {messages.map(msg => {
         const recommendations = msg.recommendations || [];
 
