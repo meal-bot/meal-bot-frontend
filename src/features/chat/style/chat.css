@@ -99,11 +99,17 @@
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
-    border-color 180ms ease;
+    border-color 180ms ease,
+    background-color 180ms ease;
 }
 
 .chat-recommendation-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  border-color: rgba(156, 175, 136, .72);
+  box-shadow:
+    0 14px 34px rgba(74, 68, 63, .14),
+    0 5px 14px rgba(74, 68, 63, .08);
+  background-color: rgba(255, 255, 255, .98);
 }
 
 @keyframes chat-recommendation-enter {
