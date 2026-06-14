@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconButton, OverlayPortal } from '../../../shared/components/ui';
+import { Button, EmptyState, IconButton, OverlayPortal } from '../../../shared/components/ui';
 import { cn } from '../../../shared/utils/cn.js';
+import { getApiErrorMessage } from '../../../shared/utils/apiError.js';
 import {
   MONTH_NAMES, DOW_SUN, buildMonthGrid, isoDate, isToday, isFuture, TODAY
 } from '../style/sampleData.js';
@@ -87,16 +88,45 @@ export default function Calendar() {
   const [chatsByDate, setChatsByDate] = useState({});
   const [isLoaded, setIsLoaded] = useState(false);
   const isLoading = !isLoaded;
+  const [monthError, setMonthError] = useState('');
   const [selectedDateChats, setSelectedDateChats] = useState([]);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState('');
 
-  useEffect(() => {
+  const loadMonthData = useCallback(() => {
+    setIsLoaded(false);
+    setMonthError('');
     fetchCalendarMonthData()
       .then(data => {
         setChatsByDate(data);
         setIsLoaded(true);
       })
-      .catch(() => setIsLoaded(true));
+      .catch(error => {
+        setChatsByDate({});
+        setMonthError(getApiErrorMessage(error, '캘린더 데이터를 불러오지 못했습니다.'));
+        setIsLoaded(true);
+      });
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchCalendarMonthData()
+      .then(data => {
+        if (cancelled) return;
+        setChatsByDate(data);
+        setIsLoaded(true);
+      })
+      .catch(error => {
+        if (cancelled) return;
+        setChatsByDate({});
+        setMonthError(getApiErrorMessage(error, '캘린더 데이터를 불러오지 못했습니다.'));
+        setIsLoaded(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const animClass = anim
@@ -107,10 +137,14 @@ export default function Calendar() {
     setClosing(false);
     setSel({ y: c.y, m: c.m, d: c.d });
     setSelectedDateChats([]);
+    setDetailError('');
     setIsDetailLoading(true);
     fetchCalendarDateData(isoDate(c.y, c.m, c.d))
       .then(data => setSelectedDateChats(data))
-      .catch(() => setSelectedDateChats([]))
+      .catch(error => {
+        setSelectedDateChats([]);
+        setDetailError(getApiErrorMessage(error, '선택한 날짜의 대화를 불러오지 못했습니다.'));
+      })
       .finally(() => setIsDetailLoading(false));
   };
   const closeDay = () => {
@@ -140,6 +174,18 @@ export default function Calendar() {
         <div className="calendar-loading">
           불러오는 중...
         </div>
+      ) : monthError ? (
+        <EmptyState
+          icon="cloud_off"
+          title="캘린더를 불러오지 못했습니다"
+          description={monthError}
+          className="mt-8"
+          action={(
+            <Button type="button" size="sm" onClick={loadMonthData}>
+              다시 시도
+            </Button>
+          )}
+        />
       ) : (
         <div className={`cal-page ${animClass}`} key={`${y}-${m}-${dir}-${anim}`}>
           <DowRow />
@@ -197,10 +243,13 @@ export default function Calendar() {
               {isDetailLoading && (
                 <div className="empty">불러오는 중...</div>
               )}
-              {!isDetailLoading && chatsForSelectedDate.length === 0 && (
+              {!isDetailLoading && detailError && (
+                <div className="empty">{detailError}</div>
+              )}
+              {!isDetailLoading && !detailError && chatsForSelectedDate.length === 0 && (
                 <div className="empty">대화 기록이 없습니다</div>
               )}
-              {!isDetailLoading && chatsForSelectedDate.map((chat, i) => {
+              {!isDetailLoading && !detailError && chatsForSelectedDate.map((chat, i) => {
                 const tag = getMealTag(chat.createdAt);
                 return (
                   <div

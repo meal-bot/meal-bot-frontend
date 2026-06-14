@@ -10,6 +10,7 @@ import { useChat } from '../hooks/useChat';
 import { isLoggedIn } from '../../auth/utils/auth';
 import RecipeDetailModal from '../../meal/components/RecipeDetailModal';
 import { fetchRandomRecipes, fetchRecipeDetail } from '../../meal/api/recipeApi';
+import { getApiErrorMessage } from '../../../shared/utils/apiError';
 import '../style/chat.css';
 
 export default function ChatPage() {
@@ -25,6 +26,8 @@ export default function ChatPage() {
           chats, refreshChats, deleteChat,
         } = useChat();
   const [randomMeals, setRandomMeals] = useState([]);
+  const [isRandomMealsLoading, setIsRandomMealsLoading] = useState(false);
+  const [randomMealsError, setRandomMealsError] = useState('');
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [detail, setDetail] = useState(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
@@ -42,23 +45,30 @@ export default function ChatPage() {
     if (chatIdToOpen.current) openExistingChat(chatIdToOpen.current);
   }, [openExistingChat]);
 
-  useEffect(() => {
-    let ignore = false;
-
-    const loadRandomMeals = async () => {
+  const loadRandomMeals = async (ignoreRef = { current: false }) => {
+    setIsRandomMealsLoading(true);
+    setRandomMealsError('');
       try {
         const recipes = await fetchRandomRecipes(10);
-        if (!ignore) setRandomMeals(Array.isArray(recipes) ? recipes : []);
+      if (!ignoreRef.current) setRandomMeals(Array.isArray(recipes) ? recipes : []);
       } catch (error) {
         console.error('랜덤 레시피 로딩 실패:', error?.response?.data || error);
-        if (!ignore) setRandomMeals([]);
+      if (!ignoreRef.current) {
+        setRandomMeals([]);
+        setRandomMealsError(getApiErrorMessage(error, '식단 아이디어를 불러오지 못했습니다.'));
+      }
+    } finally {
+      if (!ignoreRef.current) setIsRandomMealsLoading(false);
       }
     };
 
-    loadRandomMeals();
+  useEffect(() => {
+    const ignoreRef = { current: false };
+
+    loadRandomMeals(ignoreRef);
 
     return () => {
-      ignore = true;
+      ignoreRef.current = true;
     };
   }, []);
 
@@ -110,6 +120,9 @@ export default function ChatPage() {
         <ChatIntroSection
           hasMessages={hasMessages}
           meals={randomMeals}
+          isLoading={isRandomMealsLoading}
+          errorMessage={randomMealsError}
+          onRetry={() => loadRandomMeals()}
           sliderRef={sliderRef}
           canScrollLeft={canScrollLeft}
           canScrollRight={canScrollRight}

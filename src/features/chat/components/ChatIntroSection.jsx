@@ -1,8 +1,12 @@
 import MealCard from '../../meal/components/MealCard';
+import { Button, EmptyState } from '../../../shared/components/ui';
 
 export default function ChatIntroSection({
   hasMessages,
   meals,
+  isLoading = false,
+  errorMessage = '',
+  onRetry,
   sliderRef,
   canScrollLeft,
   canScrollRight,
@@ -25,6 +29,33 @@ export default function ChatIntroSection({
           <h2 className="text-3xl font-extrabold text-on-surface tracking-tight">대화 전에 먼저 둘러보세요</h2>
           <p className="text-on-surface-variant mt-1">OBOB이 준비한 식단 아이디어를 가볍게 확인해보세요.</p>
         </div>
+        {isLoading && (
+          <p className="py-12 text-center text-sm font-semibold text-on-surface-variant">
+            식단 아이디어를 불러오는 중입니다.
+          </p>
+        )}
+        {!isLoading && errorMessage && (
+          <EmptyState
+            icon="cloud_off"
+            title="식단 아이디어를 불러오지 못했습니다"
+            description={errorMessage}
+            className="mx-auto max-w-xl"
+            action={(
+              <Button type="button" size="sm" onClick={onRetry}>
+                다시 시도
+              </Button>
+            )}
+          />
+        )}
+        {!isLoading && !errorMessage && meals.length === 0 && (
+          <EmptyState
+            icon="restaurant"
+            title="표시할 식단 아이디어가 없습니다"
+            description="잠시 후 다시 시도해 주세요."
+            className="mx-auto max-w-xl"
+          />
+        )}
+        {!isLoading && !errorMessage && meals.length > 0 && (
         <div className="relative group/slider">
           <button
             onClick={() => sliderRef.current?.scrollBy({ left: -400, behavior: 'smooth' })}
@@ -59,6 +90,7 @@ export default function ChatIntroSection({
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );

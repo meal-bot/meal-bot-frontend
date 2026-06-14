@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../../shared/components/layout/Layout';
-import { Button, EmptyState, PageHeader } from '../../../shared/components/ui';
+import { Button, ConfirmDialog, EmptyState, PageHeader } from '../../../shared/components/ui';
 import { deleteInbody, fetchInbodyList } from '../api/inbodyApi';
 import BmiHeroCard from '../components/BmiHeroCard';
 import InBodyCompositionCard from '../components/InBodyCompositionCard';
@@ -11,17 +11,50 @@ import InBodyMetricsCard from '../components/InBodyMetricsCard';
 import InBodySummaryCards from '../components/InBodySummaryCards';
 import InBodyTrendCard from '../components/InBodyTrendCard';
 import { formatDate } from '../utils/inbodyDisplay';
+import { getApiErrorMessage } from '../../../shared/utils/apiError';
 
 export default function InBodyDashboardPage() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [recordToDelete, setRecordToDelete] = useState(null);
+
+  const loadRecords = () => {
+    setIsLoading(true);
+    setLoadError('');
+    fetchInbodyList()
+      .then(data => setRecords(Array.isArray(data) ? data : []))
+      .catch(error => {
+        console.error('인바디 기록을 불러오지 못했습니다.', error);
+        setRecords([]);
+        setLoadError(getApiErrorMessage(error, '인바디 기록을 불러오지 못했습니다.'));
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   useEffect(() => {
+    let cancelled = false;
+
     fetchInbodyList()
-      .then(setRecords)
-      .catch(() => console.error('인바디 기록을 불러오지 못했습니다.'))
-      .finally(() => setIsLoading(false));
+      .then(data => {
+        if (cancelled) return;
+        setRecords(Array.isArray(data) ? data : []);
+      })
+      .catch(error => {
+        if (cancelled) return;
+        console.error('인바디 기록을 불러오지 못했습니다.', error);
+        setRecords([]);
+        setLoadError(getApiErrorMessage(error, '인바디 기록을 불러오지 못했습니다.'));
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const current = records[0] ?? null;
@@ -32,18 +65,22 @@ export default function InBodyDashboardPage() {
   }));
   const goToNewMeasure = () => navigate('/inbody/new');
 
-  const handleDeleteRecord = async (record) => {
+  const requestDeleteRecord = (record) => {
     if (!record?.inbodyId) return;
+    setDeleteError('');
+    setRecordToDelete(record);
+  };
 
-    const confirmed = window.confirm('이 인바디 기록을 삭제할까요?');
-    if (!confirmed) return;
-
+  const confirmDeleteRecord = async () => {
+    if (!recordToDelete?.inbodyId) return;
     try {
-      await deleteInbody(record.inbodyId);
-      setRecords(prev => prev.filter(item => item.inbodyId !== record.inbodyId));
+      await deleteInbody(recordToDelete.inbodyId);
+      setRecords(prev => prev.filter(item => item.inbodyId !== recordToDelete.inbodyId));
+      setRecordToDelete(null);
     } catch (error) {
       console.error('인바디 기록 삭제에 실패했습니다.', error);
-      window.alert('기록을 삭제하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+      setDeleteError(getApiErrorMessage(error, '기록을 삭제하지 못했습니다. 잠시 후 다시 시도해 주세요.'));
+      setRecordToDelete(null);
     }
   };
 
@@ -73,7 +110,21 @@ export default function InBodyDashboardPage() {
           </p>
         )}
 
-        {!isLoading && records.length === 0 && (
+        {!isLoading && loadError && (
+          <EmptyState
+            icon="cloud_off"
+            title="인바디 기록을 불러오지 못했습니다"
+            description={loadError}
+            className="py-16"
+            action={(
+              <Button type="button" onClick={loadRecords}>
+                다시 시도
+              </Button>
+            )}
+          />
+        )}
+
+        {!isLoading && !loadError && records.length === 0 && (
           <EmptyState
             icon="monitoring"
             title="아직 입력된 인바디 기록이 없습니다"
@@ -87,8 +138,13 @@ export default function InBodyDashboardPage() {
           />
         )}
 
-        {!isLoading && current && (
+        {!isLoading && !loadError && current && (
           <>
+            {deleteError && (
+              <p className="rounded-xl bg-error-container px-4 py-3 text-sm font-bold text-error">
+                {deleteError}
+              </p>
+            )}
             <BmiHeroCard current={current} previous={previous} />
             <InBodySummaryCards current={current} previous={previous} />
             <InBodyTrendCard history={chartHistory} />
@@ -99,10 +155,19 @@ export default function InBodyDashboardPage() {
             </div>
 
             <InBodyMetricsCard current={current} />
-            <InBodyHistoryCard records={records} onDeleteRecord={handleDeleteRecord} />
+            <InBodyHistoryCard records={records} onDeleteRecord={requestDeleteRecord} />
           </>
         )}
       </div>
+
+      <ConfirmDialog
+        open={!!recordToDelete}
+        title="인바디 기록 삭제"
+        message="선택한 기록을 삭제할까요? 삭제 후에는 되돌릴 수 없습니다."
+        confirmLabel="삭제"
+        onConfirm={confirmDeleteRecord}
+        onCancel={() => setRecordToDelete(null)}
+      />
     </Layout>
   );
 }
