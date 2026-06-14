@@ -1,4 +1,4 @@
-import { EmptyState } from '../../../shared/components/ui';
+import { Card, EmptyState } from '../../../shared/components/ui';
 import RecommendationCards from '../../chat/components/RecommendationCards';
 import dumbAI from '../../../assets/dumb_AI.png';
 
@@ -20,16 +20,32 @@ export default function ResultsPanel({ isLoading, results, messageText, errorMes
             <span className="thinking-dots"><span></span><span></span><span></span></span>
             냉장고 속 재료를 살펴보고, 만들 수 있는 메뉴를 찾는 중이에요…
           </div>
-          <div className="cards">
-            {[0, 1, 2].map(i => (
-              <div className="skel" key={i}>
-                <div className="skel-img"></div>
-                <div className="skel-body">
-                  <div className="skel-line short"></div>
-                  <div className="skel-line long"></div>
-                  <div className="skel-line med"></div>
+          <div className="grid gap-3 mt-3 w-full grid-cols-1 sm:grid-cols-2">
+            {[0, 1].map(i => (
+              <Card
+                as="article"
+                padding="none"
+                key={i}
+                className="fridge-rec-skel overflow-hidden flex flex-col"
+                style={{ '--chat-card-index': i }}
+                aria-hidden="true"
+              >
+                <div className="p-3 flex flex-col gap-2 flex-1">
+                  <div className="flex items-start gap-2">
+                    <span className="skel-badge" />
+                    <span className="skel-line title" />
+                  </div>
+
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="skel-pill" />
+                    <span className="skel-pill short" />
+                    <span className="skel-time" />
+                  </div>
+
+                  <span className="skel-line long" />
+                  <span className="skel-line med" />
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </>

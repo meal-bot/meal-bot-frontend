@@ -571,26 +571,50 @@
 }
 
 /* loading skeletons */
-.fridge-page .skel {
-  display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 16px;
-  padding: 12px;
-  border: 1px solid var(--line-2);
-  border-radius: 12px;
+.fridge-page .fridge-rec-skel {
+  min-height: 152px;
+  pointer-events: none;
+  animation: chat-recommendation-enter 320ms cubic-bezier(.2, .7, .25, 1) both;
+  animation-delay: calc(var(--chat-card-index, 0) * 70ms);
 }
-.fridge-page .skel-img, .fridge-page .skel-line {
+.fridge-page .skel-badge,
+.fridge-page .skel-pill,
+.fridge-page .skel-time,
+.fridge-page .skel-line {
   background: linear-gradient(90deg, rgba(26,26,26,.04), rgba(26,26,26,.08), rgba(26,26,26,.04));
   background-size: 200% 100%;
   animation: fridge-shimmer 1.4s ease-in-out infinite;
+}
+.fridge-page .skel-badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex: 0 0 20px;
+  margin-top: 2px;
+}
+.fridge-page .skel-pill {
+  width: 48px;
+  height: 18px;
+  border-radius: 999px;
+}
+.fridge-page .skel-pill.short { width: 38px; }
+.fridge-page .skel-time {
+  width: 42px;
+  height: 12px;
   border-radius: 8px;
 }
-.fridge-page .skel-img { width: 88px; height: 88px; }
-.fridge-page .skel-body { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
-.fridge-page .skel-line { height: 12px; }
-.fridge-page .skel-line.short { width: 40%; }
-.fridge-page .skel-line.med   { width: 70%; }
-.fridge-page .skel-line.long  { width: 90%; }
+.fridge-page .skel-line {
+  display: block;
+  height: 12px;
+  border-radius: 8px;
+}
+.fridge-page .skel-line.title {
+  width: min(78%, 180px);
+  height: 18px;
+  margin-top: 3px;
+}
+.fridge-page .skel-line.med { width: 70%; }
+.fridge-page .skel-line.long { width: 92%; }
 @keyframes fridge-shimmer {
   0% { background-position: 100% 0; }
   100% { background-position: -100% 0; }
