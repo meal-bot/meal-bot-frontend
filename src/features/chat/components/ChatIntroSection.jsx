@@ -10,6 +10,7 @@ export default function ChatIntroSection({
   sliderRef,
   canScrollLeft,
   canScrollRight,
+  onSliderScroll,
   onMealClick,
 }) {
   const maskImage = canScrollLeft && canScrollRight
@@ -73,6 +74,7 @@ export default function ChatIntroSection({
           </button>
           <div
             ref={sliderRef}
+            onScroll={onSliderScroll}
             className="flex gap-6 overflow-x-auto pb-6 snap-x"
             style={{
               msOverflowStyle: 'none',

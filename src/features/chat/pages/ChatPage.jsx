@@ -126,6 +126,7 @@ export default function ChatPage() {
           sliderRef={sliderRef}
           canScrollLeft={canScrollLeft}
           canScrollRight={canScrollRight}
+          onSliderScroll={updateButtons}
           onMealClick={loadRecipeDetail}
         />
 
