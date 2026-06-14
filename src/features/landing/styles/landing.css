@@ -20,6 +20,14 @@
   box-sizing: border-box;
 }
 
+body:has(.landing-root) {
+  background: var(--landing-page);
+}
+
+html:has(.landing-root) {
+  scrollbar-gutter: auto;
+}
+
 .landing-root {
   position: relative;
   min-height: 100vh;
@@ -576,7 +584,7 @@
   }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   .landing-root {
     overflow-y: auto;
   }
@@ -593,7 +601,7 @@
   }
 
   .hero-grid {
-    max-width: 660px;
+    max-width: 720px;
     grid-template-columns: 1fr;
     gap: 36px;
   }
@@ -604,6 +612,12 @@
 
   .hero-sub {
     max-width: 540px;
+    white-space: normal;
+  }
+
+  .title-line,
+  .title-accent {
+    white-space: normal;
   }
 
   .footer-right {

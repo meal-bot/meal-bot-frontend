@@ -21,11 +21,11 @@ export function calculateBmi(record) {
 export function getBmiGrade(bmi) {
   if (bmi == null) return { label: '-', tone: 'muted' };
   if (bmi < 18.5) return { label: '저체중', tone: 'muted' };
-  if (bmi < 23) return { label: '정상', tone: 'primary' };
+  if (bmi < 23) return { label: '정상 범위', tone: 'primary' };
   if (bmi < 25) return { label: '과체중', tone: 'secondary' };
   if (bmi < 30) return { label: '비만 1단계', tone: 'danger' };
   if (bmi < 35) return { label: '비만 2단계', tone: 'danger' };
-  return { label: '고도비만', tone: 'danger' };
+  return { label: '고도 비만', tone: 'danger' };
 }
 
 export function getActivityInfo(value) {

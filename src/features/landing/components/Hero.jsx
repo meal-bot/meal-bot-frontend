@@ -12,7 +12,7 @@ export default function Hero({ onStart }) {
           </h1>
 
           <p className="hero-sub">
-            <span className="subtitle-line">식단 추천 에이전트가 지금 먹기 좋은 한 끼를 OBOB이 추천해드려요.</span>
+            <span className="subtitle-line">식단 추천 에이전트가 지금 먹기 좋은 한 끼를 추천해드려요.</span>
           </p>
 
           <div className="cta-row">

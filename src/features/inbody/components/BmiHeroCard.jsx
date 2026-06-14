@@ -15,37 +15,34 @@ export default function BmiHeroCard({ current, previous }) {
   const bmiDelta = previous ? formatDelta(bmi, calculateBmi(previous)) : null;
 
   return (
-    <Card padding="none" className="overflow-hidden rounded-[24px] shadow-[0_18px_60px_rgba(74,68,63,0.08)]">
-      <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr]">
-        <div className="flex flex-col justify-center gap-5 bg-gradient-to-b from-primary-container/55 to-white px-8 py-10 lg:border-r lg:border-outline-variant/30">
+    <Card padding="none" className="overflow-hidden rounded-[22px] shadow-[0_18px_48px_rgba(74,68,63,0.07)]">
+      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr]">
+        <div className="flex flex-col justify-center gap-5 bg-primary-container/45 px-8 py-9 lg:border-r lg:border-outline-variant/30">
           <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-on-surface-variant">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-on-surface-variant">
               BMI
             </p>
             <strong className="mt-3 block text-6xl font-black tracking-tight text-on-surface tabular-nums">
               {formatNumber(bmi)}
             </strong>
             <p className="mt-3 text-sm font-bold text-on-surface-variant">
-              {bmiDelta ? `최근 측정 대비 ${bmiDelta}` : '최근 측정 기준'}
+              {bmiDelta ? `이전 기록 대비 ${bmiDelta}` : '최근 기록 기준'}
             </p>
           </div>
 
           <Badge variant={grade.tone} size="md" className="w-fit px-4 py-2">
-            판정 · {grade.label}
+            BMI 기준 구간: {grade.label}
           </Badge>
         </div>
 
-        <div className="flex min-w-0 flex-col gap-7 px-8 py-9">
+        <div className="flex min-w-0 flex-col gap-6 px-8 py-8">
           <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-primary">
-              필수 입력 기반 계산 결과
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+              Latest Summary
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-on-surface">
-              {grade.label} 구간
+              최근 입력값 요약
             </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-on-surface-variant">
-              현재 BMI가 어느 구간에 있는지 확인합니다. 체성분 평가는 선택 인바디 항목을 함께 입력하면 더 정확하게 볼 수 있습니다.
-            </p>
           </div>
 
           <BmiRangeBar bmi={bmi} />
@@ -55,11 +52,7 @@ export default function BmiHeroCard({ current, previous }) {
             <HeroMetric label="키" value={current?.height} unit="cm" />
             <HeroMetric label="나이" value={current?.age} unit="세" />
             <HeroMetric label="성별" value={current?.gender ?? '-'} />
-            <HeroMetric
-              label="활동량"
-              value={activity.label}
-              compact
-            />
+            <HeroMetric label="활동량" value={activity.label} compact />
           </div>
         </div>
       </div>
@@ -73,8 +66,8 @@ function BmiRangeBar({ bmi }) {
   return (
     <div className="rounded-2xl bg-surface-container-low p-5">
       <div className="mb-4 flex items-center justify-between text-xs font-bold text-on-surface-variant">
-        <span>BMI 구간</span>
-        <span className="tabular-nums">18.5 · 23 · 25 · 30</span>
+        <span>BMI 기준 구간</span>
+        <span className="tabular-nums">18.5 / 23 / 25 / 30</span>
       </div>
       <div className="relative h-4 overflow-hidden rounded-full bg-surface-container">
         <div className="absolute inset-y-0 left-0 w-[21%] bg-outline-variant/35" />
@@ -101,7 +94,7 @@ function BmiRangeBar({ bmi }) {
 function HeroMetric({ label, value, unit = '', compact = false }) {
   return (
     <div className="rounded-2xl border border-outline-variant/30 bg-white px-4 py-3">
-      <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-on-surface-variant">
+      <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-on-surface-variant">
         {label}
       </p>
       <p className={`mt-1 font-black text-on-surface ${compact ? 'text-sm leading-5' : 'text-xl tabular-nums'}`}>

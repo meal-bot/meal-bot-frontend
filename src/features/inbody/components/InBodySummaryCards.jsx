@@ -38,7 +38,7 @@ export default function InBodySummaryCards({ current, previous }) {
               : 'text-green-600';
 
         return (
-          <Card key={item.key} padding="md" className="rounded-[22px]">
+          <Card key={item.key} padding="md" className="rounded-[20px]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-extrabold text-on-surface-variant">{item.label}</p>
@@ -57,7 +57,7 @@ export default function InBodySummaryCards({ current, previous }) {
                   {trendIcon}
                 </span>
               )}
-              <span>{delta ? `최근 측정 대비 ${delta}` : '최근 측정 기록 없음'}</span>
+              <span>{delta ? `이전 기록 대비 ${delta}` : '비교할 이전 기록 없음'}</span>
             </div>
           </Card>
         );

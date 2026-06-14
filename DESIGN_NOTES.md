@@ -176,20 +176,21 @@ Landing/marketing:
 
 ## Remaining InBody Issues / Decisions
 
+- Home agent simplified the InBody dashboard direction from "analysis dashboard" to "record summary + change review":
+  - removed the hardcoded reference-range gauge UI from `InBodyMetricsCard.jsx`
+  - removed `evaluate`, `gaugePosition`, and `range` definitions from `src/features/inbody/data/inbodyData.js`
+  - deleted unused `GaugeRow.jsx`
+  - `InBodyMetricsCard.jsx` now shows optional values as a plain record list, with no low/normal/high judgment
+  - `InBodyMetabolismCard.jsx` now focuses on BMR and estimated daily calories, without the ratio-bar explanation
+  - `InBodyTrendCard.jsx` chart height was reduced and wording now frames trends as record changes, not good/bad interpretation
+  - `InBodyCompositionCard.jsx` remains, but is framed as a simple recorded body-weight breakdown
+  - `InBodyHistoryCard.jsx` now has a simple delete action per row using `deleteInbody(inbodyId)`, `window.confirm`, and local `records` state removal
 - Several InBody files still have mojibake/broken Korean strings and should be fixed before visual work continues:
-  - `src/features/inbody/pages/InBodyDashboardPage.jsx`
-  - `src/features/inbody/components/BmiHeroCard.jsx`
-  - `src/features/inbody/components/InBodySummaryCards.jsx`
-  - `src/features/inbody/components/InBodyMetabolismCard.jsx`
-  - `src/features/inbody/data/inbodyData.js`
-- The fixed reference ranges in `ADVANCED_FIELDS` are still hardcoded.
-  - They existed before the latest edits.
-  - They are now labeled as "reference ranges", not diagnosis.
-  - Final decision needed: keep as weak reference UI, hide ranges, or replace with backend-provided/personalized standards.
+  - `src/features/inbody/pages/InBodyInputPage.jsx`
+  - `src/mock/MOCK.js`
 - Unused InBody prototype files may still remain and should be reviewed:
   - `src/features/inbody/components/ScoreRing.jsx`
   - `src/features/inbody/components/TrendChart.jsx`
-  - unused exports such as `SEGMENTS` and `LATEST` in `inbodyData.js`
 - The InBody dashboard has not been command-verified after these latest changes because the user requested no routine verification.
 
 ## Current CSS Structure

@@ -19,7 +19,7 @@ const chartTheme = {
     line: {
       stroke: 'var(--color-outline-variant)',
       strokeDasharray: '4 8',
-      strokeOpacity: 0.6,
+      strokeOpacity: 0.55,
     },
   },
   tooltip: {
@@ -44,20 +44,17 @@ export default function InBodyTrendCard({ history }) {
   const fatHistory = safeHistory.filter(item => item.bodyFatPercent != null);
 
   return (
-    <Card padding="lg" className="rounded-[24px]">
+    <Card padding="lg" className="rounded-[22px]">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
             Trend
           </p>
-          <h3 className="mt-2 text-xl font-black tracking-tight text-on-surface">시간 추이</h3>
-          <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-            체중과 체지방률을 각각의 단위로 나누어 변화 흐름을 보여줍니다.
-          </p>
+          <h3 className="mt-2 text-xl font-black tracking-tight text-on-surface">변화 흐름</h3>
         </div>
       </div>
 
-      <div className="mt-7 grid grid-cols-1 gap-5 xl:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
         <TrendPanel
           title="체중"
           unit="kg"
@@ -65,7 +62,7 @@ export default function InBodyTrendCard({ history }) {
           chipClassName="bg-primary-container text-primary"
           history={weightHistory}
           valueKey="weight"
-          emptyDescription="측정 기록이 2개 이상 쌓이면 체중 추이가 표시됩니다."
+          emptyDescription="기록이 2개 이상이면 체중 변화가 표시됩니다."
         />
         <TrendPanel
           title="체지방률"
@@ -74,7 +71,7 @@ export default function InBodyTrendCard({ history }) {
           chipClassName="bg-secondary-container text-secondary"
           history={fatHistory}
           valueKey="bodyFatPercent"
-          emptyDescription="선택 입력 항목을 입력하면 체지방률 추이를 볼 수 있습니다."
+          emptyDescription="체지방률을 2회 이상 입력하면 변화가 표시됩니다."
         />
       </div>
     </Card>
@@ -100,11 +97,11 @@ function TrendPanel({ title, unit, color, chipClassName, history, valueKey, empt
         )}
       </div>
 
-      <div className="mt-4 h-[260px]">
+      <div className="mt-4 h-[220px]">
         {hasTrend ? (
           <ResponsiveLine
             data={buildSingleSeries(history, title, valueKey, unit)}
-            margin={{ top: 18, right: 16, bottom: 48, left: 16 }}
+            margin={{ top: 16, right: 14, bottom: 42, left: 14 }}
             xScale={{ type: 'point' }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             yFormat={value => `${formatNumber(value)}${unit}`}
@@ -113,7 +110,7 @@ function TrendPanel({ title, unit, color, chipClassName, history, valueKey, empt
             axisRight={null}
             axisBottom={{
               tickSize: 0,
-              tickPadding: 14,
+              tickPadding: 12,
               format: value => String(value).slice(5),
             }}
             axisLeft={null}
@@ -121,12 +118,12 @@ function TrendPanel({ title, unit, color, chipClassName, history, valueKey, empt
             enableGridY
             colors={[color]}
             lineWidth={4}
-            pointSize={9}
+            pointSize={8}
             pointColor={{ from: 'color' }}
             pointBorderWidth={3}
             pointBorderColor="#ffffff"
             enableArea
-            areaOpacity={0.08}
+            areaOpacity={0.07}
             useMesh
             animate
             motionConfig="gentle"
@@ -138,7 +135,7 @@ function TrendPanel({ title, unit, color, chipClassName, history, valueKey, empt
         ) : (
           <EmptyState
             icon="show_chart"
-            title={`${title} 기록이 부족합니다.`}
+            title={`${title} 기록 부족`}
             description={emptyDescription}
             className="h-full border-outline-variant/35 bg-surface-container/45"
           />
