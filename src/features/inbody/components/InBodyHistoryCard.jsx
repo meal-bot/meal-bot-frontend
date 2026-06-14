@@ -23,7 +23,7 @@ export default function InBodyHistoryCard({ records, onDeleteRecord }) {
         </div>
         {visibleRecords.map((record, index) => (
           <div
-            key={record.inbodyId ?? `${record.measuredAt}-${index}`}
+            key={record.id ?? `${record.measuredAt}-${index}`}
             className={`grid grid-cols-[1.2fr_1fr_1fr_1fr_44px] items-center gap-3 px-5 py-4 text-sm ${index !== visibleRecords.length - 1 ? 'border-b border-outline-variant/25' : ''} ${index === 0 ? 'bg-primary-container/25 font-bold text-on-surface' : 'bg-white text-on-surface-variant'}`}
           >
             <span className="min-w-0">
@@ -40,7 +40,7 @@ export default function InBodyHistoryCard({ records, onDeleteRecord }) {
                 icon="delete"
                 label="인바디 기록 삭제"
                 onClick={() => onDeleteRecord?.(record)}
-                disabled={!record.inbodyId}
+                disabled={!record.id}
                 className="h-9 w-9 text-on-surface-variant hover:bg-error-container hover:text-error"
                 iconClassName="text-lg"
               />

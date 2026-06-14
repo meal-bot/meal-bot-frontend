@@ -66,16 +66,16 @@ export default function InBodyDashboardPage() {
   const goToNewMeasure = () => navigate('/inbody/new');
 
   const requestDeleteRecord = (record) => {
-    if (!record?.inbodyId) return;
+    if (!record?.id) return;
     setDeleteError('');
     setRecordToDelete(record);
   };
 
   const confirmDeleteRecord = async () => {
-    if (!recordToDelete?.inbodyId) return;
+    if (!recordToDelete?.id) return;
     try {
-      await deleteInbody(recordToDelete.inbodyId);
-      setRecords(prev => prev.filter(item => item.inbodyId !== recordToDelete.inbodyId));
+      await deleteInbody(recordToDelete.id);
+      setRecords(prev => prev.filter(item => item.id !== recordToDelete.id));
       setRecordToDelete(null);
     } catch (error) {
       console.error('인바디 기록 삭제에 실패했습니다.', error);
