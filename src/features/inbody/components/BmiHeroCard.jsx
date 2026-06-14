@@ -16,23 +16,30 @@ export default function BmiHeroCard({ current, previous }) {
 
   return (
     <Card padding="none" className="overflow-hidden rounded-[22px] shadow-[0_18px_48px_rgba(74,68,63,0.07)]">
-      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr]">
+      <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr]">
         <div className="flex flex-col justify-center gap-5 bg-primary-container/45 px-8 py-9 lg:border-r lg:border-outline-variant/30">
           <div>
             <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-on-surface-variant">
-              BMI
+              Weight Range
             </p>
-            <strong className="mt-3 block text-6xl font-black tracking-tight text-on-surface tabular-nums">
-              {formatNumber(bmi)}
+            <strong className="mt-3 block break-keep text-5xl font-black tracking-tight text-on-surface">
+              {grade.label}
             </strong>
             <p className="mt-3 text-sm font-bold text-on-surface-variant">
-              {bmiDelta ? `이전 기록 대비 ${bmiDelta}` : '최근 기록 기준'}
+              BMI 기준 체중 구간
             </p>
           </div>
 
-          <Badge variant={grade.tone} size="md" className="w-fit px-4 py-2">
-            BMI 기준 구간: {grade.label}
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant={grade.tone} size="md" className="px-4 py-2">
+              BMI {formatNumber(bmi)}
+            </Badge>
+            {bmiDelta && (
+              <Badge variant="muted" size="md" className="px-4 py-2">
+                이전 대비 {bmiDelta}
+              </Badge>
+            )}
+          </div>
         </div>
 
         <div className="flex min-w-0 flex-col gap-6 px-8 py-8">
