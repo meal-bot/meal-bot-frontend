@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ChatPage from './features/chat/pages/ChatPage';
 import LogInPage from './features/auth/pages/LogInPage';
-import UserProfilePage from './features/auth/pages/UserProfilePage';
 import OAuthCallbackPage from './features/auth/pages/OAuthCallbackPage';
 import InBodyInputPage from './features/inbody/pages/InBodyInputPage';
 import InBodyDashboardPage from './features/inbody/pages/InBodyDashboardPage';
@@ -13,8 +12,7 @@ import { SidebarProvider } from './shared/context/SidebarContext';
 import ScrollToTop from './shared/components/layout/ScrollToTop';
 
 function ProtectedRoute({ children }) {
-  const allowGuestPages = import.meta.env.DEV && import.meta.env.VITE_ALLOW_GUEST_PAGES === 'true';
-  return allowGuestPages || isLoggedIn() ? children : <Navigate to="/login" replace />;
+  return isLoggedIn() ? children : <Navigate to="/login" replace />;
 }
 
 export default function App() {
@@ -26,7 +24,6 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/main" element={<ChatPage />} />
         <Route path="/login" element={<LogInPage />} />
-        <Route path="/profile" element={<UserProfilePage />} />
         <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
         <Route path="/fridge" element={<ProtectedRoute><FridgePage /></ProtectedRoute>} />
         <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />

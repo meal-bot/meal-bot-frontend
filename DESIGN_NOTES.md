@@ -120,13 +120,11 @@ Landing/marketing:
   - adjusted the composition card to reduce perceived empty space without breaking row-height alignment
 - Temporary required-only InBody mock scenario was created for visual checking and then removed after confirmation.
 - `.env.local` was restored back to `VITE_MOCK_SCENARIO=success` after the required-only mock check.
-- The Health Analytics handoff ZIP was extracted under `.tmp-health-redesign/` for reference only.
-  - this folder is not imported by source code
-  - clean it before committing if it remains untracked
-- Mock cleanup conclusion:
-  - do not delete `src/mock/MOCK.js` or `src/mock/useMock.js` alone
-  - before deployment/main merge, remove mock imports and `if (USE_MOCKS)` branches from API files first
-  - after mock branches are removed, existing real API routes should keep working because the redesign changed the dashboard UI shell, not the endpoint contracts
+- The Health Analytics handoff ZIP reference folder was removed during main deployment cleanup.
+- Main deployment prep cleanup completed:
+  - removed API mock imports and `if (USE_MOCKS)` branches
+  - removed `src/mock/MOCK.js` and `src/mock/useMock.js`
+  - removed the temporary `VITE_ALLOW_GUEST_PAGES` route bypass from `ProtectedRoute`
 
 ## Recent InBody Dashboard Work
 
@@ -141,12 +139,7 @@ Landing/marketing:
   - previous "first measurement change rate %" approach was removed because it confused the user
   - Y-axis labels were hidden because they made the card visually noisy
   - tooltips still show the real measured values
-- Expanded local InBody mock records for trend-chart visual checking:
-  - `src/mock/MOCK.js`
-  - full mock records increased from 2 to 5
-  - added `daysAgo()` helper for safer mock dates
-  - values now include visible weight/body-fat movement
-  - this is temporary design-branch mock data and must be cleaned before final main merge
+- Expanded local InBody mock records for trend-chart visual checking, then removed mock files during main deployment prep.
 - Reworked the body composition card:
   - `src/features/inbody/components/InBodyCompositionCard.jsx`
   - removed the donut chart
@@ -184,13 +177,10 @@ Landing/marketing:
   - `InBodyMetabolismCard.jsx` now focuses on BMR and estimated daily calories, without the ratio-bar explanation
   - `InBodyTrendCard.jsx` chart height was reduced and wording now frames trends as record changes, not good/bad interpretation
   - `InBodyCompositionCard.jsx` remains, but is framed as a simple recorded body-weight breakdown
-  - `InBodyHistoryCard.jsx` now has a simple delete action per row using `deleteInbody(inbodyId)`, `window.confirm`, and local `records` state removal
-- Several InBody files still have mojibake/broken Korean strings and should be fixed before visual work continues:
+  - `InBodyHistoryCard.jsx` now has a simple delete action per row using `deleteInbody(inbodyId)`, shared `ConfirmDialog`, and local `records` state removal
+- InBody input strings should be visually rechecked before further design work:
   - `src/features/inbody/pages/InBodyInputPage.jsx`
-  - `src/mock/MOCK.js`
-- Unused InBody prototype files may still remain and should be reviewed:
-  - `src/features/inbody/components/ScoreRing.jsx`
-  - `src/features/inbody/components/TrendChart.jsx`
+- Unused InBody prototype files were removed during main deployment cleanup.
 - The InBody dashboard has not been command-verified after these latest changes because the user requested no routine verification.
 
 ## Current CSS Structure
@@ -258,33 +248,9 @@ src/features/landing/components/ChatPreview.jsx
 
 ## Temporary / Do Not Forget
 
-- Mock data is temporary for the design branch only and must be removed before final main merge.
 - `.env` files were not modified by Codex.
-- Temporary InBody mock scenarios exist for A/B dashboard checks:
-  - `VITE_MOCK_SCENARIO=success`: required + optional InBody data
-  - `VITE_MOCK_SCENARIO=requiredOnly`: required fields only, optional fields set to `null`
-  - remove this scenario structure together with mock cleanup before final main merge.
-- Home agent added a temporary frontend-only guest route bypass for design review:
-  - `src/App.jsx` now allows protected pages when `import.meta.env.DEV && VITE_ALLOW_GUEST_PAGES === 'true'`.
-  - local `.env.local` has `VITE_ALLOW_GUEST_PAGES=true` together with `VITE_USE_MOCKS=true`.
-  - this is only for checking page design and motion without login/API dependency.
-  - revert by removing `allowGuestPages` from `ProtectedRoute` and deleting `VITE_ALLOW_GUEST_PAGES` from local env before final merge/deployment.
-- Local mock usage, if needed:
-
-```env
-VITE_USE_MOCKS=true
-VITE_MOCK_SCENARIO=success
-VITE_ALLOW_GUEST_PAGES=true
-```
-
-- Temporary mock files:
-  - `src/mock/MOCK.js`
-  - `src/mock/useMock.js`
-- APIs currently include mock branches. Before main merge, search and remove:
-
-```bash
-rg "USE_MOCKS|MOCK|VITE_USE_MOCKS|VITE_MOCK_SCENARIO" src
-```
+- Mock branches and mock source files were removed during main deployment prep.
+- Temporary frontend-only guest route bypass was removed from `ProtectedRoute`.
 
 - Temporary debug outlines may still exist:
   - `src/features/chat/components/ChatThread.jsx`
@@ -295,7 +261,7 @@ rg "USE_MOCKS|MOCK|VITE_USE_MOCKS|VITE_MOCK_SCENARIO" src
 /fridge?debugError=1
 ```
 
-- `UserProfilePage` is planned for removal. Do not spend design/refactor effort on it unless explicitly asked.
+- `UserProfilePage` was removed before main deployment because it was a non-API-backed placeholder profile edit screen.
 - Figma MCP is not connected yet. It may be connected later.
 
 ## Last Known Verification

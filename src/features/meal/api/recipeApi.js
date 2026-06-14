@@ -1,6 +1,4 @@
 import api from '../../../api/axiosInstance';
-import { MOCK } from '../../../mock/MOCK';
-import { USE_MOCKS } from '../../../mock/useMock';
 
 export class RecipeNotFoundError extends Error {
   constructor(message = '레시피를 찾을 수 없습니다') {
@@ -20,20 +18,11 @@ export class AiServerError extends Error {
 // 카드 표시 + 클릭 시 모달까지 동일 데이터를 쓰므로 API 호출은 최초 1회
 // Spring: GET /api/recipes/random?count=N → fetchRecipeDetail과 동일 구조 배열 반환
 export const fetchRandomRecipes = async (count = 10) => {
-  if (USE_MOCKS) return MOCK.recipes.random.slice(0, count);
-
   const response = await api.get(`/api/recipes/random?count=${count}`);
   return response.data;
 };
 
 export const fetchRecipeDetail = async (recipeId) => {
-  if (USE_MOCKS) {
-    return {
-      ...MOCK.recipes.detail,
-      recipeId,
-    };
-  }
-
   try {
     console.log('[recipeApi] fetchRecipeDetail 요청 - recipeId:', recipeId);
     const response = await api.get(`/api/recipes/${encodeURIComponent(recipeId)}`);

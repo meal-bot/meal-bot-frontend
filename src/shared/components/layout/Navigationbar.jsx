@@ -108,15 +108,6 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
             )}
             {dropdownOpen && loggedIn && (
               <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-outline-variant/30 bg-white/95 shadow-lg backdrop-blur-sm py-1">
-                <Link
-                  to="/profile"
-                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-variant/40 transition-colors"
-                  onClick={() => setDropdownOpen(false)}
-                >
-                  <span className="material-symbols-outlined text-base">manage_accounts</span>
-                  사용자 프로필 편집
-                </Link>
-                <hr className="my-1 border-outline-variant/30" />
                 <button
                   type="button"
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-on-surface hover:bg-surface-variant/40 transition-colors"
