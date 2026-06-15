@@ -52,9 +52,15 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
           <Link
             to="/main"
             onClick={onStartNewChat}
-            className={`text-xl md:text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 ${sidebarOpen ? 'md:ml-60' : 'md:ml-10.5'}`}
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 hover:bg-surface-container md:h-11 md:w-11 ${sidebarOpen ? 'md:ml-60' : 'md:ml-10.5'}`}
+            aria-label="OBOB 홈"
           >
-            OBOB
+            <img
+              src="/favicon-512.png"
+              alt=""
+              className="h-8 w-8 object-contain md:h-9 md:w-9"
+              aria-hidden="true"
+            />
           </Link>
           {/* 데스크톱 전용 링크 목록 */}
           <div className="hidden md:flex h-16 md:h-20 items-end gap-1">
@@ -80,6 +86,10 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
 
         {/* 오른쪽: 사용자 메뉴 + 모바일 햄버거 */}
         <div className="flex items-center justify-end gap-3">
+          <span className="inline-flex items-center text-xl font-bold tracking-tighter text-on-surface md:text-2xl">
+            OBOB
+          </span>
+
           {/* 환영 문구: md 이상에서만 표시 */}
           <span className="hidden md:inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">
             {loggedIn ? `환영합니다 ${name}님!` : '로그인하여 맞춤 식단을 받아보세요'}
