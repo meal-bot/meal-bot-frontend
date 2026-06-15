@@ -147,9 +147,11 @@
   border-color: var(--sage);
   box-shadow: 0 0 0 3px rgba(156, 175, 136, .18);
 }
-.fridge-page .search-wrap svg {
+.fridge-page .search-wrap .search-icon {
   position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 16px;
   color: var(--ink-3);
+  pointer-events: none;
 }
 .fridge-page .search-wrap input::placeholder { color: var(--ink-3); }
 
@@ -244,6 +246,9 @@
   display: grid; place-items: center;
   font-size: 22px;
   background: rgba(26,26,26,.03);
+}
+.fridge-page .ing-glyph .material-symbols-outlined {
+  font-size: 24px;
 }
 .fridge-page .ing-name {
   font-size: 11.5px;
@@ -420,8 +425,12 @@
   border-radius: 50%;
   background: rgba(255,255,255,.18);
   display: grid; place-items: center;
-  font-size: 10px;
   transition: background .15s;
+}
+.fridge-page .tag-icon,
+.fridge-page .tag-x .material-symbols-outlined {
+  font-size: 13px;
+  line-height: 1;
 }
 .fridge-page .tag-x:hover { background: var(--tomato); }
 .fridge-page .tag-empty {
@@ -458,6 +467,9 @@
   border-top-color: #fff;
   border-radius: 50%;
   animation: fridge-spin .9s linear infinite;
+}
+.fridge-page .recommend-btn .material-symbols-outlined {
+  font-size: 18px;
 }
 @keyframes fridge-spin { to { transform: rotate(360deg); } }
 

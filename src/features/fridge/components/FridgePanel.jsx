@@ -52,10 +52,7 @@ export default function FridgePanel({
           냉장고 속 재료
         </div>
         <div className="search-wrap">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="11" cy="11" r="7"/>
-            <path d="m21 21-4.3-4.3"/>
-          </svg>
+          <span className="material-symbols-outlined search-icon" aria-hidden="true">search</span>
           <input
             type="text"
             value={search}
@@ -68,6 +65,7 @@ export default function FridgePanel({
       <div className="cat-row">
         {CATS.map(c => (
           <button
+            type="button"
             key={c}
             className={'cat' + (cat === c ? ' active' : '')}
             onClick={() => setCat(c)}
@@ -117,7 +115,9 @@ export default function FridgePanel({
         <div className="ingredients">
           {isAdding ? (
             <div className="ing custom-ing editing">
-              <div className="ing-glyph">➕</div>
+              <div className="ing-glyph">
+                <span className="material-symbols-outlined" aria-hidden="true">add</span>
+              </div>
               <input
                 className="custom-ing-input"
                 type="text"
@@ -134,7 +134,9 @@ export default function FridgePanel({
               onClick={() => setIsAdding(true)}
               title="없는 재료를 직접 입력해서 추가"
             >
-              <div className="ing-glyph">➕</div>
+              <div className="ing-glyph">
+                <span className="material-symbols-outlined" aria-hidden="true">add</span>
+              </div>
               <div className="ing-name">직접 입력</div>
             </div>
           )}

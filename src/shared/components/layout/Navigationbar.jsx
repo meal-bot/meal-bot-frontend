@@ -87,13 +87,17 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
 
           {/* 계정 아이콘 드롭다운 */}
           <div className="relative flex items-center" ref={dropdownRef}>
-            <span
-              className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors select-none"
-              style={{ fontSize: '32px' }}
+            <button
+              type="button"
+              aria-label="계정 메뉴 열기"
+              aria-expanded={dropdownOpen}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
               onClick={() => setDropdownOpen((prev) => !prev)}
             >
-              account_circle
-            </span>
+              <span className="material-symbols-outlined select-none" style={{ fontSize: '32px' }} aria-hidden="true">
+                account_circle
+              </span>
+            </button>
             {dropdownOpen && !loggedIn && (
               <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-outline-variant/30 bg-white/95 shadow-lg backdrop-blur-sm py-1">
                 <Link
@@ -123,10 +127,13 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
           {/* 모바일 햄버거 버튼 */}
           <div className="md:hidden relative" ref={mobileMenuRef}>
             <button
+              type="button"
+              aria-label={mobileMenuOpen ? '모바일 메뉴 닫기' : '모바일 메뉴 열기'}
+              aria-expanded={mobileMenuOpen}
               onClick={() => setMobileMenuOpen((prev) => !prev)}
               className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-surface-container transition-colors"
             >
-              <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '24px' }}>
+              <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '24px' }} aria-hidden="true">
                 {mobileMenuOpen ? 'close' : 'menu'}
               </span>
             </button>

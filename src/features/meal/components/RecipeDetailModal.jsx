@@ -67,10 +67,11 @@ export default function RecipeDetailModal({ recipe, isLoading = false, error = '
           </div>
           <button
             type="button"
+            aria-label="레시피 상세 닫기"
             onClick={onClose}
             className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-surface-container transition-colors flex-shrink-0"
           >
-            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '22px' }}>close</span>
+            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '22px' }} aria-hidden="true">close</span>
           </button>
         </div>
 

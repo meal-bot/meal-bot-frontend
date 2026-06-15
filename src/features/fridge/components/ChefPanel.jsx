@@ -78,7 +78,7 @@ export default function ChefPanel({
           {totalCount > 0 ? (
             <span className="basket-actions">
               <span className="basket-count">{totalCount}</span>
-              <button className="basket-clear" onClick={onClearAll}>모두 비우기</button>
+              <button type="button" className="basket-clear" onClick={onClearAll}>모두 비우기</button>
             </span>
           ) : (
             <span className="basket-count is-empty">0</span>
@@ -92,13 +92,18 @@ export default function ChefPanel({
               {picked.map(id => (
                 <span className="tag" key={id}>
                   {lookup[id]?.glyph} {lookup[id]?.name}
-                  <button className="tag-x" onClick={() => removePreset(id)} aria-label="제거">×</button>
+                  <button type="button" className="tag-x" onClick={() => removePreset(id)} aria-label={`${lookup[id]?.name || '재료'} 제거`}>
+                    <span className="material-symbols-outlined" aria-hidden="true">close</span>
+                  </button>
                 </span>
               ))}
               {customIngredients.map(name => (
                 <span className="tag" key={`custom-${name}`}>
-                  ✏️ {name}
-                  <button className="tag-x" onClick={() => onRemoveCustom(name)} aria-label="제거">×</button>
+                  <span className="material-symbols-outlined tag-icon" aria-hidden="true">edit</span>
+                  {name}
+                  <button type="button" className="tag-x" onClick={() => onRemoveCustom(name)} aria-label={`${name} 제거`}>
+                    <span className="material-symbols-outlined" aria-hidden="true">close</span>
+                  </button>
                 </span>
               ))}
             </>
@@ -107,6 +112,7 @@ export default function ChefPanel({
       </div>
 
       <button
+        type="button"
         className="recommend-btn"
         disabled={totalCount === 0 || isLoading}
         onClick={onRecommend}
@@ -114,7 +120,10 @@ export default function ChefPanel({
         {isLoading ? (
           <><span className="spin"></span> 셰프가 고민 중…</>
         ) : (
-          <>✨ 추천받기 {totalCount > 0 && `· ${totalCount}개 재료`}</>
+          <>
+            <span className="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+            추천받기 {totalCount > 0 && `· ${totalCount}개 재료`}
+          </>
         )}
       </button>
 

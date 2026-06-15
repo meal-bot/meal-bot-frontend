@@ -59,18 +59,22 @@ export default function ChatIntroSection({
         {!isLoading && !errorMessage && meals.length > 0 && (
         <div className="relative group/slider">
           <button
+            type="button"
+            aria-label="이전 식단 보기"
             onClick={() => sliderRef.current?.scrollBy({ left: -400, behavior: 'smooth' })}
             disabled={!canScrollLeft}
             className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-lg border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all duration-300 opacity-0 group-hover/slider:opacity-100 disabled:hidden z-20"
           >
-            <span className="material-symbols-outlined">arrow_back_ios_new</span>
+            <span className="material-symbols-outlined" aria-hidden="true">arrow_back_ios_new</span>
           </button>
           <button
+            type="button"
+            aria-label="다음 식단 보기"
             onClick={() => sliderRef.current?.scrollBy({ left: 400, behavior: 'smooth' })}
             disabled={!canScrollRight}
             className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-lg border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all duration-300 opacity-0 group-hover/slider:opacity-100 disabled:hidden z-20"
           >
-            <span className="material-symbols-outlined">arrow_forward_ios</span>
+            <span className="material-symbols-outlined" aria-hidden="true">arrow_forward_ios</span>
           </button>
           <div
             ref={sliderRef}
