@@ -11,7 +11,6 @@ const GOOGLE_SVG = (
 );
 
 export default function AuthPageShell({
-  icon,
   title,
   subtitle,
   mainClassName = 'flex-1 flex items-center justify-center px-6 pt-24 pb-12',
@@ -77,10 +76,13 @@ export default function AuthPageShell({
 
           <div className="w-full">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-container mb-5">
-                <span className="material-symbols-outlined text-3xl" style={{ color: '#8DA399' }}>
-                  {icon}
-                </span>
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-container mb-5">
+                <img
+                  src="/favicon-512.png"
+                  alt=""
+                  className="h-12 w-12 object-contain"
+                  aria-hidden="true"
+                />
               </div>
               <h1 className="text-3xl font-extrabold text-on-surface tracking-tight">{title}</h1>
               <p className="text-on-surface-variant mt-2 text-sm leading-6">{subtitle}</p>
