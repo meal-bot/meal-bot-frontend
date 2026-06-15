@@ -62,6 +62,9 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
               aria-hidden="true"
             />
           </Link>
+          <span className="inline-flex items-center text-xl font-bold tracking-tighter text-on-surface md:text-2xl">
+            OBOB
+          </span>
           {/* 데스크톱 전용 링크 목록 */}
           <div className="hidden md:flex h-16 md:h-20 items-end gap-1">
           {navLinks.map(({ to, label, icon }) => {
@@ -86,10 +89,6 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
 
         {/* 오른쪽: 사용자 메뉴 + 모바일 햄버거 */}
         <div className="flex items-center justify-end gap-3">
-          <span className="inline-flex items-center text-xl font-bold tracking-tighter text-on-surface md:text-2xl">
-            OBOB
-          </span>
-
           {/* 환영 문구: md 이상에서만 표시 */}
           <span className="hidden md:inline-flex items-center text-sm font-bold text-on-surface-variant mr-2">
             {loggedIn ? `환영합니다 ${name}님!` : '로그인하여 맞춤 식단을 받아보세요'}
