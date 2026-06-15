@@ -43,9 +43,8 @@ export default function LandingPage() {
       <div className="landing-grain" />
 
       <nav className="nav">
-        <div className="nav-brand">
-          <span className="nav-brand-dot" />
-          OBOB
+        <div className="nav-brand" aria-label="OBOB">
+          <img src="/obob-lockup-horizontal-light.svg" alt="OBOB" />
         </div>
       </nav>
 

@@ -52,19 +52,15 @@ export default function Navigationbar({ sidebarOpen = false, onStartNewChat }) {
           <Link
             to="/main"
             onClick={onStartNewChat}
-            className={`inline-flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300 hover:bg-surface-container md:h-14 md:w-14 ${sidebarOpen ? 'md:ml-60' : 'md:ml-10.5'}`}
+            className={`inline-flex h-12 items-center rounded-xl transition-all duration-300 hover:bg-surface-container md:h-14 ${sidebarOpen ? 'md:ml-60' : 'md:ml-10.5'}`}
             aria-label="OBOB 홈"
           >
             <img
-              src="/favicon-512.png"
-              alt=""
-              className="h-10 w-10 object-contain md:h-12 md:w-12"
-              aria-hidden="true"
+              src="/obob-lockup-horizontal.svg"
+              alt="OBOB"
+              className="h-9 w-auto max-w-[138px] object-contain md:h-10 md:max-w-[154px]"
             />
           </Link>
-          <span className="inline-flex items-center text-xl font-bold tracking-tighter text-on-surface md:text-2xl">
-            OBOB
-          </span>
           {/* 데스크톱 전용 링크 목록 */}
           <div className="hidden md:ml-10 md:flex h-16 md:h-20 items-end gap-1">
           {navLinks.map(({ to, label, icon }) => {

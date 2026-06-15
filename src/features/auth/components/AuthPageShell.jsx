@@ -31,9 +31,14 @@ export default function AuthPageShell({
         <div className="flex justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full">
           <Link
             to="/"
-            className="text-xl md:text-2xl font-bold tracking-tighter text-on-surface transition-all duration-300 md:ml-10.5"
+            className="inline-flex h-12 items-center rounded-xl transition-all duration-300 hover:bg-surface-container md:ml-10.5 md:h-14"
+            aria-label="OBOB 홈"
           >
-            OBOB
+            <img
+              src="/obob-lockup-horizontal.svg"
+              alt="OBOB"
+              className="h-9 w-auto max-w-[138px] object-contain md:h-10 md:max-w-[154px]"
+            />
           </Link>
           <Button as={Link} to="/main" variant="outline" size="sm" className="font-semibold">
             로그인 없이 시작하기
@@ -76,9 +81,9 @@ export default function AuthPageShell({
 
           <div className="w-full">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 mb-5">
+              <div className="inline-flex items-center justify-center mb-5">
                 <img
-                  src="/favicon-512.png"
+                  src="/app-icon-dark-1024.png"
                   alt=""
                   className="h-16 w-16 object-contain"
                   aria-hidden="true"

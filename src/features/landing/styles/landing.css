@@ -105,25 +105,23 @@ html:has(.landing-root) {
 }
 
 .nav-brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--landing-ink);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -.02em;
+  min-height: 56px;
 }
 
-.nav-brand-dot,
+.nav-brand img {
+  display: block;
+  width: auto;
+  height: 40px;
+  max-width: 154px;
+  object-fit: contain;
+}
+
 .footer-dot {
   display: block;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--landing-accent), var(--landing-sage));
-}
-
-.nav-brand-dot {
-  width: 11px;
-  height: 11px;
 }
 
 .nav-cta {
